@@ -445,25 +445,46 @@ function ProfileForm({ profile, setProfile }) {
 
 function DirectionPanel({ profile }) {
   const directions = calcDirectionScores(profile);
-
   const [fromPlace, setFromPlace] = useState("");
   const [toPlace, setToPlace] = useState("");
 
+  const directionIndex =
+    fromPlace && toPlace ? (fromPlace.length * 3 + toPlace.length * 7) % 12 : 1;
+
+  const picked = directions[directionIndex];
+  const pickedZodiac = picked[0];
+  const pickedDirection = picked[1];
+  const pickedScore = picked[2];
+
+  const getColor = (score) => {
+    if (score >= 80) return "from-emerald-400 to-green-500 border-emerald-400 text-emerald-200";
+    if (score >= 60) return "from-lime-400 to-green-500 border-lime-400 text-lime-200";
+    if (score >= 40) return "from-yellow-400 to-amber-500 border-yellow-400 text-yellow-200";
+    if (score >= 20) return "from-orange-400 to-red-500 border-orange-400 text-orange-200";
+    return "from-red-500 to-rose-600 border-red-400 text-red-200";
+  };
+
+  const resultText =
+    pickedScore >= 80
+      ? "매우 좋은 이동 흐름"
+      : pickedScore >= 60
+      ? "좋은 이동 흐름"
+      : pickedScore >= 40
+      ? "보통 흐름"
+      : pickedScore >= 20
+      ? "주의 흐름"
+      : "매우 주의";
+
   return (
     <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-4">
-      <div className="flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between">
         <h3 className="font-bold text-white">
           내 위치 기준 12지신 방향운
         </h3>
-
         <MapPin size={18} className="text-cyan-300" />
       </div>
 
-      <p className="mt-2 text-xs text-slate-400">
-        현재는 GPS 없이 출발지/목적지 입력 기반 미리보기입니다.
-      </p>
-
-      <div className="mt-4 grid gap-3 md:grid-cols-2">
+      <div className="grid gap-3 md:grid-cols-[1fr_1fr_auto]">
         <input
           value={fromPlace}
           onChange={(e) => setFromPlace(e.target.value)}
@@ -477,202 +498,133 @@ function DirectionPanel({ profile }) {
           placeholder="목적지 예: 홍대입구"
           className="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm text-white outline-none"
         />
+
+        <button className="rounded-xl bg-gradient-to-r from-violet-500 to-blue-500 px-5 py-3 text-sm font-bold text-white">
+          분석하기
+        </button>
       </div>
 
-     {fromPlace && toPlace && (() => {
+      <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_330px]">
+        <div className="relative min-h-[560px] overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#07111f] p-4">
+          <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_center,rgba(59,130,246,.35),transparent_35%),linear-gradient(90deg,rgba(255,255,255,.05)_1px,transparent_1px),linear-gradient(rgba(255,255,255,.05)_1px,transparent_1px)] bg-[length:100%_100%,48px_48px,48px_48px]" />
 
-  const directionIndex =
-    (fromPlace.length * 3 + toPlace.length * 7) % 12;
+          <div className="relative mx-auto mt-8 aspect-square max-w-[520px]">
+            <div className="absolute left-1/2 top-1/2 h-[86%] w-[86%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-cyan-300/30" />
 
-  const picked = directions[directionIndex];
+            {directions.map(([zodiac, dir, score], index) => {
+              const angle = index * 30 - 90;
+              const rad = (angle * Math.PI) / 180;
+              const radius = 42;
+              const x = 50 + radius * Math.cos(rad);
+              const y = 50 + radius * Math.sin(rad);
+              const active = zodiac === pickedZodiac;
+              const color = getColor(score);
 
-  const zodiac = picked[0];
-  const directionName = picked[1];
-  const score = picked[2];
+              return (
+                <div
+                  key={zodiac}
+                  className="absolute -translate-x-1/2 -translate-y-1/2 text-center"
+                  style={{ left: `${x}%`, top: `${y}%` }}
+                >
+                  <div
+                    className={`mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border bg-slate-950/90 text-3xl font-black shadow-2xl ${
+                      active
+                        ? `${color} scale-110 shadow-cyan-500/40`
+                        : color
+                    }`}
+                  >
+                    {zodiac}
+                  </div>
+                  <div className="mt-1 text-xs text-slate-300">{dir}</div>
+                  <div className="mx-auto mt-1 rounded-full bg-black/70 px-2 py-1 text-xs font-bold text-white">
+                    {score}%
+                  </div>
+                </div>
+              );
+            })}
 
-  let resultText = "보통 흐름";
-
-  if (score >= 75) {
-    resultText = "매우 좋은 이동 흐름";
-  } else if (score >= 60) {
-    resultText = "긍정 흐름";
-  } else if (score <= 35) {
-    resultText = "주의 이동 흐름";
-  }
-
-  return (
-    <div className="mt-3 rounded-xl bg-cyan-500/10 p-4 text-sm text-cyan-100">
-      <div className="font-bold text-cyan-200">
-        {fromPlace} → {toPlace}
-      </div>
-
-      <div className="mt-2">
-        방향: {directionName}
-      </div>
-
-      <div>
-        12지신 방향: {zodiac}
-      </div>
-
-      <div>
-        이동운 점수: {score}%
-      </div>
-
-      <div className="mt-2 text-white">
-        오늘의 흐름: {resultText}
-      </div>
-    </div>
-  );
-
-})()}
-
-      <div className="mt-3 grid grid-cols-3 gap-2">
-        {directions.map(([z, dir, score]) => (
-          <div
-            key={z}
-            className="rounded-xl bg-white/[0.04] p-3 text-center"
-          >
-            <div className="text-lg font-black text-white">
-              {z}
+            <div className="absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border border-blue-300/50 bg-blue-500/30 p-2 shadow-2xl shadow-blue-500/40">
+              <div className="flex h-full w-full items-center justify-center rounded-full bg-blue-500 text-xs font-bold text-white">
+                내 위치
+              </div>
             </div>
 
-            <div className="text-[11px] text-slate-400">
-              {dir}
+            <div
+              className="absolute left-1/2 top-1/2 h-1 origin-left border-t-2 border-dashed border-white/80"
+              style={{
+                width: "36%",
+                transform: `rotate(${directionIndex * 30 - 90}deg)`,
+              }}
+            />
+          </div>
+
+          <div className="relative mt-4 rounded-xl border border-white/10 bg-black/30 p-3 text-xs text-slate-300">
+            점수 기준:
+            <span className="ml-3 text-emerald-300">80% 이상 매우 좋음</span>
+            <span className="ml-3 text-lime-300">60~79% 좋음</span>
+            <span className="ml-3 text-yellow-300">40~59% 보통</span>
+            <span className="ml-3 text-orange-300">20~39% 주의</span>
+            <span className="ml-3 text-red-300">20% 미만 매우 주의</span>
+          </div>
+        </div>
+
+        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/80 p-5">
+          <h3 className="text-xl font-black text-white">
+            이동 방향 분석 결과
+          </h3>
+
+          <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+            <div className="text-xs text-slate-400">주 이동 방향</div>
+            <div className="mt-2 text-3xl font-black text-violet-300">
+              {pickedDirection}
             </div>
 
-            <div className="mt-1 text-sm text-cyan-200">
-              {score}%
+            <div className="mt-5 text-xs text-slate-400">12지신 방향</div>
+            <div className="mt-2 text-3xl font-black text-blue-300">
+              {pickedZodiac}
+            </div>
+
+            <div className="mt-5 text-xs text-slate-400">이동운 점수</div>
+            <div className="mt-2 text-4xl font-black text-yellow-300">
+              {pickedScore}%
+            </div>
+
+            <div className="mt-4 rounded-xl bg-emerald-500/10 p-3 text-sm text-emerald-200">
+              {resultText}
             </div>
           </div>
-        ))}
+
+          <div className="mt-5 space-y-3">
+            {[...directions]
+              .sort((a, b) => b[2] - a[2])
+              .map(([zodiac, dir, score], i) => (
+                <div key={zodiac} className="grid grid-cols-[28px_1fr_52px] items-center gap-2 text-sm">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-xs text-white">
+                    {i + 1}
+                  </div>
+
+                  <div>
+                    <span className="font-bold text-white">{zodiac}</span>
+                    <span className="ml-2 text-slate-400">({dir})</span>
+                    <div className="mt-1 h-2 rounded-full bg-slate-800">
+                      <div
+                        className="h-full rounded-full bg-gradient-to-r from-violet-500 to-cyan-300"
+                        style={{ width: `${score}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="text-right font-bold text-cyan-300">
+                    {score}%
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
       </div>
     </div>
   );
 }
-
-function UserHome({ profile, data, setTab }) {
-  if (!profile.birthDate) {
-    return (
-      <div className="mx-auto max-w-xl rounded-[2rem] border border-white/10 bg-slate-950/80 p-6 text-center">
-        <Info className="mx-auto text-violet-300" size={42} />
-
-        <h2 className="mt-4 text-2xl font-black text-white">
-          생년월일시 입력이 필요합니다
-        </h2>
-
-        <p className="mt-2 text-sm leading-6 text-slate-400">
-          오늘의 운세 흐름, 대운·세운, 12지신 방향운을 보려면
-          먼저 생년월일과 태어난 시간을 입력해 주세요.
-        </p>
-
-        <button
-          onClick={() => setTab("profile")}
-          className="mt-5 rounded-xl bg-violet-500 px-5 py-3 font-bold text-white"
-        >
-          생년월일시 입력하기
-        </button>
-      </div>
-    );
-  }
-
-  const cards = [
-    ["인연운", data.scores.love, Heart],
-    ["외출·이동운", data.scores.move, Compass],
-    ["사고 주의", data.scores.accident, AlertTriangle],
-    ["구설 주의", data.scores.conflict, MessageCircleWarning],
-    ["금전운", data.scores.money, Coins],
-    ["행복지수", data.scores.happy, Smile],
-  ];
-
-  return (
-    <div className="grid gap-4 lg:grid-cols-[1fr_340px]">
-      <section className="space-y-4">
-        <div className="rounded-[2rem] border border-white/10 bg-slate-950/75 p-5 shadow-2xl">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="text-xs text-violet-300">
-                AI · 통계 기반
-              </p>
-
-              <h1 className="mt-1 text-2xl font-black text-white">
-                오늘의 운세 흐름
-              </h1>
-
-              <p className="mt-1 text-sm text-slate-400">
-                {profile.nickname || "사용자"}님 · {profile.calendarType}
-              </p>
-            </div>
-
-            <button
-              onClick={() => setTab("calendar")}
-              className="rounded-xl bg-white/10 px-3 py-2 text-xs text-slate-200"
-            >
-              <CalendarDays className="inline mr-1" size={14} />
-              캘린더
-            </button>
-          </div>
-
-          <div className="mt-5 grid gap-4 md:grid-cols-[170px_1fr]">
-            <div className="flex aspect-square items-center justify-center rounded-full bg-gradient-to-br from-violet-500 via-amber-300 to-cyan-300 p-3">
-              <div className="flex h-full w-full flex-col items-center justify-center rounded-full bg-slate-950">
-                <span className="text-4xl font-black text-white">
-                  {data.scores.total}%
-                </span>
-
-                <span className="text-sm text-amber-200">
-                  양호
-                </span>
-              </div>
-            </div>
-
-            <div className="rounded-2xl bg-white/[0.04] p-4">
-              <h2 className="font-bold text-white">
-                오늘은 ‘기회와 변화’의 흐름
-              </h2>
-
-              <p className="mt-2 text-sm leading-6 text-slate-300">
-                유사 사주군 {data.similarCount}명, 누적 데이터{" "}
-                {data.eventCount}건 기준의 참고용 통계입니다.
-              </p>
-
-              <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                {data.keywords.map((k) => (
-                  <span
-                    key={k}
-                    className="rounded-full bg-violet-400/15 px-3 py-1 text-violet-200"
-                  >
-                    #{k}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid gap-3 md:grid-cols-3">
-          {cards.map(([label, value, Icon]) => (
-            <button
-              key={label}
-              onClick={() => setTab("flow")}
-              className="rounded-2xl border border-white/10 bg-slate-950/70 p-4 text-left shadow-xl"
-            >
-              <div className="flex items-center justify-between">
-                <Icon className="text-violet-300" size={22} />
-
-                <span className="text-2xl font-black text-white">
-                  {value}%
-                </span>
-              </div>
-
-              <div className="mt-3 text-sm font-bold text-white">
-                {label}
-              </div>
-            </button>
-          ))}
-        </div>
-
-        <DirectionPanel profile={profile} />
-      </section>
 
       <aside className="space-y-4">
         <NoticeBox />
