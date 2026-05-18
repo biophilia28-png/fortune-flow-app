@@ -442,7 +442,83 @@ function ProfileForm({ profile, setProfile }) {
     </div>
   );
 }
+function UserHome({ profile, data, setTab }) {
+  return (
+    <div className="space-y-4">
+      <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-6">
+        <p className="text-sm text-violet-300">
+          오늘의 운세 흐름
+        </p>
 
+        <h1 className="mt-2 text-4xl font-black text-white">
+          {profile.nickname || "사용자"}님의 운세
+        </h1>
+
+        <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-2xl bg-white/[0.04] p-4">
+            <div className="text-xs text-slate-400">
+              종합운
+            </div>
+
+            <div className="mt-2 text-4xl font-black text-cyan-300">
+              {data.scores.total}%
+            </div>
+          </div>
+
+          <div className="rounded-2xl bg-white/[0.04] p-4">
+            <div className="text-xs text-slate-400">
+              인연운
+            </div>
+
+            <div className="mt-2 text-4xl font-black text-pink-300">
+              {data.scores.love}%
+            </div>
+          </div>
+
+          <div className="rounded-2xl bg-white/[0.04] p-4">
+            <div className="text-xs text-slate-400">
+              금전운
+            </div>
+
+            <div className="mt-2 text-4xl font-black text-yellow-300">
+              {data.scores.money}%
+            </div>
+          </div>
+
+          <div className="rounded-2xl bg-white/[0.04] p-4">
+            <div className="text-xs text-slate-400">
+              행복지수
+            </div>
+
+            <div className="mt-2 text-4xl font-black text-emerald-300">
+              {data.scores.happy}%
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 flex gap-2">
+          <button
+            onClick={() => setTab("flow")}
+            className="rounded-xl bg-violet-500 px-4 py-3 font-bold text-white"
+          >
+            운세 흐름 보기
+          </button>
+
+          <button
+            onClick={() => setTab("calendar")}
+            className="rounded-xl bg-cyan-500 px-4 py-3 font-bold text-white"
+          >
+            캘린더 보기
+          </button>
+        </div>
+      </div>
+
+      <DirectionPanel profile={profile} />
+
+      <FeedbackBox />
+    </div>
+  );
+}
 function DirectionPanel({ profile }) {
   const directions = calcDirectionScores(profile);
   const [fromPlace, setFromPlace] = useState("");
