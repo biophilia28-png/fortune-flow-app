@@ -479,11 +479,52 @@ function DirectionPanel({ profile }) {
         />
       </div>
 
-      {fromPlace && toPlace && (
-        <div className="mt-3 rounded-xl bg-cyan-500/10 p-3 text-sm text-cyan-100">
-          {fromPlace} → {toPlace} 이동 방향운을 분석 중입니다.
-        </div>
-      )}
+     {fromPlace && toPlace && (() => {
+
+  const directionIndex =
+    (fromPlace.length * 3 + toPlace.length * 7) % 12;
+
+  const picked = directions[directionIndex];
+
+  const zodiac = picked[0];
+  const directionName = picked[1];
+  const score = picked[2];
+
+  let resultText = "보통 흐름";
+
+  if (score >= 75) {
+    resultText = "매우 좋은 이동 흐름";
+  } else if (score >= 60) {
+    resultText = "긍정 흐름";
+  } else if (score <= 35) {
+    resultText = "주의 이동 흐름";
+  }
+
+  return (
+    <div className="mt-3 rounded-xl bg-cyan-500/10 p-4 text-sm text-cyan-100">
+      <div className="font-bold text-cyan-200">
+        {fromPlace} → {toPlace}
+      </div>
+
+      <div className="mt-2">
+        방향: {directionName}
+      </div>
+
+      <div>
+        12지신 방향: {zodiac}
+      </div>
+
+      <div>
+        이동운 점수: {score}%
+      </div>
+
+      <div className="mt-2 text-white">
+        오늘의 흐름: {resultText}
+      </div>
+    </div>
+  );
+
+})()}
 
       <div className="mt-3 grid grid-cols-3 gap-2">
         {directions.map(([z, dir, score]) => (
