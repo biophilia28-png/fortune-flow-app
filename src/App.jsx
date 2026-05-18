@@ -626,17 +626,13 @@ function DirectionPanel({ profile }) {
   );
 }
 
-       function FlowPage({ data }) {
+     function FlowPage({ data }) {
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
         <h2 className="text-3xl font-black text-white">
           대운·세운·월운·일운·시운
         </h2>
-
-        <p className="mt-2 text-sm text-slate-400">
-          실제 만세력 엔진 연결 전까지는 MVP용 간이 점수입니다.
-        </p>
 
         <div className="mt-5 space-y-4">
           <StatBar label="대운 흐름" value={data.scores.bigLuck} />
