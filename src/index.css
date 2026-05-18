@@ -2,5 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-* { box-sizing: border-box; }
-body { margin: 0; background: #050816; }
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #050816;
+}
+
+input[type="date"],
+input[type="time"] {
+  color-scheme: dark;
+}
