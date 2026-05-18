@@ -673,21 +673,69 @@ function StatsPage({ data }) {
 }
 
 function Admin() {
+  const [password, setPassword] = useState("");
+  const [unlocked, setUnlocked] = useState(false);
+  const ADMIN_PASSWORD = "1234";
+
+  if (!unlocked) {
+    return (
+      <div className="mx-auto max-w-md rounded-[2rem] border border-white/10 bg-slate-950/80 p-6">
+        <Lock className="text-rose-300" size={36} />
+
+        <h2 className="mt-4 text-2xl font-black text-white">
+          관리자 인증
+        </h2>
+
+        <p className="mt-2 text-sm text-slate-400">
+          관리자 통계는 비밀번호 입력 후 확인할 수 있습니다.
+        </p>
+
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="관리자 비밀번호"
+          className="mt-5 w-full rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-white outline-none"
+        />
+
+        <button
+          onClick={() => {
+            if (password === ADMIN_PASSWORD) {
+              setUnlocked(true);
+            } else {
+              alert("비밀번호가 틀렸습니다.");
+            }
+          }}
+          className="mt-4 w-full rounded-xl bg-violet-500 px-4 py-3 font-bold text-white"
+        >
+          관리자 모드 입장
+        </button>
+
+        <p className="mt-3 text-xs text-slate-500">
+          테스트 비밀번호: 1234
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
       <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs text-rose-300">
-              관리자 모드
-            </p>
+            <p className="text-xs text-rose-300">관리자 모드</p>
 
             <h1 className="text-2xl font-black text-white">
               사용자 통계
             </h1>
           </div>
 
-          <Lock className="text-rose-300" />
+          <button
+            onClick={() => setUnlocked(false)}
+            className="rounded-xl bg-white/10 px-4 py-2 text-sm text-slate-200"
+          >
+            잠금
+          </button>
         </div>
       </div>
 
@@ -702,15 +750,125 @@ function Admin() {
             key={a}
             className="rounded-2xl border border-white/10 bg-slate-950/70 p-4"
           >
-            <div className="mt-3 text-xs text-slate-400">
-              {a}
-            </div>
+            <div className="text-xs text-slate-400">{a}</div>
 
-            <div className="text-2xl font-black text-white">
+            <div className="mt-2 text-2xl font-black text-white">
               {b}
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-4">
+          <h3 className="font-bold text-white">연령대별 사용자</h3>
+
+          <div className="mt-4 space-y-3">
+            <StatBar label="20대" value={32} />
+            <StatBar label="30대" value={41} />
+            <StatBar label="40대" value={18} />
+            <StatBar label="50대 이상" value={9} />
+          </div>
+        </div>
+
+        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-4">
+          <h3 className="font-bold text-white">운세 적중 피드백</h3>
+
+          <div className="mt-4 space-y-3">
+            <StatBar label="잘 맞았어요" value={61} />
+            <StatBar label="보통이에요" value={27} />
+            <StatBar label="안 맞았어요" value={12} />
+            <StatBar label="재방문 의향" value={73} />
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-4">
+        <h3 className="font-bold text-white">출시 전 체크</h3>
+
+        <div className="mt-3 grid gap-2 text-sm text-slate-300 md:grid-cols-3">
+          <div className="rounded-xl bg-white/[0.04] p-3">
+            개인정보처리방침 URL 필요
+          </div>
+
+          <div className="rounded-xl bg-white/[0.04] p-3">
+            이용약관 URL 필요
+          </div>
+
+          <div className="rounded-xl bg-white/[0.04] p-3">
+            Firebase 연결 필요
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SettingsPage() {
+  return (
+    <div className="space-y-4">
+      <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
+        <p className="text-xs text-violet-300">앱 정보</p>
+
+        <h2 className="mt-1 text-3xl font-black text-white">
+          설정 / 약관 / 문의
+        </h2>
+
+        <p className="mt-2 text-sm text-slate-400">
+          앱 등록 전 필수 안내 화면입니다.
+        </p>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+          <h3 className="text-xl font-black text-white">
+            필수 공지
+          </h3>
+
+          <p className="mt-3 text-sm leading-7 text-slate-300">
+            본 서비스는 사주팔자, 대운, 세운, 월운, 일운, 시운 및
+            통계 데이터를 기반으로 한 참고용 운세 서비스입니다.
+            제공되는 결과는 확정된 예언이나 사실이 아니며,
+            건강, 투자, 법률, 사고 여부를 단정하지 않습니다.
+          </p>
+        </div>
+
+        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+          <h3 className="text-xl font-black text-white">
+            개인정보 처리 안내
+          </h3>
+
+          <p className="mt-3 text-sm leading-7 text-slate-300">
+            생년월일시, 성별, 위치 정보는 운세 계산과 방향운 분석을
+            위해 사용됩니다. 위치 정보는 선택 동의이며, 사용자가
+            동의하지 않아도 기본 운세 기능은 이용할 수 있습니다.
+          </p>
+        </div>
+
+        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+          <h3 className="text-xl font-black text-white">
+            이용약관
+          </h3>
+
+          <p className="mt-3 text-sm leading-7 text-slate-300">
+            사용자는 본 서비스를 참고용 정보로 이용해야 하며,
+            앱에서 제공하는 운세 결과를 근거로 중요한 의사결정을
+            단독으로 진행하지 않아야 합니다.
+          </p>
+        </div>
+
+        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+          <h3 className="text-xl font-black text-white">
+            문의 / 탈퇴 안내
+          </h3>
+
+          <p className="mt-3 text-sm leading-7 text-slate-300">
+            문의 이메일: support@example.com
+            <br />
+            계정 삭제 및 데이터 삭제 요청은 설정 화면 또는 문의 이메일을
+            통해 접수할 수 있습니다.
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -749,6 +907,7 @@ export default function App() {
     ["calendar", "캘린더", CalendarDays],
     ["stats", "통계", BarChart3],
     ["admin", "관리자", Settings],
+    ["settings", "설정", Settings],
   ];
 
   return (
@@ -801,9 +960,11 @@ export default function App() {
         )}
 
         {tab === "admin" && <Admin />}
+
+        {tab === "settings" && <SettingsPage />}
       </main>
 
-      <nav className="fixed bottom-3 left-1/2 z-10 grid w-[calc(100%-24px)] max-w-4xl -translate-x-1/2 grid-cols-6 rounded-2xl border border-white/10 bg-slate-950/90 p-2 shadow-2xl backdrop-blur">
+      <nav className="fixed bottom-3 left-1/2 z-10 grid w-[calc(100%-24px)] max-w-4xl -translate-x-1/2 grid-cols-7 rounded-2xl border border-white/10 bg-slate-950/90 p-2 shadow-2xl backdrop-blur">
         {menu.map(([id, label, Icon]) => (
           <button
             key={id}
