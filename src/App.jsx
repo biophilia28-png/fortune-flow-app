@@ -626,52 +626,6 @@ function DirectionPanel({ profile }) {
   );
 }
 
-      <aside className="space-y-4">
-        <NoticeBox />
-        <FeedbackBox />
-
-        <div className="rounded-[1.5rem] bg-gradient-to-br from-violet-600 to-rose-400 p-5 shadow-2xl">
-          <Star className="text-white" />
-
-          <h3 className="mt-3 text-xl font-black text-white">
-            무료 운세 확인
-          </h3>
-
-          <p className="mt-1 text-sm text-white/80">
-            초기 베타 기간에는 무료 제공됩니다.
-          </p>
-        </div>
-      </aside>
-    </div>
-  );
-}
-
-function FlowPage({ data }) {
-  return (
-    <div className="grid gap-4 lg:grid-cols-2">
-      <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
-        <h2 className="text-3xl font-black text-white">
-          대운·세운·월운·일운·시운
-        </h2>
-
-        <p className="mt-2 text-sm text-slate-400">
-          실제 만세력 엔진 연결 전까지는 MVP용 간이 점수입니다.
-        </p>
-
-        <div className="mt-5 space-y-4">
-          <StatBar label="대운 흐름" value={data.scores.bigLuck} />
-          <StatBar label="세운 흐름" value={data.scores.yearLuck} />
-          <StatBar label="월운 흐름" value={data.scores.monthLuck} />
-          <StatBar label="일운 흐름" value={data.scores.dayLuck} />
-          <StatBar label="시운 흐름" value={data.scores.hourLuck} />
-        </div>
-      </div>
-
-      <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
-        <h2 className="text-3xl font-black text-white">
-          오늘의 상세 해석
-        </h2>
-
         <div className="mt-4 space-y-3 text-sm leading-7 text-slate-300">
           <p className="rounded-xl bg-white/[0.04] p-4">
             오늘은 외부 활동과 연락 흐름이 비교적 강합니다.
