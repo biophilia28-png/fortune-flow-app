@@ -346,7 +346,10 @@ function ProfileForm({ profile, setProfile }) {
 
 function DirectionPanel({ profile }) {
   const directions = calcDirectionScores(profile);
-
+  
+const [fromPlace, setFromPlace] = useState("");
+const [toPlace, setToPlace] = useState("");
+  
   return (
     <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-4">
       <div className="flex items-center justify-between">
@@ -357,6 +360,29 @@ function DirectionPanel({ profile }) {
         <MapPin size={18} className="text-cyan-300" />
       </div>
 
+      <div className="mt-4 grid gap-3 md:grid-cols-2">
+  <input
+    value={fromPlace}
+    onChange={(e) => setFromPlace(e.target.value)}
+    placeholder="출발지 예: 서울역"
+    className="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm text-white outline-none"
+  />
+
+  <input
+    value={toPlace}
+    onChange={(e) => setToPlace(e.target.value)}
+    placeholder="목적지 예: 홍대입구"
+    className="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm text-white outline-none"
+  />
+</div>
+
+{fromPlace && toPlace && (
+  <div className="mt-3 rounded-xl bg-cyan-500/10 p-3 text-sm text-cyan-100">
+    {fromPlace} → {toPlace} 이동 방향운을 분석 중입니다.
+    현재 버전은 미리보기이며, 다음 버전에서 실제 지도 방향 계산을 연결합니다.
+  </div>
+)}
+      
       <div className="mt-3 grid grid-cols-3 gap-2">
         {directions.map(([z, dir, score]) => (
           <div
