@@ -857,18 +857,92 @@ function SettingsPage() {
           </p>
         </div>
 
-        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
-          <h3 className="text-xl font-black text-white">
-            문의 / 탈퇴 안내
-          </h3>
+       <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+  <h3 className="text-xl font-black text-white">
+    내 데이터 관리
+  </h3>
 
-          <p className="mt-3 text-sm leading-7 text-slate-300">
-            문의 이메일: support@example.com
-            <br />
-            계정 삭제 및 데이터 삭제 요청은 설정 화면 또는 문의 이메일을
-            통해 접수할 수 있습니다.
-          </p>
-        </div>
+  <p className="mt-3 text-sm leading-7 text-slate-300">
+    현재 버전은 회원가입 없이 사용할 수 있으며, 생년월일시 입력값은
+    서버가 아닌 사용자의 브라우저/기기 내부에만 저장됩니다.
+  </p>
+
+  <button
+    onClick={() => {
+      localStorage.removeItem(STORAGE_KEY);
+      alert("저장된 입력값이 삭제되었습니다. 앱을 새로고침하면 초기화됩니다.");
+    }}
+    className="mt-4 w-full rounded-xl bg-rose-500 px-4 py-3 font-bold text-white"
+  >
+    내 입력값 삭제하기
+  </button>
+</div>
+      </div>
+    </div>
+  );
+}
+
+function StorePreviewPage() {
+  const items = [
+    ["오늘의 운세 흐름", "사주팔자와 통계 기반으로 오늘 흐름 확인"],
+    ["대운·세운 분석", "10년·1년·월·일·시간 흐름 표시"],
+    ["12지신 방향운", "내 위치 기준 이동 방향별 흐름 확인"],
+    ["통계 피드백", "사용자 피드백으로 운세 정확도 개선"],
+    ["필수 공지", "참고용 운세 서비스 고지"],
+    ["관리자 통계", "설치자·접속자·연령대 통계 확인"],
+  ];
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
+        <p className="text-xs text-cyan-300">스토어 등록 준비</p>
+
+        <h2 className="mt-1 text-3xl font-black text-white">
+          앱 스크린샷 구성
+        </h2>
+
+        <p className="mt-2 text-sm text-slate-400">
+          Play스토어 등록 전에 필요한 대표 화면 구성입니다.
+        </p>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {items.map(([title, desc], index) => (
+          <div
+            key={title}
+            className="overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/80 shadow-2xl"
+          >
+            <div className="h-40 bg-gradient-to-br from-violet-500 to-fuchsia-400 p-5">
+              <div className="text-xs text-white/80">
+                운세플로우
+              </div>
+
+              <div className="mt-4 text-2xl font-black text-white">
+                {title}
+              </div>
+
+              <div className="mt-2 text-sm text-white/80">
+                등록용 화면 {index + 1}
+              </div>
+            </div>
+
+            <div className="space-y-3 p-5">
+              <div className="rounded-2xl bg-white/[0.05] p-4">
+                <div className="text-xs text-slate-400">
+                  미리보기
+                </div>
+
+                <div className="mt-1 text-lg font-black text-white">
+                  {desc}
+                </div>
+              </div>
+
+              <button className="w-full rounded-xl bg-violet-500 px-4 py-3 text-sm font-bold text-white">
+                화면 확인
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -907,6 +981,7 @@ export default function App() {
     ["calendar", "캘린더", CalendarDays],
     ["stats", "통계", BarChart3],
     ["admin", "관리자", Settings],
+    ["store", "스토어", Star],
     ["settings", "설정", Settings],
   ];
 
@@ -962,9 +1037,12 @@ export default function App() {
         {tab === "admin" && <Admin />}
 
         {tab === "settings" && <SettingsPage />}
+
+        {tab === "store" && <StorePreviewPage />}
+        
       </main>
 
-      <nav className="fixed bottom-3 left-1/2 z-10 grid w-[calc(100%-24px)] max-w-4xl -translate-x-1/2 grid-cols-7 rounded-2xl border border-white/10 bg-slate-950/90 p-2 shadow-2xl backdrop-blur">
+      <nav className="fixed bottom-3 left-1/2 z-10 grid w-[calc(100%-24px)] max-w-4xl -translate-x-1/2 grid-cols-8 rounded-2xl border border-white/10 bg-slate-950/90 p-2 shadow-2xl backdrop-blur">
         {menu.map(([id, label, Icon]) => (
           <button
             key={id}
