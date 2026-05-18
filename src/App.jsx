@@ -649,6 +649,38 @@ function CalendarPage({ data }) {
 }
 
 function StatsPage({ data }) {
+  const [logs, setLogs] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("fortune_flow_logs") || "[]");
+    } catch {
+      return [];
+    }
+  });
+
+  function saveTodayLog() {
+    const today = new Date().toLocaleDateString("ko-KR");
+
+    const newLog = {
+      date: today,
+      total: data.scores.total,
+      love: data.scores.love,
+      money: data.scores.money,
+      move: data.scores.move,
+      happy: data.scores.happy,
+    };
+
+    const next = [newLog, ...logs].slice(0, 30);
+    setLogs(next);
+    localStorage.setItem("fortune_flow_logs", JSON.stringify(next));
+    alert("오늘 운세 기록이 저장되었습니다.");
+  }
+
+  function clearLogs() {
+    setLogs([]);
+    localStorage.removeItem("fortune_flow_logs");
+    alert("운세 기록이 삭제되었습니다.");
+  }
+
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
@@ -657,408 +689,62 @@ function StatsPage({ data }) {
         </h2>
 
         <div className="mt-5 space-y-4">
-          <StatBar
-            label="인연운 상승"
-            value={data.scores.love}
-          />
-
-          <StatBar
-            label="이동운 상승"
-            value={data.scores.move}
-          />
-
-          <StatBar
-            label="금전운 상승"
-            value={data.scores.money}
-          />
-
-          <StatBar
-            label="행복지수"
-            value={data.scores.happy}
-          />
+          <StatBar label="인연운 상승" value={data.scores.love} />
+          <StatBar label="이동운 상승" value={data.scores.move} />
+          <StatBar label="금전운 상승" value={data.scores.money} />
+          <StatBar label="행복지수" value={data.scores.happy} />
         </div>
-      </div>
-
-      <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
-        <h2 className="text-3xl font-black text-white">
-          유사 데이터
-        </h2>
-
-        <div className="mt-5 grid gap-3 text-sm text-slate-300">
-          <div className="rounded-xl bg-white/[0.04] p-4">
-            유사 사주군: {data.similarCount}명
-          </div>
-
-          <div className="rounded-xl bg-white/[0.04] p-4">
-            누적 데이터: {data.eventCount}건
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Admin() {
-  const [password, setPassword] = useState("");
-  const [unlocked, setUnlocked] = useState(false);
-  const ADMIN_PASSWORD = "1234";
-
-  if (!unlocked) {
-    return (
-      <div className="mx-auto max-w-md rounded-[2rem] border border-white/10 bg-slate-950/80 p-6">
-        <Lock className="text-rose-300" size={36} />
-
-        <h2 className="mt-4 text-2xl font-black text-white">
-          관리자 인증
-        </h2>
-
-        <p className="mt-2 text-sm text-slate-400">
-          관리자 통계는 비밀번호 입력 후 확인할 수 있습니다.
-        </p>
-
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="관리자 비밀번호"
-          className="mt-5 w-full rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-white outline-none"
-        />
 
         <button
-          onClick={() => {
-            if (password === ADMIN_PASSWORD) {
-              setUnlocked(true);
-            } else {
-              alert("비밀번호가 틀렸습니다.");
-            }
-          }}
-          className="mt-4 w-full rounded-xl bg-violet-500 px-4 py-3 font-bold text-white"
+          onClick={saveTodayLog}
+          className="mt-5 w-full rounded-xl bg-violet-500 px-4 py-3 font-bold text-white"
         >
-          관리자 모드 입장
+          오늘 운세 기록 저장
         </button>
-
-        <p className="mt-3 text-xs text-slate-500">
-          테스트 비밀번호: 1234
-        </p>
       </div>
-    );
-  }
 
-  return (
-    <div className="space-y-4">
       <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
         <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs text-rose-300">관리자 모드</p>
-
-            <h1 className="text-2xl font-black text-white">
-              사용자 통계
-            </h1>
-          </div>
+          <h2 className="text-3xl font-black text-white">
+            내 운세 기록
+          </h2>
 
           <button
-            onClick={() => setUnlocked(false)}
-            className="rounded-xl bg-white/10 px-4 py-2 text-sm text-slate-200"
+            onClick={clearLogs}
+            className="rounded-xl bg-white/10 px-3 py-2 text-xs text-slate-300"
           >
-            잠금
+            삭제
           </button>
         </div>
-      </div>
 
-      <div className="grid gap-3 md:grid-cols-4">
-        {[
-          ["총 설치자", "12,584"],
-          ["오늘 사용자", "1,284"],
-          ["누적 실행", "83,210"],
-          ["공지 확인", "92%"],
-        ].map(([a, b]) => (
-          <div
-            key={a}
-            className="rounded-2xl border border-white/10 bg-slate-950/70 p-4"
-          >
-            <div className="text-xs text-slate-400">{a}</div>
-
-            <div className="mt-2 text-2xl font-black text-white">
-              {b}
+        <div className="mt-5 space-y-3">
+          {logs.length === 0 ? (
+            <div className="rounded-xl bg-white/[0.04] p-4 text-sm text-slate-400">
+              아직 저장된 기록이 없습니다.
             </div>
-          </div>
-        ))}
-      </div>
+          ) : (
+            logs.map((log, index) => (
+              <div
+                key={`${log.date}-${index}`}
+                className="rounded-xl bg-white/[0.04] p-4 text-sm text-slate-300"
+              >
+                <div className="font-bold text-white">{log.date}</div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-4">
-          <h3 className="font-bold text-white">연령대별 사용자</h3>
-
-          <div className="mt-4 space-y-3">
-            <StatBar label="20대" value={32} />
-            <StatBar label="30대" value={41} />
-            <StatBar label="40대" value={18} />
-            <StatBar label="50대 이상" value={9} />
-          </div>
-        </div>
-
-        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-4">
-          <h3 className="font-bold text-white">운세 적중 피드백</h3>
-
-          <div className="mt-4 space-y-3">
-            <StatBar label="잘 맞았어요" value={61} />
-            <StatBar label="보통이에요" value={27} />
-            <StatBar label="안 맞았어요" value={12} />
-            <StatBar label="재방문 의향" value={73} />
-          </div>
-        </div>
-      </div>
-
-      <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-4">
-        <h3 className="font-bold text-white">출시 전 체크</h3>
-
-        <div className="mt-3 grid gap-2 text-sm text-slate-300 md:grid-cols-3">
-          <div className="rounded-xl bg-white/[0.04] p-3">
-            개인정보처리방침 URL 필요
-          </div>
-
-          <div className="rounded-xl bg-white/[0.04] p-3">
-            이용약관 URL 필요
-          </div>
-
-          <div className="rounded-xl bg-white/[0.04] p-3">
-            Firebase 연결 필요
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function SettingsPage() {
-  return (
-    <div className="space-y-4">
-      <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
-        <p className="text-xs text-violet-300">앱 정보</p>
-
-        <h2 className="mt-1 text-3xl font-black text-white">
-          설정 / 약관 / 문의
-        </h2>
-
-        <p className="mt-2 text-sm text-slate-400">
-          앱 등록 전 필수 안내 화면입니다.
-        </p>
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
-          <h3 className="text-xl font-black text-white">
-            필수 공지
-          </h3>
-
-          <p className="mt-3 text-sm leading-7 text-slate-300">
-            본 서비스는 사주팔자, 대운, 세운, 월운, 일운, 시운 및
-            통계 데이터를 기반으로 한 참고용 운세 서비스입니다.
-            제공되는 결과는 확정된 예언이나 사실이 아니며,
-            건강, 투자, 법률, 사고 여부를 단정하지 않습니다.
-          </p>
-        </div>
-
-        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
-          <h3 className="text-xl font-black text-white">
-            개인정보 처리 안내
-          </h3>
-
-          <p className="mt-3 text-sm leading-7 text-slate-300">
-            생년월일시, 성별, 위치 정보는 운세 계산과 방향운 분석을
-            위해 사용됩니다. 위치 정보는 선택 동의이며, 사용자가
-            동의하지 않아도 기본 운세 기능은 이용할 수 있습니다.
-          </p>
-        </div>
-
-        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
-          <h3 className="text-xl font-black text-white">
-            이용약관
-          </h3>
-
-          <p className="mt-3 text-sm leading-7 text-slate-300">
-            사용자는 본 서비스를 참고용 정보로 이용해야 하며,
-            앱에서 제공하는 운세 결과를 근거로 중요한 의사결정을
-            단독으로 진행하지 않아야 합니다.
-          </p>
-        </div>
-
-       <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
-  <h3 className="text-xl font-black text-white">
-    내 데이터 관리
-  </h3>
-
-  <p className="mt-3 text-sm leading-7 text-slate-300">
-    현재 버전은 회원가입 없이 사용할 수 있으며, 생년월일시 입력값은
-    서버가 아닌 사용자의 브라우저/기기 내부에만 저장됩니다.
-  </p>
-
-  <button
-    onClick={() => {
-      localStorage.removeItem(STORAGE_KEY);
-      alert("저장된 입력값이 삭제되었습니다. 앱을 새로고침하면 초기화됩니다.");
-    }}
-    className="mt-4 w-full rounded-xl bg-rose-500 px-4 py-3 font-bold text-white"
-  >
-    내 입력값 삭제하기
-  </button>
-</div>
-      </div>
-    </div>
-  );
-}
-
-function StorePreviewPage() {
-  const items = [
-    ["오늘의 운세 흐름", "사주팔자와 통계 기반으로 오늘 흐름 확인"],
-    ["대운·세운 분석", "10년·1년·월·일·시간 흐름 표시"],
-    ["12지신 방향운", "내 위치 기준 이동 방향별 흐름 확인"],
-    ["통계 피드백", "사용자 피드백으로 운세 정확도 개선"],
-    ["필수 공지", "참고용 운세 서비스 고지"],
-    ["관리자 통계", "설치자·접속자·연령대 통계 확인"],
-  ];
-
-  return (
-    <div className="space-y-4">
-      <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
-        <p className="text-xs text-cyan-300">스토어 등록 준비</p>
-
-        <h2 className="mt-1 text-3xl font-black text-white">
-          앱 스크린샷 구성
-        </h2>
-
-        <p className="mt-2 text-sm text-slate-400">
-          Play스토어 등록 전에 필요한 대표 화면 구성입니다.
-        </p>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {items.map(([title, desc], index) => (
-          <div
-            key={title}
-            className="overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/80 shadow-2xl"
-          >
-            <div className="h-40 bg-gradient-to-br from-violet-500 to-fuchsia-400 p-5">
-              <div className="text-xs text-white/80">
-                운세플로우
-              </div>
-
-              <div className="mt-4 text-2xl font-black text-white">
-                {title}
-              </div>
-
-              <div className="mt-2 text-sm text-white/80">
-                등록용 화면 {index + 1}
-              </div>
-            </div>
-
-            <div className="space-y-3 p-5">
-              <div className="rounded-2xl bg-white/[0.05] p-4">
-                <div className="text-xs text-slate-400">
-                  미리보기
-                </div>
-
-                <div className="mt-1 text-lg font-black text-white">
-                  {desc}
+                <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
+                  <div>종합: {log.total}%</div>
+                  <div>인연: {log.love}%</div>
+                  <div>금전: {log.money}%</div>
+                  <div>이동: {log.move}%</div>
+                  <div>행복: {log.happy}%</div>
                 </div>
               </div>
-
-              <button className="w-full rounded-xl bg-violet-500 px-4 py-3 text-sm font-bold text-white">
-                화면 확인
-              </button>
-            </div>
-          </div>
-        ))}
+            ))
+          )}
+        </div>
       </div>
     </div>
   );
 }
-
-export default function App() {
-  const [tab, setTab] = useState("home");
-
-  const [profile, setProfile] =
-    useState(defaultProfile);
-
-  useEffect(() => {
-    try {
-      const saved = JSON.parse(
-        localStorage.getItem(STORAGE_KEY)
-      );
-
-      if (saved) {
-        setProfile({
-          ...defaultProfile,
-          ...saved,
-        });
-      }
-    } catch {}
-  }, []);
-
-  const data = useMemo(
-    () => calcPseudoSaju(profile),
-    [profile]
-  );
-
-  const menu = [
-    ["home", "홈", Home],
-    ["profile", "입력", UserRound],
-    ["flow", "흐름", CalendarDays],
-    ["calendar", "캘린더", CalendarDays],
-    ["stats", "통계", BarChart3],
-    ["admin", "관리자", Settings],
-    ["store", "스토어", Star],
-    ["settings", "설정", Settings],
-  ];
-
-  return (
-    <div className="min-h-screen bg-[#050816] p-3 text-slate-100">
-      <header className="mx-auto mb-4 flex max-w-7xl items-center justify-between rounded-[2rem] border border-white/10 bg-slate-950/80 p-4 shadow-2xl">
-        <div>
-          <div className="text-xs text-violet-300">
-            AI · 통계 기반 운세 플랫폼
-          </div>
-
-          <h1 className="text-2xl font-black text-white">
-            운세플로우
-          </h1>
-        </div>
-
-        <button
-          onClick={() => setTab("profile")}
-          className="rounded-xl bg-violet-500/20 px-4 py-2 text-sm text-violet-100"
-        >
-          생년월일시 입력
-        </button>
-      </header>
-
-      <main className="mx-auto max-w-7xl pb-28">
-        {tab === "home" && (
-          <UserHome
-            profile={profile}
-            data={data}
-            setTab={setTab}
-          />
-        )}
-
-        {tab === "profile" && (
-          <ProfileForm
-            profile={profile}
-            setProfile={setProfile}
-          />
-        )}
-
-        {tab === "flow" && (
-          <FlowPage data={data} />
-        )}
-
-        {tab === "calendar" && (
-          <CalendarPage data={data} />
-        )}
-
-        {tab === "stats" && (
-          <StatsPage data={data} />
-        )}
 
         {tab === "admin" && <Admin />}
 
