@@ -851,7 +851,8 @@ return (
   {fortune.total}점
 </div>
        </button>
-        })}
+   );
+})}
       </div>
     </div>
   );
