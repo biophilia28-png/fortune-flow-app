@@ -1,5 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
+  getTodayFortune,
+  getCalendarFortunes
+} from "./fortuneEngine";
+import {
   Home,
   CalendarDays,
   BarChart3,
@@ -219,7 +223,7 @@ function FeedbackBox() {
       <div className="mt-3 grid grid-cols-3 gap-2 text-xs">
         {["잘 맞음", "보통", "안 맞음"].map((v) => (
           <button
-            key={v}
+            key={fortune.total}
             onClick={() => selectAnswer(v)}
             className={`rounded-xl px-3 py-3 font-bold ${
               answer === v
@@ -227,7 +231,7 @@ function FeedbackBox() {
                 : "bg-white/10 text-slate-200"
             }`}
           >
-            {v}
+           {fortune.total}
           </button>
         ))}
       </div>
@@ -442,7 +446,7 @@ function ProfileForm({ profile, setProfile }) {
     </div>
   );
 }
-function UserHome({ profile, data, setTab }) {
+function UserHome({ profile, data, setTab, todayFortune }) {
   return (
     <div className="space-y-4">
       <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-6">
@@ -461,7 +465,7 @@ function UserHome({ profile, data, setTab }) {
             </div>
 
             <div className="mt-2 text-4xl font-black text-cyan-300">
-              {data.scores.total}%
+              {todayFortune.total}%
             </div>
           </div>
 
@@ -471,7 +475,7 @@ function UserHome({ profile, data, setTab }) {
             </div>
 
             <div className="mt-2 text-4xl font-black text-pink-300">
-              {data.scores.love}%
+             {todayFortune.love}%
             </div>
           </div>
 
@@ -481,7 +485,7 @@ function UserHome({ profile, data, setTab }) {
             </div>
 
             <div className="mt-2 text-4xl font-black text-yellow-300">
-              {data.scores.money}%
+              {todayFortune.money}%
             </div>
           </div>
 
@@ -491,11 +495,28 @@ function UserHome({ profile, data, setTab }) {
             </div>
 
             <div className="mt-2 text-4xl font-black text-emerald-300">
-              {data.scores.happy}%
+            {todayFortune.happy}%
             </div>
           </div>
         </div>
+<div className="mt-5 rounded-2xl bg-white/[0.04] p-4">
+  <div className="text-sm text-cyan-300 font-bold">
+    오늘의 사주 흐름
+  </div>
 
+  <p className="mt-2 text-sm text-slate-300">
+    {todayFortune.saju.summary}
+  </p>
+
+  <div className="mt-3 text-xs text-violet-300">
+    기문: {todayFortune.qimen.door}
+    / 길방향: {todayFortune.qimen.direction}
+  </div>
+
+  <div className="mt-2 text-xs text-yellow-300">
+    주역: {todayFortune.iching.main}
+  </div>
+</div>
         <div className="mt-6 flex gap-2">
           <button
             onClick={() => setTab("flow")}
@@ -742,10 +763,14 @@ function DirectionPanel({ profile }) {
   );
 }
 
-function CalendarPage({ data }) {
-  const days = Array.from({ length: 30 }, (_, i) =>
-    clamp(data.scores.total + ((i * 13) % 21) - 10)
-  );
+function CalendarPage({ profile }) {
+const now = new Date();
+
+const days = getCalendarFortunes(
+  now.getFullYear(),
+  now.getMonth() + 1,
+  profile
+);
 
   return (
     <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
@@ -758,7 +783,7 @@ function CalendarPage({ data }) {
       </p>
 
       <div className="mt-5 grid grid-cols-5 gap-2 md:grid-cols-10">
-        {days.map((v, i) => (
+      {days.map((fortune, i) => (
           <div
             key={i}
             className="rounded-xl bg-white/[0.04] p-3 text-center"
@@ -769,14 +794,14 @@ function CalendarPage({ data }) {
 
             <div
               className={`mt-1 text-lg font-black ${
-                v >= 70
+               fortune.total >= 70
                   ? "text-cyan-300"
-                  : v >= 50
+                  : fortune.total >= 50
                   ? "text-amber-200"
                   : "text-rose-300"
               }`}
             >
-              {v}
+             {fortune.total}
             </div>
           </div>
         ))}
@@ -1142,6 +1167,13 @@ function Admin() {
 }
 
 export default function App() {
+
+  const userProfile = JSON.parse(
+  localStorage.getItem(STORAGE_KEY) || "{}"
+);
+
+const todayFortune = getTodayFortune(userProfile);
+  
   const [tab, setTab] = useState("home");
   const [profile, setProfile] = useState(defaultProfile);
 
@@ -1196,11 +1228,12 @@ export default function App() {
 
       <main className="mx-auto max-w-7xl pb-28">
         {tab === "home" && (
-          <UserHome
-            profile={profile}
-            data={data}
-            setTab={setTab}
-          />
+         <UserHome
+  profile={profile}
+  data={data}
+  setTab={setTab}
+  todayFortune={todayFortune}
+/>
         )}
 
         {tab === "profile" && (
@@ -1215,7 +1248,7 @@ export default function App() {
         )}
 
         {tab === "calendar" && (
-          <CalendarPage data={data} />
+         <CalendarPage profile={profile} />
         )}
 
         {tab === "stats" && (
