@@ -789,7 +789,7 @@ const blanks = Array.from({ length: firstDay });
         이번 달 날짜별 흐름 미리보기입니다.
       </p>
 
-     <div className="mt-5 grid grid-cols-7 gap-2">
+    
 
        <div className="mt-5 grid grid-cols-7 gap-2 text-center text-xs font-bold text-slate-400">
   {["일", "월", "화", "수", "목", "금", "토"].map((d) => (
@@ -837,9 +837,9 @@ const blanks = Array.from({ length: firstDay });
 >
   {fortune.total}점
 </div>
-           </div>
-           ))}
-</div>
+         </div>
+        ))}
+      </div>
     </div>
   );
 }
