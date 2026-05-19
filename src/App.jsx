@@ -945,8 +945,7 @@ function StatsPage({ data }) {
     </div>
   );
 }
-  function clearAllData() {
-   function SettingsPage({ setProfile }) {
+function SettingsPage({ setProfile }) {
   function clearAllData() {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(LOG_KEY);
