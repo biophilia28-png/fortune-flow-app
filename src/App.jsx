@@ -844,112 +844,107 @@ const blanks = Array.from({ length: firstDay });
   );
 }
 
-function StatsPage({ data }) {
-  const [logs, setLogs] = useState(() =>
-    loadJson(LOG_KEY, [])
-  );
+function getScoreLabel(score) {
+  if (score >= 80) return "매우 좋음";
+  if (score >= 60) return "좋음";
+  if (score >= 40) return "보통";
+  if (score >= 20) return "주의";
+  return "매우 주의";
+}
 
-  function saveTodayLog() {
-    const today = new Date().toLocaleDateString("ko-KR");
+function getScoreColor(score) {
+  if (score >= 80) return "text-emerald-300 bg-emerald-500/10";
+  if (score >= 60) return "text-cyan-300 bg-cyan-500/10";
+  if (score >= 40) return "text-yellow-300 bg-yellow-500/10";
+  if (score >= 20) return "text-orange-300 bg-orange-500/10";
+  return "text-rose-300 bg-rose-500/10";
+}
 
-    const newLog = {
-      date: today,
-      total: data.scores.total,
-      love: data.scores.love,
-      money: data.scores.money,
-      move: data.scores.move,
-      happy: data.scores.happy,
-    };
-
-    const next = [newLog, ...logs].slice(0, 30);
-
-    setLogs(next);
-
-    localStorage.setItem(LOG_KEY, JSON.stringify(next));
-
-    alert("오늘 운세 기록이 저장되었습니다.");
-  }
-
-  function clearLogs() {
-    setLogs([]);
-
-    localStorage.removeItem(LOG_KEY);
-
-    alert("운세 기록이 삭제되었습니다.");
-  }
+function StatCard({ label, value, caution = false }) {
+  const displayValue = Math.round(value);
+  const finalScore = caution ? 100 - displayValue : displayValue;
+  const labelText = getScoreLabel(finalScore);
+  const color = getScoreColor(finalScore);
 
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
-      <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
-        <h2 className="text-3xl font-black text-white">
-          통계 인사이트
-        </h2>
-
-        <p className="mt-2 text-sm text-slate-400">
-          유사 사주군 및 사용자 피드백 기반으로 표시됩니다.
-        </p>
-
-        <div className="mt-5 space-y-4">
-          <StatBar label="인연운 상승" value={data.scores.love} />
-          <StatBar label="이동운 상승" value={data.scores.move} />
-          <StatBar label="금전운 상승" value={data.scores.money} />
-          <StatBar label="행복지수" value={data.scores.happy} />
+    <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+      <div className="flex items-center justify-between">
+        <div className="text-sm font-bold text-white">{label}</div>
+        <div className={`rounded-full px-2 py-1 text-[11px] font-bold ${color}`}>
+          {labelText}
         </div>
-
-        <button
-          onClick={saveTodayLog}
-          className="mt-5 w-full rounded-xl bg-violet-500 px-4 py-3 font-bold text-white"
-        >
-          오늘 운세 기록 저장
-        </button>
       </div>
 
-      <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
-        <div className="flex items-center justify-between">
-          <h2 className="text-3xl font-black text-white">
-            내 운세 기록
-          </h2>
+      <div className="mt-3 text-3xl font-black text-white">
+        {displayValue}%
+      </div>
 
-          <button
-            onClick={clearLogs}
-            className="rounded-xl bg-white/10 px-3 py-2 text-xs text-slate-300"
-          >
-            삭제
-          </button>
-        </div>
-
-        <div className="mt-5 space-y-3">
-          {logs.length === 0 ? (
-            <div className="rounded-xl bg-white/[0.04] p-4 text-sm text-slate-400">
-              아직 저장된 기록이 없습니다.
-            </div>
-          ) : (
-            logs.map((log, index) => (
-              <div
-                key={`${log.date}-${index}`}
-                className="rounded-xl bg-white/[0.04] p-4 text-sm text-slate-300"
-              >
-                <div className="font-bold text-white">
-                  {log.date}
-                </div>
-
-                <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
-                  <div>종합: {log.total}%</div>
-                  <div>인연: {log.love}%</div>
-                  <div>금전: {log.money}%</div>
-                  <div>이동: {log.move}%</div>
-                  <div>행복: {log.happy}%</div>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
+      <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-800">
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-violet-500 to-cyan-300"
+          style={{ width: `${displayValue}%` }}
+        />
       </div>
     </div>
   );
 }
 
-function SettingsPage({ setProfile }) {
+function StatsPage({ data }) {
+  const detailStats = [
+    ["사고주의", data.scores.accident, true],
+    ["외출운", data.scores.move, false],
+    ["대인관계", data.scores.love, false],
+    ["업무집중", data.scores.dayLuck, false],
+    ["건강", data.scores.happy, false],
+    ["소비주의", data.scores.money > 70 ? 65 : 35, true],
+    ["말조심", data.scores.conflict, true],
+    ["귀인운", data.scores.yearLuck, false],
+    ["기회운", data.scores.bigLuck, false],
+    ["스트레스", data.scores.conflict + 15, true],
+    ["연락운", data.scores.love + 5, false],
+    ["투자리스크", data.scores.accident + data.scores.conflict / 2, true],
+  ];
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
+        <p className="text-xs text-violet-300">상세 통계</p>
+
+        <h2 className="mt-1 text-3xl font-black text-white">
+          오늘의 운세 지표
+        </h2>
+
+        <p className="mt-2 text-sm text-slate-400">
+          단순 점수보다 항목별 위험/기회 흐름을 함께 보여줍니다.
+        </p>
+      </div>
+
+      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+        <StatCard label="종합운" value={data.scores.total} />
+        <StatCard label="인연운" value={data.scores.love} />
+        <StatCard label="금전운" value={data.scores.money} />
+        <StatCard label="행복지수" value={data.scores.happy} />
+      </div>
+
+      <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
+        <h3 className="text-xl font-black text-white">
+          상세 통계 12개
+        </h3>
+
+        <div className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+          {detailStats.map(([label, value, caution]) => (
+            <StatCard
+              key={label}
+              label={label}
+              value={clamp(value)}
+              caution={caution}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
   function clearAllData() {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(LOG_KEY);
