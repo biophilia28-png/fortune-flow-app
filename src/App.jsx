@@ -946,6 +946,8 @@ function StatsPage({ data }) {
   );
 }
   function clearAllData() {
+   function SettingsPage({ setProfile }) {
+  function clearAllData() {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(LOG_KEY);
     localStorage.removeItem(FEEDBACK_KEY);
@@ -956,9 +958,7 @@ function StatsPage({ data }) {
   return (
     <div className="space-y-4">
       <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
-        <p className="text-xs text-violet-300">
-          앱 정보
-        </p>
+        <p className="text-xs text-violet-300">앱 정보</p>
 
         <h2 className="mt-1 text-3xl font-black text-white">
           설정 / 약관 / 데이터 관리
@@ -971,45 +971,28 @@ function StatsPage({ data }) {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
-          <h3 className="text-xl font-black text-white">
-            필수 공지
-          </h3>
-
+          <h3 className="text-xl font-black text-white">필수 공지</h3>
           <p className="mt-3 text-sm leading-7 text-slate-300">
-            본 서비스는 사주팔자, 대운, 세운, 월운, 일운, 시운 및 통계
-            데이터를 기반으로 한 참고용 운세 서비스입니다. 제공되는 결과는
-            확정된 예언이나 사실이 아니며, 건강, 투자, 법률, 사고 여부를
-            단정하지 않습니다.
+            본 서비스는 참고용 운세 서비스이며, 건강·투자·법률·사고 여부를 단정하지 않습니다.
           </p>
         </div>
 
         <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
-          <h3 className="text-xl font-black text-white">
-            개인정보 처리 안내
-          </h3>
-
+          <h3 className="text-xl font-black text-white">개인정보 처리 안내</h3>
           <p className="mt-3 text-sm leading-7 text-slate-300">
-            현재 버전은 회원가입이 없으며, 생년월일시 입력값은 서버가 아닌
-            사용자의 브라우저/기기 내부에 저장됩니다.
+            생년월일시 입력값은 서버가 아닌 사용자의 브라우저/기기 내부에 저장됩니다.
           </p>
         </div>
 
         <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
-          <h3 className="text-xl font-black text-white">
-            이용약관
-          </h3>
-
+          <h3 className="text-xl font-black text-white">이용약관</h3>
           <p className="mt-3 text-sm leading-7 text-slate-300">
-            사용자는 본 서비스를 참고용 정보로 이용해야 하며, 운세 결과를
-            근거로 중요한 의사결정을 단독으로 진행하지 않아야 합니다.
+            운세 결과를 근거로 중요한 의사결정을 단독으로 진행하지 않아야 합니다.
           </p>
         </div>
 
         <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
-          <h3 className="text-xl font-black text-white">
-            내 데이터 관리
-          </h3>
-
+          <h3 className="text-xl font-black text-white">내 데이터 관리</h3>
           <p className="mt-3 text-sm leading-7 text-slate-300">
             입력값, 운세 기록, 피드백 기록은 이 기기 내부에 저장됩니다.
           </p>
@@ -1026,7 +1009,6 @@ function StatsPage({ data }) {
     </div>
   );
 }
-
 function Admin() {
   const [password, setPassword] = useState("");
   const [unlocked, setUnlocked] = useState(false);
