@@ -245,13 +245,39 @@ export function getTodayFortune(user = {}) {
   return getDailyFortune(new Date(), user);
 }
 
-export function getGanjiName(date = new Date()) {
-  const d = new Date(date);
-  const baseDate = new Date(1984, 1, 2); // 갑자일 기준
-  const diffDays = Math.floor((d - baseDate) / 86400000);
+const heavenlyStems = [
+  "갑","을","병","정","무",
+  "기","경","신","임","계"
+];
 
-  const stem = STEMS[((diffDays % 10) + 10) % 10];
-  const branch = BRANCHES[((diffDays % 12) + 12) % 12];
+const earthlyBranches = [
+  "자","축","인","묘","진","사",
+  "오","미","신","유","술","해"
+];
 
-  return `${stem}${branch}`;
+export function getGanjiName(date) {
+// 기준일: 2026-05-19 = 계사일
+const baseDate = new Date(2026, 4, 19);
+
+  const target = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate()
+  );
+
+  const diffDays = Math.floor(
+    (target - baseDate) / (1000 * 60 * 60 * 24)
+  );
+
+const stem =
+  heavenlyStems[
+    ((9 + diffDays) % 10 + 10) % 10
+  ];
+
+const branch =
+  earthlyBranches[
+    ((5 + diffDays) % 12 + 12) % 12
+  ];
+
+  return stem + branch;
 }
