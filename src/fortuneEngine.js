@@ -94,7 +94,7 @@ export function getDailyFortune(date = new Date(), user = {}) {
   const sinsal = pick(SINSAL, seed + 13);
 
   const conflictScore = 40 + (seed % 45);
-  const base = 45 + (seed % 35);
+  const base = 25 + (seed % 65);
 
   const love = clamp(base + ((seed % 17) - 5));
   const money = clamp(base + (((seed >> 2) % 19) - 6));
