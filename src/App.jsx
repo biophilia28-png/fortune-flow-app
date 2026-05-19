@@ -223,7 +223,7 @@ function FeedbackBox() {
       <div className="mt-3 grid grid-cols-3 gap-2 text-xs">
         {["잘 맞음", "보통", "안 맞음"].map((v) => (
           <button
-            key={fortune.total}
+           key={v}
             onClick={() => selectAnswer(v)}
             className={`rounded-xl px-3 py-3 font-bold ${
               answer === v
@@ -231,7 +231,7 @@ function FeedbackBox() {
                 : "bg-white/10 text-slate-200"
             }`}
           >
-           {fortune.total}
+          {v}
           </button>
         ))}
       </div>
