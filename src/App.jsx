@@ -764,7 +764,7 @@ function DirectionPanel({ profile }) {
   );
 }
 
-function CalendarPage({ profile }) {
+function CalendarPage({ profile, setSelectedFortune }) {
 const now = new Date();
 
 const days = getCalendarFortunes(
@@ -803,11 +803,24 @@ const blanks = Array.from({ length: firstDay });
     <div key={`blank-${i}`} />
   ))}
 
-      {days.map((fortune, i) => (
-          <div
-            key={i}
-        className="rounded-xl bg-white/[0.04] p-3 text-center min-h-[118px]"
-          >
+   {days.map((fortune, i) => {
+  const currentDate = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    i + 1
+  );
+
+return (
+  <button
+    key={i}
+      onClick={() =>
+        setSelectedFortune({
+          ...fortune,
+          date: currentDate,
+        })
+      }
+      className="rounded-xl bg-white/[0.04] p-3 text-center min-h-[118px] transition hover:scale-[1.03] hover:bg-violet-500/10"
+    >
           <div className="text-xs text-slate-400">
   {i + 1}일
 </div>
@@ -837,8 +850,8 @@ const blanks = Array.from({ length: firstDay });
 >
   {fortune.total}점
 </div>
-         </div>
-        ))}
+       </button>
+        })}
       </div>
     </div>
   );
@@ -1184,9 +1197,9 @@ export default function App() {
 
 const todayFortune = getTodayFortune(userProfile);
   
-  const [tab, setTab] = useState("home");
-  const [profile, setProfile] = useState(defaultProfile);
-
+const [tab, setTab] = useState("home");
+const [profile, setProfile] = useState(defaultProfile);
+const [selectedFortune, setSelectedFortune] = useState(null);
   useEffect(() => {
     const saved = loadJson(STORAGE_KEY, null);
 
@@ -1261,9 +1274,35 @@ const todayFortune = getTodayFortune(userProfile);
   />
 )}
 
-        {tab === "calendar" && (
-         <CalendarPage profile={profile} />
-        )}
+     {tab === "calendar" && (
+  <div className="space-y-4">
+    <CalendarPage
+      profile={profile}
+      setSelectedFortune={setSelectedFortune}
+    />
+
+    {selectedFortune && (
+      <StatsPage
+        data={{
+          scores: {
+            total: selectedFortune.total,
+            love: selectedFortune.love,
+            money: selectedFortune.money,
+            happy: selectedFortune.happy,
+            move: selectedFortune.move,
+            accident: selectedFortune.accidentRisk,
+            conflict: selectedFortune.stress,
+            dayLuck: selectedFortune.focus,
+            yearLuck: selectedFortune.noble,
+            bigLuck: selectedFortune.chance,
+            monthLuck: selectedFortune.move,
+            hourLuck: selectedFortune.contact,
+          },
+        }}
+      />
+    )}
+  </div>
+)}
 
         {tab === "stats" && (
           <StatsPage data={data} />
