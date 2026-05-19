@@ -803,8 +803,6 @@ const blanks = Array.from({ length: firstDay });
     <div key={`blank-${i}`} />
   ))}
 
-  {days.map((fortune, i) => (
-  
       {days.map((fortune, i) => (
           <div
             key={i}
@@ -840,7 +838,9 @@ const blanks = Array.from({ length: firstDay });
   {fortune.total}점
 </div>
            </div>
-      ))}
+           ))}
+</div>
+    </div>
   );
 }
 
