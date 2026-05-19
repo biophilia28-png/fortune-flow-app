@@ -244,3 +244,14 @@ export function getScoreLabel(score, reverse = false) {
 export function getTodayFortune(user = {}) {
   return getDailyFortune(new Date(), user);
 }
+
+export function getGanjiName(date = new Date()) {
+  const d = new Date(date);
+  const baseDate = new Date(1984, 1, 2); // 갑자일 기준
+  const diffDays = Math.floor((d - baseDate) / 86400000);
+
+  const stem = STEMS[((diffDays % 10) + 10) % 10];
+  const branch = BRANCHES[((diffDays % 12) + 12) % 12];
+
+  return `${stem}${branch}`;
+}
