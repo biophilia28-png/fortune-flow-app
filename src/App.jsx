@@ -772,7 +772,13 @@ const days = getCalendarFortunes(
   now.getMonth() + 1,
   profile
 );
+const year = now.getFullYear();
+const month = now.getMonth() + 1;
+const today = now.getDate();
 
+const firstDay = new Date(year, month - 1, 1).getDay();
+
+const blanks = Array.from({ length: firstDay });
   return (
     <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
       <h2 className="text-3xl font-black text-white">
@@ -783,7 +789,22 @@ const days = getCalendarFortunes(
         이번 달 날짜별 흐름 미리보기입니다.
       </p>
 
-      <div className="mt-5 grid grid-cols-5 gap-2 md:grid-cols-10">
+     <div className="mt-5 grid grid-cols-7 gap-2">
+
+       <div className="mt-5 grid grid-cols-7 gap-2 text-center text-xs font-bold text-slate-400">
+  {["일", "월", "화", "수", "목", "금", "토"].map((d) => (
+    <div key={d}>{d}</div>
+  ))}
+</div>
+
+<div className="mt-2 grid grid-cols-7 gap-2">
+
+  {blanks.map((_, i) => (
+    <div key={`blank-${i}`} />
+  ))}
+
+  {days.map((fortune, i) => (
+  
       {days.map((fortune, i) => (
           <div
             key={i}
@@ -818,10 +839,8 @@ const days = getCalendarFortunes(
 >
   {fortune.total}점
 </div>
-          </div>
-        ))}
-      </div>
-    </div>
+           </div>
+      ))}
   );
 }
 
@@ -1258,9 +1277,13 @@ const todayFortune = getTodayFortune(userProfile);
           />
         )}
 
-        {tab === "flow" && (
-          <FlowPage data={data} />
-        )}
+       {tab === "flow" && (
+  <FlowPage
+    data={data}
+    profile={profile}
+    todayFortune={todayFortune}
+  />
+)}
 
         {tab === "calendar" && (
          <CalendarPage profile={profile} />
