@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
   getTodayFortune,
-  getCalendarFortunes
+  getCalendarFortunes,
+  getGanjiName
 } from "./fortuneEngine";
 import {
   Home,
@@ -786,23 +787,37 @@ const days = getCalendarFortunes(
       {days.map((fortune, i) => (
           <div
             key={i}
-            className="rounded-xl bg-white/[0.04] p-3 text-center"
+        className="rounded-xl bg-white/[0.04] p-3 text-center min-h-[118px]"
           >
-            <div className="text-xs text-slate-400">
-              {i + 1}일
-            </div>
+          <div className="text-xs text-slate-400">
+  {i + 1}일
+</div>
 
-            <div
-              className={`mt-1 text-lg font-black ${
-               fortune.total >= 70
-                  ? "text-cyan-300"
-                  : fortune.total >= 50
-                  ? "text-amber-200"
-                  : "text-rose-300"
-              }`}
-            >
-             {fortune.total}
-            </div>
+<div className="mt-1 text-lg font-black text-white">
+  {getGanjiName(new Date(now.getFullYear(), now.getMonth(), i + 1))}
+</div>
+
+<div className="mt-1 text-[11px] text-cyan-300">
+  {fortune.saju.element} · {fortune.saju.tenGod}
+</div>
+
+<div className="mt-1 text-[11px] text-violet-300">
+  {fortune.saju.twelveStage} · {fortune.saju.sinsal}
+</div>
+
+<div
+  className={`mt-2 text-xl font-black ${
+    fortune.total >= 80
+      ? "text-emerald-300"
+      : fortune.total >= 65
+      ? "text-cyan-300"
+      : fortune.total >= 45
+      ? "text-yellow-300"
+      : "text-rose-300"
+  }`}
+>
+  {fortune.total}점
+</div>
           </div>
         ))}
       </div>
