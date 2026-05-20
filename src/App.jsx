@@ -1,3 +1,4 @@
+import LifeFortunePage from "./LifeFortunePage";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   getTodayFortune,
@@ -1341,6 +1342,7 @@ const [selectedFortune, setSelectedFortune] = useState(null);
    
     ["calendar", "캘린더", CalendarDays],
     ["stats", "통계", BarChart3],
+    ["life", "당사주", Star],
     ["settings", "설정", Settings],
     ["admin", "관리자", Lock],
   ];
@@ -1417,6 +1419,9 @@ const [selectedFortune, setSelectedFortune] = useState(null);
   </div>
 )}
 
+        {tab === "life" && (
+  <LifeFortunePage profile={profile} />
+)}
         {tab === "stats" && (
           <StatsPage data={data} />
         )}
