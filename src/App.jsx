@@ -904,7 +904,7 @@ function StatCard({ label, value, caution = false }) {
   const color = getScoreColor(finalScore);
 
   return (
-  <div className="rounded-xl md:rounded-2xl border border-white/10 bg-white/[0.04] p-2.5 md:p-4">
+<div className="rounded-xl border border-white/10 bg-white/[0.04] p-2 md:p-3">
       <div className="flex items-center justify-between">
         <div className="text-sm font-bold text-white">{label}</div>
         <div className={`rounded-full px-2 py-1 text-[11px] font-bold ${color}`}>
@@ -912,7 +912,7 @@ function StatCard({ label, value, caution = false }) {
         </div>
       </div>
 
-     <div className="mt-2 text-xl md:text-3xl font-black text-white">
+    <div className="mt-1 text-lg md:text-2xl font-black text-white">
         {displayValue}%
       </div>
 
