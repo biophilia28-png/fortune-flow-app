@@ -767,95 +767,116 @@ function FlowPage({ data }) {
 }
 
 function CalendarPage({ profile, setSelectedFortune }) {
-const now = new Date();
+  const now = new Date();
 
-const days = getCalendarFortunes(
-  now.getFullYear(),
-  now.getMonth() + 1,
-  profile
-);
-const year = now.getFullYear();
-const month = now.getMonth() + 1;
-const today = now.getDate();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const today = now.getDate();
 
-const firstDay = new Date(year, month - 1, 1).getDay();
+  const days = getCalendarFortunes(year, month, profile);
+  const firstDay = new Date(year, month - 1, 1).getDay();
+  const blanks = Array.from({ length: firstDay });
 
-const blanks = Array.from({ length: firstDay });
   return (
-    <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
-      <h2 className="text-3xl font-black text-white">
-        운세 캘린더
-      </h2>
+    <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-3 md:p-5">
+      <div className="mb-4 flex items-end justify-between">
+        <div>
+          <p className="text-xs text-violet-300">불교 달력형 운세</p>
+          <h2 className="mt-1 text-xl font-black text-white md:text-3xl">
+            {year}년 {month}월
+          </h2>
+        </div>
 
-      <p className="mt-2 text-sm text-slate-400">
-        이번 달 날짜별 흐름 미리보기입니다.
-      </p>
-
-    
-
-       <div className="mt-5 grid grid-cols-7 gap-2 text-center text-xs font-bold text-slate-400">
-  {["일", "월", "화", "수", "목", "금", "토"].map((d) => (
-    <div key={d}>{d}</div>
-  ))}
-</div>
-
-<div className="mt-2 grid grid-cols-7 gap-2">
-
-  {blanks.map((_, i) => (
-    <div key={`blank-${i}`} />
-  ))}
-
-   {days.map((fortune, i) => {
-  const currentDate = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    i + 1
-  );
-
-return (
-  <button
-    key={i}
-      onClick={() =>
-        setSelectedFortune({
-          ...fortune,
-          date: currentDate,
-        })
-      }
-      className="rounded-xl bg-white/[0.04] p-3 text-center min-h-[118px] transition hover:scale-[1.03] hover:bg-violet-500/10"
-    >
-          <div className="text-xs text-slate-400">
-  {i + 1}일
-</div>
-
-<div className="mt-1 text-lg font-black text-white">
-  {getGanjiName(new Date(now.getFullYear(), now.getMonth(), i + 1))}
-</div>
-
-<div className="mt-1 text-[11px] text-cyan-300">
-  {fortune.saju.element} · {fortune.saju.tenGod}
-</div>
-
-<div className="mt-1 text-[11px] text-violet-300">
-  {fortune.saju.twelveStage} · {fortune.saju.sinsal}
-</div>
-
-<div
-  className={`mt-2 text-xl font-black ${
-    fortune.total >= 80
-      ? "text-emerald-300"
-      : fortune.total >= 65
-      ? "text-cyan-300"
-      : fortune.total >= 45
-      ? "text-yellow-300"
-      : "text-rose-300"
-  }`}
->
-  {fortune.total}점
-</div>
-       </button>
-   );
-})}
+        <div className="rounded-xl bg-violet-500/15 px-3 py-2 text-xs font-bold text-violet-200">
+          오늘 {today}일
+        </div>
       </div>
+
+      <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-400 md:gap-2 md:text-xs">
+        {["일", "월", "화", "수", "목", "금", "토"].map((d, i) => (
+          <div
+            key={d}
+            className={i === 0 ? "text-rose-300" : i === 6 ? "text-cyan-300" : ""}
+          >
+            {d}
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-2 grid grid-cols-7 gap-1 md:gap-2">
+        {blanks.map((_, i) => (
+          <div key={`blank-${i}`} className="min-h-[74px] md:min-h-[118px]" />
+        ))}
+
+        {days.map((fortune, i) => {
+          const dayNum = i + 1;
+          const currentDate = new Date(year, month - 1, dayNum);
+          const isToday = dayNum === today;
+          const ganji = getGanjiName(currentDate);
+
+          const scoreColor =
+            fortune.total >= 80
+              ? "text-emerald-300 bg-emerald-500/10 border-emerald-400/30"
+              : fortune.total >= 65
+              ? "text-cyan-300 bg-cyan-500/10 border-cyan-400/30"
+              : fortune.total >= 45
+              ? "text-yellow-300 bg-yellow-500/10 border-yellow-400/30"
+              : "text-rose-300 bg-rose-500/10 border-rose-400/30";
+
+          return (
+            <button
+              key={dayNum}
+              onClick={() =>
+                setSelectedFortune({
+                  ...fortune,
+                  date: currentDate,
+                })
+              }
+              className={`relative min-h-[74px] rounded-xl border p-1.5 text-left transition active:scale-95 md:min-h-[118px] md:p-3 ${
+                isToday
+                  ? "border-violet-400 bg-violet-500/15"
+                  : "border-white/10 bg-white/[0.04] hover:bg-violet-500/10"
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <div
+                  className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-black md:h-7 md:w-7 md:text-xs ${
+                    isToday ? "bg-violet-500 text-white" : "bg-black/30 text-slate-200"
+                  }`}
+                >
+                  {dayNum}
+                </div>
+
+                <div className={`rounded-full border px-1.5 py-0.5 text-[9px] font-bold md:text-[11px] ${scoreColor}`}>
+                  {fortune.total}
+                </div>
+              </div>
+
+              <div className="mt-1 text-center">
+                <div className="text-[11px] font-black text-white md:text-lg">
+                  {ganji}
+                </div>
+
+                <div className="mt-0.5 hidden text-[10px] text-cyan-300 md:block">
+                  {fortune.saju.element} · {fortune.saju.tenGod}
+                </div>
+
+                <div className="mt-0.5 hidden text-[10px] text-violet-300 md:block">
+                  {fortune.saju.twelveStage}
+                </div>
+
+                <div className="mt-1 text-[9px] text-slate-400 md:hidden">
+                  {fortune.saju.element}
+                </div>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      <p className="mt-3 text-[11px] text-slate-400 md:text-xs">
+        날짜를 누르면 아래에 해당 날짜의 상세 운세 지표가 표시됩니다.
+      </p>
     </div>
   );
 }
