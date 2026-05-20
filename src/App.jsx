@@ -1365,7 +1365,11 @@ const [selectedFortune, setSelectedFortune] = useState(null);
           <div className="text-xs text-violet-300">
             AI · 통계 기반 운세 플랫폼
           </div>
-
+<img
+  src="/icon.png"
+  alt="오늘의운"
+  className="mb-2 h-14 w-14 rounded-2xl object-cover shadow-lg"
+/>
           <h1 className="text-2xl font-black text-white">
             오늘의운
           </h1>
