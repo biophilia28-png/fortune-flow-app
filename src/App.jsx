@@ -1043,7 +1043,7 @@ function SettingsPage({ setProfile }) {
           설정 / 공지 / 데이터 관리
         </h2>
         <p className="mt-2 text-sm text-slate-400">
-          운세플로우 이용 전 안내사항입니다.
+          오늘의운 이용 전 안내사항입니다.
         </p>
       </div>
 
@@ -1367,7 +1367,7 @@ const [selectedFortune, setSelectedFortune] = useState(null);
           </div>
 
           <h1 className="text-2xl font-black text-white">
-            운세플로우
+            오늘의운
           </h1>
         </div>
 
