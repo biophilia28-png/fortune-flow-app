@@ -1322,6 +1322,7 @@ const todayFortune = getTodayFortune(userProfile);
 const [tab, setTab] = useState("home");
 const [profile, setProfile] = useState(defaultProfile);
 const [selectedFortune, setSelectedFortune] = useState(null);
+  const [settingsTapCount, setSettingsTapCount] = useState(0);
   useEffect(() => {
     const saved = loadJson(STORAGE_KEY, null);
 
@@ -1439,7 +1440,22 @@ const [selectedFortune, setSelectedFortune] = useState(null);
         {menu.map(([id, label, Icon]) => (
           <button
             key={id}
-            onClick={() => setTab(id)}
+          onClick={() => {
+  if (id === "settings") {
+    const nextCount = settingsTapCount + 1;
+    setSettingsTapCount(nextCount);
+
+    if (nextCount >= 8) {
+      setSettingsTapCount(0);
+      setTab("admin");
+      return;
+    }
+  } else {
+    setSettingsTapCount(0);
+  }
+
+  setTab(id);
+}}
             className={`rounded-xl px-1 py-3 text-[11px] md:text-xs ${
               tab === id
                 ? "bg-violet-500 text-white"
