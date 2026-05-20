@@ -1031,12 +1031,7 @@ function SettingsPage({ setProfile, setTab }) {
   function clearAllData() {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(LOG_KEY);
-<button
-  onClick={() => setTab("admin")}
-  className="mt-4 w-full rounded-xl bg-violet-500 px-4 py-3 font-bold text-white"
->
-  관리자 페이지 들어가기
-</button>
+
     setProfile(defaultProfile);
     alert("저장된 입력값과 기록이 삭제되었습니다.");
   }
@@ -1046,52 +1041,75 @@ function SettingsPage({ setProfile, setTab }) {
       <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
         <p className="text-xs text-violet-300">앱 정보</p>
 
-        <h2 className="mt-1 text-3xl font-black text-white">
-          설정 / 약관 / 데이터 관리
-        </h2>
+        <div className="grid gap-4 lg:grid-cols-2">
 
-        <p className="mt-2 text-sm text-slate-400">
-          회원가입 없이 기기 내부 저장 방식으로 작동합니다.
-        </p>
-      </div>
+  <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+    <h3 className="text-xl font-black text-white">
+      서비스 안내
+    </h3>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
-          <h3 className="text-xl font-black text-white">필수 공지</h3>
-          <p className="mt-3 text-sm leading-7 text-slate-300">
-            본 서비스는 참고용 운세 서비스이며, 건강·투자·법률·사고 여부를 단정하지 않습니다.
-          </p>
-        </div>
+    <p className="mt-3 text-sm leading-7 text-slate-300">
+      본 서비스는 만세력·사주팔자·당사주·토정비결·통계 기반 운세 흐름을
+      참고용으로 제공하는 서비스입니다.
+    </p>
+  </div>
 
-        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
-          <h3 className="text-xl font-black text-white">개인정보 처리 안내</h3>
-          <p className="mt-3 text-sm leading-7 text-slate-300">
-            생년월일시 입력값은 서버가 아닌 사용자의 브라우저/기기 내부에 저장됩니다.
-          </p>
-        </div>
+  <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+    <h3 className="text-xl font-black text-white">
+      운세 결과 안내
+    </h3>
 
-        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
-          <h3 className="text-xl font-black text-white">이용약관</h3>
-          <p className="mt-3 text-sm leading-7 text-slate-300">
-            운세 결과를 근거로 중요한 의사결정을 단독으로 진행하지 않아야 합니다.
-          </p>
-        </div>
+    <p className="mt-3 text-sm leading-7 text-slate-300">
+      운세 결과는 통계·사주 이론 기반 참고 정보이며,
+      실제 결과를 보장하지 않습니다.
+    </p>
+  </div>
 
-        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
-          <h3 className="text-xl font-black text-white">내 데이터 관리</h3>
-          <p className="mt-3 text-sm leading-7 text-slate-300">
-            입력값, 운세 기록, 피드백 기록은 이 기기 내부에 저장됩니다.
-          </p>
+  <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+    <h3 className="text-xl font-black text-white">
+      투자·건강 판단 주의
+    </h3>
 
-          <button
-            onClick={clearAllData}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-rose-500 px-4 py-3 font-bold text-white"
-          >
-            <Trash2 size={18} />
-            내 입력값/기록 삭제하기
-          </button>
-        </div>
-      </div>
+    <p className="mt-3 text-sm leading-7 text-slate-300">
+      투자·건강·법률·의료 판단은 전문가 상담이 우선이며,
+      운세 결과만으로 중요한 결정을 내리지 않아야 합니다.
+    </p>
+  </div>
+
+  <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+    <h3 className="text-xl font-black text-white">
+      개인정보 처리 안내
+    </h3>
+
+    <p className="mt-3 text-sm leading-7 text-slate-300">
+      생년월일시 입력값은 서버 전송 없이
+      사용자의 브라우저 내부(localStorage)에 저장됩니다.
+    </p>
+  </div>
+
+  <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+    <h3 className="text-xl font-black text-white">
+      데이터 삭제 안내
+    </h3>
+
+    <p className="mt-3 text-sm leading-7 text-slate-300">
+      설정 메뉴의 데이터 삭제 기능을 통해
+      저장된 입력값과 기록을 즉시 제거할 수 있습니다.
+    </p>
+  </div>
+
+  <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+    <h3 className="text-xl font-black text-white">
+      광고 및 유료 기능
+    </h3>
+
+    <p className="mt-3 text-sm leading-7 text-slate-300">
+      현재 기본 기능은 무료로 제공되며,
+      향후 일부 기능은 광고 또는 유료 기능이 추가될 수 있습니다.
+    </p>
+  </div>
+
+</div>
     </div>
   );
 }
