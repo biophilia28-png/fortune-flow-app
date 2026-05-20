@@ -951,11 +951,11 @@ function StatsPage({ data }) {
         <p className="text-xs text-violet-300">상세 통계</p>
 
  <h2 className="mt-1 text-base md:text-2xl font-black text-white">
-  오늘의 운세 지표
+ 대운·세운·월운·일운 통계
 </h2>
 
       <p className="mt-2 text-xs md:text-sm text-slate-400">
-          단순 점수보다 항목별 위험/기회 흐름을 함께 보여줍니다.
+         홈은 오늘 하루 기준, 통계는 장기·올해·이번 달·오늘 흐름 기준입니다.
         </p>
       </div>
 
