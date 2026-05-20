@@ -1473,7 +1473,7 @@ const [selectedFortune, setSelectedFortune] = useState(null);
         {tab === "admin" && <Admin />}
       </main>
 
-      <nav className="fixed bottom-3 left-1/2 z-10 grid w-[calc(100%-24px)] max-w-4xl -translate-x-1/2 grid-cols-6 rounded-2xl border border-white/10 bg-slate-950/90 p-2 shadow-2xl backdrop-blur">
+      <nav className="fixed bottom-3 left-1/2 z-10 grid w-[calc(100%-24px)] max-w-4xl -translate-x-1/2 grid-cols-7 rounded-2xl border border-white/10 bg-slate-950/90 p-2 shadow-2xl backdrop-blur">
         {menu.map(([id, label, Icon]) => (
           <button
             key={id}
