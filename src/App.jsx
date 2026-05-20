@@ -765,49 +765,6 @@ function DirectionPanel({ profile }) {
   );
 }
 
-function FlowPage({ data }) {
-  const scores = data?.scores || {};
-
-  return (
-    <div className="space-y-4">
-      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
-        <p className="text-xs text-violet-300">운세 흐름</p>
-        <h2 className="mt-1 text-2xl font-black text-white md:text-3xl">
-          대운·세운·월운·일운·시운
-        </h2>
-        <p className="mt-2 text-xs text-slate-400 md:text-sm">
-          오늘 기준 흐름을 항목별로 보여줍니다.
-        </p>
-      </div>
-
-      <div className="grid gap-3 md:grid-cols-2">
-        <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
-          <StatBar label="대운 흐름" value={scores.bigLuck || 50} />
-          <div className="mt-4" />
-          <StatBar label="세운 흐름" value={scores.yearLuck || 50} />
-          <div className="mt-4" />
-          <StatBar label="월운 흐름" value={scores.monthLuck || 50} />
-          <div className="mt-4" />
-          <StatBar label="일운 흐름" value={scores.dayLuck || 50} />
-          <div className="mt-4" />
-          <StatBar label="시운 흐름" value={scores.hourLuck || 50} />
-        </div>
-
-        <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4 text-sm leading-7 text-slate-300">
-          <p className="rounded-xl bg-white/[0.04] p-3">
-            오늘은 이동·연락·외부 활동 흐름을 함께 보는 구간입니다.
-          </p>
-          <p className="mt-3 rounded-xl bg-white/[0.04] p-3">
-            점수가 높아도 무리한 투자·이동·결정은 피하고 참고용으로만 보세요.
-          </p>
-          <p className="mt-3 rounded-xl bg-white/[0.04] p-3">
-            낮은 항목은 조심해야 할 방향으로 해석하면 됩니다.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function CalendarPage({ profile, setSelectedFortune }) {
   const now = new Date();
@@ -1381,7 +1338,7 @@ const [selectedFortune, setSelectedFortune] = useState(null);
   const menu = [
     ["home", "홈", Home],
     ["profile", "입력", UserRound],
-    ["flow", "흐름", CalendarDays],
+   
     ["calendar", "캘린더", CalendarDays],
     ["stats", "통계", BarChart3],
     ["settings", "설정", Settings],
@@ -1428,13 +1385,7 @@ const [selectedFortune, setSelectedFortune] = useState(null);
           />
         )}
 
-       {tab === "flow" && (
-  <FlowPage
-    data={data}
-    profile={profile}
-    todayFortune={todayFortune}
-  />
-)}
+  
 
      {tab === "calendar" && (
   <div className="space-y-4">
