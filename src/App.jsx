@@ -906,7 +906,7 @@ function StatCard({ label, value, caution = false }) {
   return (
 <div className="rounded-xl border border-white/10 bg-white/[0.04] p-2 md:p-3">
       <div className="flex items-center justify-between">
-        <div className="text-sm font-bold text-white">{label}</div>
+       <div className="text-[11px] md:text-sm font-bold text-white">{label}</div>
         <div className={`rounded-full px-2 py-1 text-[11px] font-bold ${color}`}>
           {labelText}
         </div>
@@ -944,12 +944,12 @@ function StatsPage({ data }) {
 
   return (
  <div className="space-y-3 md:space-y-4 text-sm md:text-base">
-      <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
+    <div className="rounded-xl border border-white/10 bg-slate-950/80 p-3 md:p-4">
         <p className="text-xs text-violet-300">상세 통계</p>
 
-     <h2 className="mt-1 text-xl md:text-3xl font-black text-white">
-          오늘의 운세 지표
-        </h2>
+ <h2 className="mt-1 text-base md:text-2xl font-black text-white">
+  오늘의 운세 지표
+</h2>
 
       <p className="mt-2 text-xs md:text-sm text-slate-400">
           단순 점수보다 항목별 위험/기회 흐름을 함께 보여줍니다.
@@ -964,7 +964,7 @@ function StatsPage({ data }) {
       </div>
 
       <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
-        <h3 className="text-xl font-black text-white">
+       <h3 className="text-sm md:text-lg font-black text-white">
           상세 통계 12개
         </h3>
 
