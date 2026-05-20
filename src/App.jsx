@@ -540,20 +540,69 @@ function UserHome({ profile, data, setTab, todayFortune }) {
       <FeedbackBox />
     </div>
   );
-}
-function DirectionPanel({ profile }) {
+}function DirectionPanel({ profile }) {
   const directions = calcDirectionScores(profile);
   const [fromPlace, setFromPlace] = useState("");
   const [toPlace, setToPlace] = useState("");
+  const [directionIndex, setDirectionIndex] = useState(1);
 
-let directionIndex = 10;
+  const placeCoords = {
+    "서울역": { lat: 37.5547, lng: 126.9706 },
+    "녹천역": { lat: 37.6447, lng: 127.0514 },
+    "홍대입구": { lat: 37.5572, lng: 126.9254 },
+    "강남역": { lat: 37.4979, lng: 127.0276 },
+    "잠실역": { lat: 37.5133, lng: 127.1000 },
+    "신림역": { lat: 37.4842, lng: 126.9297 },
+    "노원역": { lat: 37.6542, lng: 127.0606 },
+    "수유역": { lat: 37.6380, lng: 127.0257 },
+    "종로3가": { lat: 37.5716, lng: 126.9910 },
+    "구로디지털단지역": { lat: 37.4853, lng: 126.9015 },
+  };
 
-if (
-  fromPlace.includes("서울") &&
-  toPlace.includes("녹천")
-) {
-  directionIndex = 11; // 인(동북동)
-}
+  function normalizePlaceName(name) {
+    return name.replace(/\s/g, "").trim();
+  }
+
+  function getCoords(name) {
+    const key = normalizePlaceName(name);
+    return placeCoords[key] || null;
+  }
+
+  function angleToDirectionIndex(angle) {
+    // 0도=동, 90도=북, 180도=서, 270도=남
+    // directions 배열 기준: 0 해(북북서), 1 자(북), 2 축(북북동), 3 인(동북동), 4 묘(동), 5 진(동남동), 6 사(남남동), 7 오(남), 8 미(남남서), 9 신(서남서), 10 유(서), 11 술(서북서)
+    if (angle >= 345 || angle < 15) return 4;   // 동 = 묘
+    if (angle >= 15 && angle < 45) return 3;     // 동북동 = 인
+    if (angle >= 45 && angle < 75) return 2;     // 북북동 = 축
+    if (angle >= 75 && angle < 105) return 1;    // 북 = 자
+    if (angle >= 105 && angle < 135) return 0;   // 북북서 = 해
+    if (angle >= 135 && angle < 165) return 11;  // 서북서 = 술
+    if (angle >= 165 && angle < 195) return 10;  // 서 = 유
+    if (angle >= 195 && angle < 225) return 9;   // 서남서 = 신
+    if (angle >= 225 && angle < 255) return 8;   // 남남서 = 미
+    if (angle >= 255 && angle < 285) return 7;   // 남 = 오
+    if (angle >= 285 && angle < 315) return 6;   // 남남동 = 사
+    return 5;                                    // 동남동 = 진
+  }
+
+  function analyzeDirection() {
+    const start = getCoords(fromPlace);
+    const end = getCoords(toPlace);
+
+    if (!start || !end) {
+      alert("현재 테스트 가능 지역: 서울역, 녹천역, 홍대입구, 강남역, 잠실역, 신림역, 노원역, 수유역, 종로3가, 구로디지털단지역");
+      return;
+    }
+
+    const dx = end.lng - start.lng;
+    const dy = end.lat - start.lat;
+
+    let angle = Math.atan2(dy, dx) * 180 / Math.PI;
+    if (angle < 0) angle += 360;
+
+    const idx = angleToDirectionIndex(angle);
+    setDirectionIndex(idx);
+  }
 
   const picked = directions[directionIndex];
   const pickedZodiac = picked[0];
@@ -599,11 +648,14 @@ if (
         <input
           value={toPlace}
           onChange={(e) => setToPlace(e.target.value)}
-          placeholder="목적지 예: 홍대입구"
+          placeholder="목적지 예: 녹천역"
           className="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm text-white outline-none"
         />
 
-        <button className="rounded-xl bg-gradient-to-r from-violet-500 to-blue-500 px-5 py-3 text-sm font-bold text-white">
+        <button
+          onClick={analyzeDirection}
+          className="rounded-xl bg-gradient-to-r from-violet-500 to-blue-500 px-5 py-3 text-sm font-bold text-white"
+        >
           분석하기
         </button>
       </div>
@@ -632,9 +684,7 @@ if (
                 >
                   <div
                     className={`mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border bg-slate-950/90 text-3xl font-black shadow-2xl ${
-                      active
-                        ? `${color} scale-110 shadow-cyan-500/40`
-                        : color
+                      active ? `${color} scale-110 shadow-cyan-500/40` : color
                     }`}
                   >
                     {zodiac}
