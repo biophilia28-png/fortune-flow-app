@@ -273,37 +273,7 @@ function NoticeBox() {
 
 
 
-  return (
-    <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-4">
-      <h3 className="font-bold text-white">
-        오늘 실제로 비슷했나요?
-      </h3>
-
-      <div className="mt-3 grid grid-cols-3 gap-2 text-xs">
-        {["잘 맞음", "보통", "안 맞음"].map((v) => (
-          <button
-           key={v}
-            onClick={() => selectAnswer(v)}
-            className={`rounded-xl px-3 py-3 font-bold ${
-              answer === v
-                ? "bg-violet-500 text-white"
-                : "bg-white/10 text-slate-200"
-            }`}
-          >
-          {v}
-          </button>
-        ))}
-      </div>
-
-      <div className="mt-4 space-y-2 text-xs text-slate-300">
-        <div>잘 맞음: {counts["잘 맞음"] || 0}회</div>
-        <div>보통: {counts["보통"] || 0}회</div>
-        <div>안 맞음: {counts["안 맞음"] || 0}회</div>
-      </div>
-    </div>
-  );
-}
-
+ 
 function ProfileForm({ profile, setProfile }) {
   const [temp, setTemp] = useState(profile);
 
@@ -1108,7 +1078,7 @@ function SettingsPage({ setProfile }) {
   function clearAllData() {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(LOG_KEY);
-    localStorage.removeItem(FEEDBACK_KEY);
+
     setProfile(defaultProfile);
     alert("저장된 입력값과 기록이 삭제되었습니다.");
   }
@@ -1176,10 +1146,10 @@ function Admin() {
  
   const logs = loadJson(LOG_KEY, []);
 
-  const good = feedback["잘 맞음"] || 0;
-  const normal = feedback["보통"] || 0;
-  const bad = feedback["안 맞음"] || 0;
-  const totalFeedback = good + normal + bad;
+const good = 0;
+const normal = 0;
+const bad = 0;
+const totalFeedback = 0;
 
   if (!unlocked) {
     return (
