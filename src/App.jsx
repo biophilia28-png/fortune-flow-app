@@ -1368,7 +1368,7 @@ const [selectedFortune, setSelectedFortune] = useState(null);
 <img
   src="/icon.png"
   alt="오늘의운"
-  className="mb-2 h-14 w-14 rounded-2xl object-cover shadow-lg"
+  className="mb-3 h-20 w-20 rounded-3xl object-cover shadow-2xl"
 />
           <img
   src={appIcon}
