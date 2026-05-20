@@ -1,0 +1,15 @@
+{
+  "name": "오늘의운",
+  "short_name": "오늘의운",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#09090f",
+  "theme_color": "#7c3aed",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
