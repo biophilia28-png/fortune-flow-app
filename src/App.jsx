@@ -1027,7 +1027,7 @@ function StatsPage({ data }) {
     </div>
   );
 }
-function SettingsPage({ setProfile, setTab }) {
+function SettingsPage({ setProfile }) {
   function clearAllData() {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(LOG_KEY);
@@ -1099,19 +1099,38 @@ function SettingsPage({ setProfile, setTab }) {
   </div>
 
   <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
-    <h3 className="text-xl font-black text-white">
-      광고 및 유료 기능
-    </h3>
+  <h3 className="text-xl font-black text-white">
+    광고 및 유료 기능
+  </h3>
 
-    <p className="mt-3 text-sm leading-7 text-slate-300">
-      현재 기본 기능은 무료로 제공되며,
-      향후 일부 기능은 광고 또는 유료 기능이 추가될 수 있습니다.
-    </p>
-  </div>
+  <p className="mt-3 text-sm leading-7 text-slate-300">
+    현재 기본 기능은 무료로 제공되며,
+    향후 일부 기능은 광고 또는 유료 기능이 추가될 수 있습니다.
+  </p>
+</div>
 
 </div>
-    </div>
-  );
+
+<div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+  <h3 className="text-xl font-black text-white">
+    데이터 초기화
+  </h3>
+
+  <p className="mt-3 text-sm leading-7 text-slate-300">
+    저장된 생년월일시와 기록 데이터를 삭제합니다.
+  </p>
+
+  <button
+    onClick={clearAllData}
+    className="mt-4 flex items-center gap-2 rounded-xl bg-rose-500 px-4 py-3 font-bold text-white"
+  >
+    <Trash2 size={18} />
+    데이터 전체 삭제
+  </button>
+</div>
+
+</div>
+);
 }
 function Admin() {
   const [password, setPassword] = useState("");
@@ -1158,7 +1177,7 @@ const totalFeedback = 0;
         </button>
 
         <p className="mt-3 text-xs text-slate-500">
-          테스트 비밀번호: 1234
+         설정 버튼 8회 클릭 후 관리자 진입
         </p>
       </div>
     );
@@ -1448,13 +1467,13 @@ const [selectedFortune, setSelectedFortune] = useState(null);
         )}
 
         {tab === "settings" && (
-         <SettingsPage setProfile={setProfile} setTab={setTab} />
+        <SettingsPage setProfile={setProfile} />
         )}
 
         {tab === "admin" && <Admin />}
       </main>
 
-      <nav className="fixed bottom-3 left-1/2 z-10 grid w-[calc(100%-24px)] max-w-4xl -translate-x-1/2 grid-cols-7 rounded-2xl border border-white/10 bg-slate-950/90 p-2 shadow-2xl backdrop-blur">
+      <nav className="fixed bottom-3 left-1/2 z-10 grid w-[calc(100%-24px)] max-w-4xl -translate-x-1/2 grid-cols-6 rounded-2xl border border-white/10 bg-slate-950/90 p-2 shadow-2xl backdrop-blur">
         {menu.map(([id, label, Icon]) => (
           <button
             key={id}
