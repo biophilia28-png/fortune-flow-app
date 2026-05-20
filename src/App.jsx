@@ -30,7 +30,7 @@ import {
 
 const STORAGE_KEY = "fortune_flow_profile_v2";
 const LOG_KEY = "fortune_flow_logs";
-const FEEDBACK_KEY = "fortune_flow_feedback";
+
 
 const defaultProfile = {
   nickname: "",
@@ -271,27 +271,7 @@ function NoticeBox() {
   );
 }
 
-function FeedbackBox() {
-  const [answer, setAnswer] = useState("");
 
-  const [counts, setCounts] = useState(() =>
-    loadJson(FEEDBACK_KEY, {})
-  );
-
-  function selectAnswer(v) {
-    const next = {
-      ...counts,
-      [v]: (counts[v] || 0) + 1,
-    };
-
-    setAnswer(v);
-    setCounts(next);
-
-    localStorage.setItem(
-      FEEDBACK_KEY,
-      JSON.stringify(next)
-    );
-  }
 
   return (
     <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-4">
@@ -605,7 +585,7 @@ function UserHome({ profile, data, setTab, todayFortune }) {
 
       <DirectionPanel profile={profile} />
 
-      <FeedbackBox />
+    
     </div>
   );
 }
@@ -1193,7 +1173,7 @@ function Admin() {
 
   const ADMIN_PASSWORD = "1234";
 
-  const feedback = loadJson(FEEDBACK_KEY, {});
+ 
   const logs = loadJson(LOG_KEY, []);
 
   const good = feedback["잘 맞음"] || 0;
