@@ -12,7 +12,7 @@
   "react-dom": "latest",
   "lucide-react": "latest",
   "lunar-javascript": "^1.7.3"
-}
+
   },
   "devDependencies": {
     "tailwindcss": "3.4.17",
