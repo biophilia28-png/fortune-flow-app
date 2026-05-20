@@ -788,7 +788,7 @@ function CalendarPage({ profile, setSelectedFortune }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-6 gap-1 text-center text-[10px] font-bold text-slate-400 md:gap-2 md:text-xs">
+      <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-400 md:gap-2 md:text-xs"> text-[10px] font-bold text-slate-400 md:gap-2 md:text-xs">
         {["일", "월", "화", "수", "목", "금", "토"].map((d, i) => (
           <div
             key={d}
