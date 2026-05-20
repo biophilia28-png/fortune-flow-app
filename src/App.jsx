@@ -906,17 +906,17 @@ function StatCard({ label, value, caution = false }) {
   return (
 <div className="rounded-xl border border-white/10 bg-white/[0.04] p-2 md:p-3">
       <div className="flex items-center justify-between">
-       <div className="text-[11px] md:text-sm font-bold text-white">{label}</div>
+       <div className="text-[10px] md:text-xs font-bold text-white">{label}</div>
         <div className={`rounded-full px-2 py-1 text-[11px] font-bold ${color}`}>
           {labelText}
         </div>
       </div>
 
-    <div className="mt-1 text-lg md:text-2xl font-black text-white">
+  <div className="mt-0.5 text-[18px] md:text-base font-black text-white">
         {displayValue}%
       </div>
 
-      <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-800">
+    <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-slate-800">
         <div
           className="h-full rounded-full bg-gradient-to-r from-violet-500 to-cyan-300"
           style={{ width: `${displayValue}%` }}
