@@ -531,10 +531,6 @@ function UserHome({ profile, data, setTab, todayFortune }) {
     </div>
   );
 }
-      <FeedbackBox />
-    </div>
-  );
-}
 
 function DirectionPanel({ profile }) {
   const directions = calcDirectionScores(profile);
