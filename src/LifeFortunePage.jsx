@@ -18,102 +18,159 @@ function ScoreBar({ score }) {
   );
 }
 
-import { Solar } from "lunar-javascript";
-
-function safe(v, fallback = "") {
-  return v || fallback;
-}
-
-export function getManse(profile) {
-  const birthDate = profile.birthDate || "1990-01-01";
-  const birthTime = profile.birthTime || "12:00";
-
-  const y = Number(birthDate.slice(0, 4));
-  const m = Number(birthDate.slice(5, 7));
-  const d = Number(birthDate.slice(8, 10));
-  const hh = Number(birthTime.slice(0, 2));
-  const mm = Number(birthTime.slice(3, 5)) || 0;
-
-  const solar = Solar.fromYmdHms(y, m, d, hh, mm, 0);
-  const lunar = solar.getLunar();
-  const eightChar = lunar.getEightChar();
-
-  return {
-    solarText: solar.toYmdHms(),
-    lunarText: lunar.toString(),
-    yearPillar: eightChar.getYear(),
-    monthPillar: eightChar.getMonth(),
-    dayPillar: eightChar.getDay(),
-    hourPillar: eightChar.getTime(),
-    fullText: lunar.toFullString(),
-  };
-}
-
-export function getDangSaju(profile) {
+export default function LifeFortunePage({ profile }) {
   const manse = getManse(profile);
-  const seed = manse.yearPillar + manse.monthPillar + manse.dayPillar + manse.hourPillar;
-
-  let n = 0;
-  for (let i = 0; i < seed.length; i++) n += seed.charCodeAt(i) * (i + 1);
-
-  const peakLoveAge = 24 + (n % 18);
-  const peakMoneyAge = 33 + ((n >> 2) % 24);
-  const cautionAge = 29 + ((n >> 4) % 22);
-
-  return {
-    early: {
-      title: "초년운",
-      age: "0세 ~ 30세",
-      score: 50 + (n % 35),
-      text: "초년에는 환경 변화, 가족운, 학업운, 인간관계의 영향을 크게 받는 흐름입니다.",
-    },
-    middle: {
-      title: "중년운",
-      age: "31세 ~ 55세",
-      score: 55 + ((n >> 3) % 35),
-      text: "중년에는 직업운, 재물운, 인연운이 본격적으로 강해지는 시기입니다.",
-    },
-    late: {
-      title: "말년운",
-      age: "56세 이후",
-      score: 52 + ((n >> 5) % 36),
-      text: "말년에는 건강, 안정, 가족, 재물 보존 흐름이 중요해집니다.",
-    },
-    peakLoveAge,
-    peakMoneyAge,
-    cautionAge,
-  };
-}
-
-export function getTojung(profile) {
-  const manse = getManse(profile);
-  const nowYear = new Date().getFullYear();
-  const seed = manse.dayPillar + nowYear + manse.hourPillar;
-
-  let n = 0;
-  for (let i = 0; i < seed.length; i++) n += seed.charCodeAt(i) * (i + 3);
-
-  return {
-    year: nowYear,
-    total: 50 + (n % 45),
-    bestMonths: [1 + (n % 12), 1 + ((n >> 3) % 12)],
-    cautionMonths: [1 + ((n >> 5) % 12), 1 + ((n >> 7) % 12)],
-    text: "올해는 세운 기준으로 인연, 이동, 재물, 직업 변화 흐름을 함께 보는 해입니다.",
-  };
-}
-
-export function getLifeTimeline(profile) {
   const dang = getDangSaju(profile);
+  const toj = getTojung(profile);
+  const timeline = getLifeTimeline(profile);
 
-  return [
-    { age: "10대", score: dang.early.score, text: "기초운·학업·가족 영향" },
-    { age: "20대", score: dang.early.score + 3, text: "진로·연애·이동 변화" },
-    { age: "30대", score: dang.middle.score, text: "인연·재물·직업 상승" },
-    { age: "40대", score: dang.middle.score + 2, text: "사회운·자산 형성" },
-    { age: "50대", score: dang.late.score, text: "안정·건강·가족운" },
-    { age: "60대 이후", score: dang.late.score + 1, text: "말년 안정과 재물 보존" },
-  ].map((v) => ({
-    ...v,
-    score: Math.max(5, Math.min(95, Math.round(v.score))),
-  }));
+  return (
+    <div className="space-y-4">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
+        <p className="text-xs text-violet-300">만세력 기반</p>
+
+        <h2 className="mt-1 text-2xl font-black text-white">
+          당사주 · 토정비결 · 인생 총운
+        </h2>
+
+        <p className="mt-2 text-xs text-slate-400">
+          생년월일시 기준 사주팔자와 연도 흐름을 함께 봅니다.
+        </p>
+      </div>
+
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
+        <h3 className="font-black text-white">만세력 사주팔자</h3>
+
+        <div className="mt-3 grid grid-cols-2 gap-2 text-sm md:grid-cols-4">
+          <div className="rounded-xl bg-white/[0.04] p-3">
+            년주
+            <br />
+            {manse.yearPillar}
+          </div>
+
+          <div className="rounded-xl bg-white/[0.04] p-3">
+            월주
+            <br />
+            {manse.monthPillar}
+          </div>
+
+          <div className="rounded-xl bg-white/[0.04] p-3">
+            일주
+            <br />
+            {manse.dayPillar}
+          </div>
+
+          <div className="rounded-xl bg-white/[0.04] p-3">
+            시주
+            <br />
+            {manse.hourPillar}
+          </div>
+        </div>
+
+        <p className="mt-3 text-xs leading-5 text-slate-400">
+          음력 변환: {manse.lunarText}
+        </p>
+      </div>
+
+      <div className="grid gap-3 md:grid-cols-3">
+        {[dang.early, dang.middle, dang.late].map((item) => (
+          <div
+            key={item.title}
+            className="rounded-2xl border border-white/10 bg-slate-950/80 p-4"
+          >
+            <div className="text-xs text-violet-300">{item.age}</div>
+
+            <h3 className="mt-1 text-xl font-black text-white">
+              {item.title}
+            </h3>
+
+            <div className="mt-2 text-2xl font-black text-cyan-300">
+              {item.score}점
+            </div>
+
+            <ScoreBar score={item.score} />
+
+            <p className="mt-3 text-xs leading-5 text-slate-300">
+              {item.text}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
+        <h3 className="text-xl font-black text-white">핵심 시기</h3>
+
+        <div className="mt-3 grid gap-2 text-sm md:grid-cols-3">
+          <div className="rounded-xl bg-white/[0.04] p-3">
+            최고의 인연운: {dang.peakLoveAge}세 전후
+          </div>
+
+          <div className="rounded-xl bg-white/[0.04] p-3">
+            재물 상승기: {dang.peakMoneyAge}세 전후
+          </div>
+
+          <div className="rounded-xl bg-white/[0.04] p-3">
+            주의 시기: {dang.cautionAge}세 전후
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
+        <h3 className="text-xl font-black text-white">
+          {toj.year}년 토정비결
+        </h3>
+
+        <div className="mt-2 text-3xl font-black text-yellow-300">
+          {toj.total}점
+        </div>
+
+        <ScoreBar score={toj.total} />
+
+        <p className="mt-3 text-sm leading-6 text-slate-300">
+          {toj.text}
+        </p>
+
+        <div className="mt-3 grid gap-2 text-sm md:grid-cols-2">
+          <div className="rounded-xl bg-emerald-500/10 p-3 text-emerald-200">
+            좋은 달: {toj.bestMonths.join("월, ")}월
+          </div>
+
+          <div className="rounded-xl bg-rose-500/10 p-3 text-rose-200">
+            조심할 달: {toj.cautionMonths.join("월, ")}월
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
+        <h3 className="text-xl font-black text-white">
+          인생 총 스케줄
+        </h3>
+
+        <div className="mt-3 space-y-3">
+          {timeline.map((item) => (
+            <div
+              key={item.age}
+              className="rounded-xl bg-white/[0.04] p-3"
+            >
+              <div className="flex items-center justify-between">
+                <div className="font-bold text-white">
+                  {item.age}
+                </div>
+
+                <div className="text-cyan-300">
+                  {item.score}점
+                </div>
+              </div>
+
+              <ScoreBar score={item.score} />
+
+              <p className="mt-2 text-xs text-slate-400">
+                {item.text}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
