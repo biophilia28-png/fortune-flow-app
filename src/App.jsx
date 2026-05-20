@@ -538,12 +538,7 @@ function UserHome({ profile, data, setTab, todayFortune }) {
         </div>
 
         <div className="mt-5 flex gap-2">
-          <button
-            onClick={() => setTab("flow")}
-            className="rounded-xl bg-violet-500 px-4 py-2 text-sm font-bold text-white md:py-3"
-          >
-            운세 흐름 보기
-          </button>
+        
 
           <button
             onClick={() => setTab("calendar")}
@@ -793,7 +788,7 @@ function CalendarPage({ profile, setSelectedFortune }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-400 md:gap-2 md:text-xs">
+      <div className="grid grid-cols-6 gap-1 text-center text-[10px] font-bold text-slate-400 md:gap-2 md:text-xs">
         {["일", "월", "화", "수", "목", "금", "토"].map((d, i) => (
           <div
             key={d}
