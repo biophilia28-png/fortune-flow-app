@@ -540,37 +540,40 @@ function UserHome({ profile, data, setTab, todayFortune }) {
       <FeedbackBox />
     </div>
   );
-}function DirectionPanel({ profile }) {
+}
+
+function DirectionPanel({ profile }) {
   const directions = calcDirectionScores(profile);
   const [fromPlace, setFromPlace] = useState("");
   const [toPlace, setToPlace] = useState("");
   const [directionIndex, setDirectionIndex] = useState(1);
+  const [loading, setLoading] = useState(false);
 
-  const placeCoords = {
-    "서울역": { lat: 37.5547, lng: 126.9706 },
-    "녹천역": { lat: 37.6447, lng: 127.0514 },
-    "홍대입구": { lat: 37.5572, lng: 126.9254 },
-    "강남역": { lat: 37.4979, lng: 127.0276 },
-    "잠실역": { lat: 37.5133, lng: 127.1000 },
-    "신림역": { lat: 37.4842, lng: 126.9297 },
-    "노원역": { lat: 37.6542, lng: 127.0606 },
-    "수유역": { lat: 37.6380, lng: 127.0257 },
-    "종로3가": { lat: 37.5716, lng: 126.9910 },
-    "구로디지털단지역": { lat: 37.4853, lng: 126.9015 },
-  };
+  async function searchPlace(query) {
+    const url =
+      "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" +
+      encodeURIComponent(query);
 
-  function normalizePlaceName(name) {
-    return name.replace(/\s/g, "").trim();
-  }
+    const res = await fetch(url, {
+      headers: {
+        "Accept": "application/json",
+      },
+    });
 
-  function getCoords(name) {
-    const key = normalizePlaceName(name);
-    return placeCoords[key] || null;
+    const data = await res.json();
+
+    if (!data || data.length === 0) {
+      return null;
+    }
+
+    return {
+      lat: Number(data[0].lat),
+      lng: Number(data[0].lon),
+      name: data[0].display_name,
+    };
   }
 
   function angleToDirectionIndex(angle) {
-    // 0도=동, 90도=북, 180도=서, 270도=남
-    // directions 배열 기준: 0 해(북북서), 1 자(북), 2 축(북북동), 3 인(동북동), 4 묘(동), 5 진(동남동), 6 사(남남동), 7 오(남), 8 미(남남서), 9 신(서남서), 10 유(서), 11 술(서북서)
     if (angle >= 345 || angle < 15) return 4;   // 동 = 묘
     if (angle >= 15 && angle < 45) return 3;     // 동북동 = 인
     if (angle >= 45 && angle < 75) return 2;     // 북북동 = 축
@@ -585,23 +588,37 @@ function UserHome({ profile, data, setTab, todayFortune }) {
     return 5;                                    // 동남동 = 진
   }
 
-  function analyzeDirection() {
-    const start = getCoords(fromPlace);
-    const end = getCoords(toPlace);
-
-    if (!start || !end) {
-      alert("현재 테스트 가능 지역: 서울역, 녹천역, 홍대입구, 강남역, 잠실역, 신림역, 노원역, 수유역, 종로3가, 구로디지털단지역");
+  async function analyzeDirection() {
+    if (!fromPlace.trim() || !toPlace.trim()) {
+      alert("출발지와 목적지를 모두 입력하세요.");
       return;
     }
 
-    const dx = end.lng - start.lng;
-    const dy = end.lat - start.lat;
+    try {
+      setLoading(true);
 
-    let angle = Math.atan2(dy, dx) * 180 / Math.PI;
-    if (angle < 0) angle += 360;
+      const start = await searchPlace(fromPlace);
+      const end = await searchPlace(toPlace);
 
-    const idx = angleToDirectionIndex(angle);
-    setDirectionIndex(idx);
+      if (!start || !end) {
+        alert("장소를 찾지 못했습니다. 예: 서울역, 녹천역, 부산역, Tokyo Station");
+        return;
+      }
+
+      const dx = end.lng - start.lng;
+      const dy = end.lat - start.lat;
+
+      let angle = Math.atan2(dy, dx) * 180 / Math.PI;
+      if (angle < 0) angle += 360;
+
+      const idx = angleToDirectionIndex(angle);
+      setDirectionIndex(idx);
+    } catch (error) {
+      alert("장소 검색 중 오류가 발생했습니다. 잠시 후 다시 시도하세요.");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   }
 
   const picked = directions[directionIndex];
@@ -654,9 +671,10 @@ function UserHome({ profile, data, setTab, todayFortune }) {
 
         <button
           onClick={analyzeDirection}
-          className="rounded-xl bg-gradient-to-r from-violet-500 to-blue-500 px-5 py-3 text-sm font-bold text-white"
+          disabled={loading}
+          className="rounded-xl bg-gradient-to-r from-violet-500 to-blue-500 px-5 py-3 text-sm font-bold text-white disabled:opacity-50"
         >
-          분석하기
+          {loading ? "검색중..." : "분석하기"}
         </button>
       </div>
 
@@ -774,46 +792,6 @@ function UserHome({ profile, data, setTab, todayFortune }) {
                 </div>
               ))}
           </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-     function FlowPage({ data }) {
-  return (
-    <div className="grid gap-4 lg:grid-cols-2">
-      <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
-        <h2 className="text-3xl font-black text-white">
-          대운·세운·월운·일운·시운
-        </h2>
-
-        <div className="mt-5 space-y-4">
-          <StatBar label="대운 흐름" value={data.scores.bigLuck} />
-          <StatBar label="세운 흐름" value={data.scores.yearLuck} />
-          <StatBar label="월운 흐름" value={data.scores.monthLuck} />
-          <StatBar label="일운 흐름" value={data.scores.dayLuck} />
-          <StatBar label="시운 흐름" value={data.scores.hourLuck} />
-        </div>
-      </div>
-
-      <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
-        <h2 className="text-3xl font-black text-white">
-          오늘의 상세 해석
-        </h2>
-
-        <div className="mt-4 space-y-3 text-sm leading-7 text-slate-300">
-          <p className="rounded-xl bg-white/[0.04] p-4">
-            오늘은 외부 활동과 연락 흐름이 비교적 강합니다.
-          </p>
-
-          <p className="rounded-xl bg-white/[0.04] p-4">
-            금전운은 기회와 소비가 함께 증가하는 흐름입니다.
-          </p>
-
-          <p className="rounded-xl bg-white/[0.04] p-4">
-            피로한 시간대 이동은 주의하세요.
-          </p>
         </div>
       </div>
     </div>
