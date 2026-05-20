@@ -1097,6 +1097,20 @@ function SettingsPage({ setProfile }) {
             현재 기본 기능은 무료로 제공되며, 향후 일부 기능은 광고 또는 유료 기능이 추가될 수 있습니다.
           </p>
         </div>
+       <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+  <h3 className="text-xl font-black text-white">
+    데이터 저장 안내
+  </h3>
+
+  <p className="mt-3 text-sm leading-7 text-slate-300">
+    본 서비스는 입력한 생년월일, 시간, 방향, 점수 계산 정보를 서버에 저장하지 않습니다.
+    화면에서 계산 결과만 보여주는 간단한 참고용 서비스입니다.
+  </p>
+
+  <p className="mt-3 text-xs leading-6 text-slate-500">
+    로그인, 회원가입, 채팅, 신고 기능은 현재 제공하지 않습니다.
+  </p>
+</div>
       </div>
     </div>
   );
