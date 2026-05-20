@@ -608,8 +608,11 @@ function DirectionPanel({ profile }) {
       const dx = end.lng - start.lng;
       const dy = end.lat - start.lat;
 
-      let angle = Math.atan2(dy, dx) * 180 / Math.PI;
-      if (angle < 0) angle += 360;
+    let angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+     angle = 90 - angle;
+
+    if (angle < 0) angle += 360;
 
       const idx = angleToDirectionIndex(angle);
       setDirectionIndex(idx);
