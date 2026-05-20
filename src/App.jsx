@@ -127,28 +127,106 @@ function calcPseudoSaju(profile) {
 }
 
 function calcDirectionScores(profile) {
-  const h = hashNumber(`${profile.birthDate}-${profile.birthTime}-direction`);
+  const birthDate = profile.birthDate || "1990-01-01";
+  const birthTime = profile.birthTime || "12:00";
+
+  const year = Number(birthDate.slice(0, 4)) || 1990;
+  const month = Number(birthDate.slice(5, 7)) || 1;
+  const day = Number(birthDate.slice(8, 10)) || 1;
+  const hour = Number(birthTime.slice(0, 2)) || 12;
+
+  const h = hashNumber(`${birthDate}-${birthTime}-${profile.gender}-${profile.calendarType}`);
+
+  const birthElement = ["목", "화", "토", "금", "수"][(year + month + day + hour + h) % 5];
+
+  const weakElement = ["목", "화", "토", "금", "수"][(h + day + month) % 5];
+  const strongElement = ["목", "화", "토", "금", "수"][(h + year + hour) % 5];
+
+  const today = new Date();
+  const todayIndex = (today.getFullYear() + today.getMonth() + today.getDate()) % 12;
 
   const names = [
-    ["자", "북"],
-    ["축", "북북동"],
-    ["인", "동북동"],
-    ["묘", "동"],
-    ["진", "동남동"],
-    ["사", "남남동"],
-    ["오", "남"],
-    ["미", "남남서"],
-    ["신", "서남서"],
-    ["유", "서"],
-    ["술", "서북서"],
-    ["해", "북북서"],
+    { zodiac: "자", dir: "북", angle: 0, element: "수" },
+    { zodiac: "축", dir: "북북동", angle: 30, element: "토" },
+    { zodiac: "인", dir: "동북동", angle: 60, element: "목" },
+    { zodiac: "묘", dir: "동", angle: 90, element: "목" },
+    { zodiac: "진", dir: "동남동", angle: 120, element: "토" },
+    { zodiac: "사", dir: "남남동", angle: 150, element: "화" },
+    { zodiac: "오", dir: "남", angle: 180, element: "화" },
+    { zodiac: "미", dir: "남남서", angle: 210, element: "토" },
+    { zodiac: "신", dir: "서남서", angle: 240, element: "금" },
+    { zodiac: "유", dir: "서", angle: 270, element: "금" },
+    { zodiac: "술", dir: "서북서", angle: 300, element: "토" },
+    { zodiac: "해", dir: "북북서", angle: 330, element: "수" },
   ];
 
-  return names.map(([z, dir], i) => [
-    z,
-    dir,
-    clamp(40 + (((h >> (i % 16)) + i * 7) % 49)),
-  ]);
+  const clashMap = {
+    자: "오",
+    축: "미",
+    인: "신",
+    묘: "유",
+    진: "술",
+    사: "해",
+    오: "자",
+    미: "축",
+    신: "인",
+    유: "묘",
+    술: "진",
+    해: "사",
+  };
+
+  const qimenGoodIndex = (h + todayIndex + day) % 12;
+  const qimenBadIndex = (h + todayIndex + month + 6) % 12;
+
+  return names.map((item, i) => {
+    let score = 55;
+
+    const reasons = [];
+
+    if (item.element === weakElement) {
+      score += 15;
+      reasons.push(`부족한 오행 ${weakElement} 보완`);
+    }
+
+    if (item.element === strongElement) {
+      score -= 10;
+      reasons.push(`과한 오행 ${strongElement} 방향`);
+    }
+
+    if (i === qimenGoodIndex) {
+      score += 18;
+      reasons.push("기문 길방");
+    }
+
+    if (i === qimenBadIndex) {
+      score -= 18;
+      reasons.push("기문 흉방");
+    }
+
+    const todayZodiac = names[todayIndex].zodiac;
+
+    if (item.zodiac === todayZodiac) {
+      score += 8;
+      reasons.push("오늘 일진과 같은 흐름");
+    }
+
+    if (clashMap[todayZodiac] === item.zodiac) {
+      score -= 16;
+      reasons.push("오늘 일진과 충돌 방향");
+    }
+
+    score += ((h >> (i % 12)) % 11) - 5;
+
+    const finalScore = clamp(score, 15, 95);
+
+    return [
+      item.zodiac,
+      item.dir,
+      finalScore,
+      item.element,
+      reasons.length ? reasons.join(" · ") : "기본 방향 흐름",
+    ];
+  });
 }
 
 function loadJson(key, fallback) {
@@ -598,7 +676,8 @@ function DirectionPanel({ profile }) {
   const pickedZodiac = picked[0];
   const pickedDirection = picked[1];
   const pickedScore = picked[2];
-
+  const pickedElement = picked[3];
+  const pickedReason = picked[4];
   return (
     <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-3 md:p-4">
       <div className="mb-3 flex items-center justify-between">
@@ -665,9 +744,15 @@ function DirectionPanel({ profile }) {
                     {dir}
                   </div>
 
-                  <div className="mx-auto mt-1 w-fit rounded-full bg-black/80 px-2 py-0.5 text-[10px] font-bold text-white md:text-xs">
-                    {score}%
-                  </div>
+                 <div className="mx-auto mt-1 w-fit rounded-full bg-black/80 px-2 py-1 text-center">
+  <div className="text-[10px] font-bold text-white md:text-xs">
+    {score}%
+  </div>
+
+  <div className="text-[9px] text-cyan-200 md:text-[10px]">
+    {directions[index][3]}
+  </div>
+</div>
                 </div>
               );
             })}
@@ -715,6 +800,14 @@ function DirectionPanel({ profile }) {
             <div className="mt-1 text-3xl font-black text-yellow-300 md:text-4xl">
               {pickedScore}%
             </div>
+            <div className="mt-4 text-xs text-slate-400">방위 오행</div>
+<div className="mt-1 text-xl font-black text-emerald-300">
+  {pickedElement}
+</div>
+
+<div className="mt-4 rounded-xl bg-white/[0.04] p-3 text-xs leading-5 text-slate-300">
+  {pickedReason}
+</div>
           </div>
         </div>
       </div>
