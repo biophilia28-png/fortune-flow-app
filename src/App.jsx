@@ -455,7 +455,7 @@ function UserHome({ profile, data, setTab, todayFortune }) {
           오늘의 운세 흐름
         </p>
 
-        <h1 className="mt-2 text-4xl font-black text-white">
+       <h1 className="mt-2 text-2xl font-black text-white md:text-4xl">
           {profile.nickname || "사용자"}님의 운세
         </h1>
 
@@ -465,7 +465,7 @@ function UserHome({ profile, data, setTab, todayFortune }) {
               종합운
             </div>
 
-            <div className="mt-2 text-4xl font-black text-cyan-300">
+           text-3xl md:text-4xl
               {todayFortune.total}%
             </div>
           </div>
@@ -475,7 +475,7 @@ function UserHome({ profile, data, setTab, todayFortune }) {
               인연운
             </div>
 
-            <div className="mt-2 text-4xl font-black text-pink-300">
+           text-3xl md:text-4xl
              {todayFortune.love}%
             </div>
           </div>
@@ -485,7 +485,7 @@ function UserHome({ profile, data, setTab, todayFortune }) {
               금전운
             </div>
 
-            <div className="mt-2 text-4xl font-black text-yellow-300">
+            text-3xl md:text-4xl
               {todayFortune.money}%
             </div>
           </div>
@@ -495,7 +495,7 @@ function UserHome({ profile, data, setTab, todayFortune }) {
               행복지수
             </div>
 
-            <div className="mt-2 text-4xl font-black text-emerald-300">
+            text-3xl md:text-4xl
             {todayFortune.happy}%
             </div>
           </div>
@@ -555,16 +555,11 @@ function DirectionPanel({ profile }) {
       encodeURIComponent(query);
 
     const res = await fetch(url, {
-      headers: {
-        "Accept": "application/json",
-      },
+      headers: { Accept: "application/json" },
     });
 
     const data = await res.json();
-
-    if (!data || data.length === 0) {
-      return null;
-    }
+    if (!data || data.length === 0) return null;
 
     return {
       lat: Number(data[0].lat),
@@ -573,10 +568,9 @@ function DirectionPanel({ profile }) {
     };
   }
 
-function angleToDirectionIndex(angle) {
-  // 0도=북 기준
-  return Math.round(angle / 30) % 12;
-}
+  function angleToDirectionIndex(angle) {
+    return Math.round(angle / 30) % 12;
+  }
 
   async function analyzeDirection() {
     if (!fromPlace.trim() || !toPlace.trim()) {
@@ -591,21 +585,19 @@ function angleToDirectionIndex(angle) {
       const end = await searchPlace(toPlace);
 
       if (!start || !end) {
-        alert("장소를 찾지 못했습니다. 예: 서울역, 녹천역, 부산역, Tokyo Station");
+        alert("장소를 찾지 못했습니다. 예: 서울역, 부산역, Tokyo Station");
         return;
       }
 
       const dx = end.lng - start.lng;
       const dy = end.lat - start.lat;
-      
-let angle = Math.atan2(dx, dy) * 180 / Math.PI;
 
-if (angle < 0) angle += 360;
+      let angle = Math.atan2(dx, dy) * 180 / Math.PI;
+      if (angle < 0) angle += 360;
 
-      const idx = angleToDirectionIndex(angle);
-      setDirectionIndex(idx);
+      setDirectionIndex(angleToDirectionIndex(angle));
     } catch (error) {
-      alert("장소 검색 중 오류가 발생했습니다. 잠시 후 다시 시도하세요.");
+      alert("장소 검색 중 오류가 발생했습니다.");
       console.error(error);
     } finally {
       setLoading(false);
@@ -617,64 +609,43 @@ if (angle < 0) angle += 360;
   const pickedDirection = picked[1];
   const pickedScore = picked[2];
 
-  const getColor = (score) => {
-    if (score >= 80) return "from-emerald-400 to-green-500 border-emerald-400 text-emerald-200";
-    if (score >= 60) return "from-lime-400 to-green-500 border-lime-400 text-lime-200";
-    if (score >= 40) return "from-yellow-400 to-amber-500 border-yellow-400 text-yellow-200";
-    if (score >= 20) return "from-orange-400 to-red-500 border-orange-400 text-orange-200";
-    return "from-red-500 to-rose-600 border-red-400 text-red-200";
-  };
-
-  const resultText =
-    pickedScore >= 80
-      ? "매우 좋은 이동 흐름"
-      : pickedScore >= 60
-      ? "좋은 이동 흐름"
-      : pickedScore >= 40
-      ? "보통 흐름"
-      : pickedScore >= 20
-      ? "주의 흐름"
-      : "매우 주의";
-
   return (
-    <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-4">
-      <div className="mb-4 flex items-center justify-between">
-        <h3 className="font-bold text-white">
+    <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-3 md:p-4">
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className="text-sm font-bold text-white md:text-base">
           내 위치 기준 12지신 방향운
         </h3>
-        <MapPin size={18} className="text-cyan-300" />
+        <MapPin size={16} className="text-cyan-300" />
       </div>
 
-      <div className="grid gap-3 md:grid-cols-[1fr_1fr_auto]">
+      <div className="grid gap-2 md:grid-cols-[1fr_1fr_auto]">
         <input
           value={fromPlace}
           onChange={(e) => setFromPlace(e.target.value)}
           placeholder="출발지 예: 서울역"
-          className="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm text-white outline-none"
+          className="rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 text-xs text-white outline-none md:px-4 md:py-3 md:text-sm"
         />
 
         <input
           value={toPlace}
           onChange={(e) => setToPlace(e.target.value)}
-          placeholder="목적지 예: 녹천역"
-          className="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm text-white outline-none"
+          placeholder="목적지 예: 부산역"
+          className="rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 text-xs text-white outline-none md:px-4 md:py-3 md:text-sm"
         />
 
         <button
           onClick={analyzeDirection}
           disabled={loading}
-          className="rounded-xl bg-gradient-to-r from-violet-500 to-blue-500 px-5 py-3 text-sm font-bold text-white disabled:opacity-50"
+          className="rounded-xl bg-gradient-to-r from-violet-500 to-blue-500 px-4 py-2 text-xs font-bold text-white disabled:opacity-50 md:px-5 md:py-3 md:text-sm"
         >
           {loading ? "검색중..." : "분석하기"}
         </button>
       </div>
 
-      <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_330px]">
-        <div className="relative min-h-[560px] overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#07111f] p-4">
-          <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_center,rgba(59,130,246,.35),transparent_35%),linear-gradient(90deg,rgba(255,255,255,.05)_1px,transparent_1px),linear-gradient(rgba(255,255,255,.05)_1px,transparent_1px)] bg-[length:100%_100%,48px_48px,48px_48px]" />
-
-          <div className="relative mx-auto mt-8 aspect-square max-w-[520px]">
-            <div className="absolute left-1/2 top-1/2 h-[86%] w-[86%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-cyan-300/30" />
+      <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_310px]">
+        <div className="relative min-h-[390px] overflow-visible rounded-2xl border border-white/10 bg-[#07111f] p-2 md:min-h-[560px] md:p-4">
+          <div className="relative mx-auto mt-8 aspect-square max-w-[330px] md:max-w-[520px]">
+            <div className="absolute left-1/2 top-1/2 h-[84%] w-[84%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-cyan-300/30" />
 
             {directions.map(([zodiac, dir, score], index) => {
               const angle = index * 30 - 90;
@@ -683,7 +654,6 @@ if (angle < 0) angle += 360;
               const x = 50 + radius * Math.cos(rad);
               const y = 50 + radius * Math.sin(rad);
               const active = zodiac === pickedZodiac;
-              const color = getColor(score);
 
               return (
                 <div
@@ -692,22 +662,28 @@ if (angle < 0) angle += 360;
                   style={{ left: `${x}%`, top: `${y}%` }}
                 >
                   <div
-                    className={`mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border bg-slate-950/90 text-3xl font-black shadow-2xl ${
-                      active ? `${color} scale-110 shadow-cyan-500/40` : color
+                    className={`mx-auto flex h-11 w-11 items-center justify-center rounded-xl border bg-slate-950/90 text-xl font-black shadow-xl md:h-16 md:w-16 md:rounded-2xl md:text-3xl ${
+                      active
+                        ? "scale-110 border-cyan-300 text-cyan-200 shadow-cyan-500/40"
+                        : "border-lime-400 text-lime-200"
                     }`}
                   >
                     {zodiac}
                   </div>
-                  <div className="mt-1 text-xs text-slate-300">{dir}</div>
-                  <div className="mx-auto mt-1 rounded-full bg-black/70 px-2 py-1 text-xs font-bold text-white">
+
+                  <div className="mt-1 text-[10px] text-slate-300 md:text-xs">
+                    {dir}
+                  </div>
+
+                  <div className="mx-auto mt-1 w-fit rounded-full bg-black/80 px-2 py-0.5 text-[10px] font-bold text-white md:text-xs">
                     {score}%
                   </div>
                 </div>
               );
             })}
 
-            <div className="absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border border-blue-300/50 bg-blue-500/30 p-2 shadow-2xl shadow-blue-500/40">
-              <div className="flex h-full w-full items-center justify-center rounded-full bg-blue-500 text-xs font-bold text-white">
+            <div className="absolute left-1/2 top-1/2 h-14 w-14 -translate-x-1/2 -translate-y-1/2 rounded-full border border-blue-300/50 bg-blue-500/30 p-1.5 shadow-xl shadow-blue-500/40 md:h-20 md:w-20 md:p-2">
+              <div className="flex h-full w-full items-center justify-center rounded-full bg-blue-500 text-[10px] font-bold text-white md:text-xs">
                 내 위치
               </div>
             </div>
@@ -721,68 +697,79 @@ if (angle < 0) angle += 360;
             />
           </div>
 
-          <div className="relative mt-4 rounded-xl border border-white/10 bg-black/30 p-3 text-xs text-slate-300">
-            점수 기준:
-            <span className="ml-3 text-emerald-300">80% 이상 매우 좋음</span>
-            <span className="ml-3 text-lime-300">60~79% 좋음</span>
-            <span className="ml-3 text-yellow-300">40~59% 보통</span>
-            <span className="ml-3 text-orange-300">20~39% 주의</span>
-            <span className="ml-3 text-red-300">20% 미만 매우 주의</span>
+          <div className="relative mt-3 rounded-xl border border-white/10 bg-black/30 p-2 text-[10px] leading-5 text-slate-300 md:p-3 md:text-xs">
+            <span className="text-emerald-300">80%↑ 매우 좋음</span>
+            <span className="ml-2 text-lime-300">60~79 좋음</span>
+            <span className="ml-2 text-yellow-300">40~59 보통</span>
+            <span className="ml-2 text-orange-300">20~39 주의</span>
           </div>
         </div>
 
-        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/80 p-5">
-          <h3 className="text-xl font-black text-white">
+        <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
+          <h3 className="text-lg font-black text-white md:text-xl">
             이동 방향 분석 결과
           </h3>
 
-          <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+          <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
             <div className="text-xs text-slate-400">주 이동 방향</div>
-            <div className="mt-2 text-3xl font-black text-violet-300">
+            <div className="mt-1 text-2xl font-black text-violet-300 md:text-3xl">
               {pickedDirection}
             </div>
 
-            <div className="mt-5 text-xs text-slate-400">12지신 방향</div>
-            <div className="mt-2 text-3xl font-black text-blue-300">
+            <div className="mt-4 text-xs text-slate-400">12지신 방향</div>
+            <div className="mt-1 text-2xl font-black text-blue-300 md:text-3xl">
               {pickedZodiac}
             </div>
 
-            <div className="mt-5 text-xs text-slate-400">이동운 점수</div>
-            <div className="mt-2 text-4xl font-black text-yellow-300">
+            <div className="mt-4 text-xs text-slate-400">이동운 점수</div>
+            <div className="mt-1 text-3xl font-black text-yellow-300 md:text-4xl">
               {pickedScore}%
             </div>
-
-            <div className="mt-4 rounded-xl bg-emerald-500/10 p-3 text-sm text-emerald-200">
-              {resultText}
-            </div>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-          <div className="mt-5 space-y-3">
-            {[...directions]
-              .sort((a, b) => b[2] - a[2])
-              .map(([zodiac, dir, score], i) => (
-                <div key={zodiac} className="grid grid-cols-[28px_1fr_52px] items-center gap-2 text-sm">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-xs text-white">
-                    {i + 1}
-                  </div>
+function FlowPage({ data }) {
+  const scores = data?.scores || {};
 
-                  <div>
-                    <span className="font-bold text-white">{zodiac}</span>
-                    <span className="ml-2 text-slate-400">({dir})</span>
-                    <div className="mt-1 h-2 rounded-full bg-slate-800">
-                      <div
-                        className="h-full rounded-full bg-gradient-to-r from-violet-500 to-cyan-300"
-                        style={{ width: `${score}%` }}
-                      />
-                    </div>
-                  </div>
+  return (
+    <div className="space-y-4">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
+        <p className="text-xs text-violet-300">운세 흐름</p>
+        <h2 className="mt-1 text-2xl font-black text-white md:text-3xl">
+          대운·세운·월운·일운·시운
+        </h2>
+        <p className="mt-2 text-xs text-slate-400 md:text-sm">
+          오늘 기준 흐름을 항목별로 보여줍니다.
+        </p>
+      </div>
 
-                  <div className="text-right font-bold text-cyan-300">
-                    {score}%
-                  </div>
-                </div>
-              ))}
-          </div>
+      <div className="grid gap-3 md:grid-cols-2">
+        <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
+          <StatBar label="대운 흐름" value={scores.bigLuck || 50} />
+          <div className="mt-4" />
+          <StatBar label="세운 흐름" value={scores.yearLuck || 50} />
+          <div className="mt-4" />
+          <StatBar label="월운 흐름" value={scores.monthLuck || 50} />
+          <div className="mt-4" />
+          <StatBar label="일운 흐름" value={scores.dayLuck || 50} />
+          <div className="mt-4" />
+          <StatBar label="시운 흐름" value={scores.hourLuck || 50} />
+        </div>
+
+        <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4 text-sm leading-7 text-slate-300">
+          <p className="rounded-xl bg-white/[0.04] p-3">
+            오늘은 이동·연락·외부 활동 흐름을 함께 보는 구간입니다.
+          </p>
+          <p className="mt-3 rounded-xl bg-white/[0.04] p-3">
+            점수가 높아도 무리한 투자·이동·결정은 피하고 참고용으로만 보세요.
+          </p>
+          <p className="mt-3 rounded-xl bg-white/[0.04] p-3">
+            낮은 항목은 조심해야 할 방향으로 해석하면 됩니다.
+          </p>
         </div>
       </div>
     </div>
