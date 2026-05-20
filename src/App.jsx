@@ -927,6 +927,9 @@ function StatCard({ label, value, caution = false }) {
 }
 
 function StatsPage({ data }) {
+
+  const cycleStats = getFortuneCycleStats();
+
   const detailStats = [
     ["사고주의", data.scores.accident, true],
     ["외출운", data.scores.move, false],
@@ -967,6 +970,52 @@ function StatsPage({ data }) {
        <h3 className="text-sm md:text-lg font-black text-white">
           상세 통계 12개
         </h3>
+<div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+  <div className="mb-3">
+    <h2 className="text-lg font-bold text-white">운세 흐름 통계</h2>
+
+    <p className="mt-1 text-xs text-white/60">
+      홈 화면은 오늘 하루 기준이며,
+      아래는 대운·세운·월운·일운 흐름입니다.
+    </p>
+  </div>
+
+  <div className="grid grid-cols-2 gap-2">
+    {cycleStats.map((item) => (
+      <div
+        key={item.title}
+        className="rounded-xl border border-white/10 bg-black/20 p-3"
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-sm font-bold text-white">
+              {item.title}
+            </div>
+
+            <div className="text-[11px] text-white/50">
+              {item.label}
+            </div>
+          </div>
+
+          <div className="text-xl font-black text-white">
+            {item.score}점
+          </div>
+        </div>
+
+        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10">
+          <div
+            className="h-full rounded-full bg-violet-400"
+            style={{ width: `${item.score}%` }}
+          />
+        </div>
+
+        <div className="mt-2 text-[11px] text-white/50">
+          {item.desc}
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
 
         <div className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {detailStats.map(([label, value, caution]) => (
@@ -1211,6 +1260,52 @@ function Admin() {
       </div>
     </div>
   );
+}
+
+function getFortuneCycleStats(birthKey = "default") {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const date = now.getDate();
+
+  const seedText = `${birthKey}-${year}-${month}-${date}`;
+  let seed = 0;
+
+  for (let i = 0; i < seedText.length; i++) {
+    seed += seedText.charCodeAt(i) * (i + 1);
+  }
+
+  const makeScore = (salt, min = 55, max = 94) => {
+    const raw = Math.abs(Math.sin(seed + salt) * 10000);
+    return Math.floor(min + (raw % (max - min + 1)));
+  };
+
+  return [
+    {
+      title: "대운",
+      label: "10년 흐름",
+      score: makeScore(11, 50, 90),
+      desc: "장기 인생 방향과 큰 변화 흐름",
+    },
+    {
+      title: "세운",
+      label: "올해 흐름",
+      score: makeScore(22, 52, 94),
+      desc: "올해 기회, 재물, 인간관계 흐름",
+    },
+    {
+      title: "월운",
+      label: "이번 달 흐름",
+      score: makeScore(33, 50, 92),
+      desc: "이번 달 컨디션과 실행력",
+    },
+    {
+      title: "일운",
+      label: "오늘 흐름",
+      score: makeScore(44, 55, 96),
+      desc: "오늘 하루 운세 지표",
+    },
+  ];
 }
 
 export default function App() {
