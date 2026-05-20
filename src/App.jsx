@@ -788,7 +788,7 @@ function CalendarPage({ profile, setSelectedFortune }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-400 md:gap-2 md:text-xs"> text-[10px] font-bold text-slate-400 md:gap-2 md:text-xs">
+     <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-400 md:gap-2 md:text-xs">
         {["일", "월", "화", "수", "목", "금", "토"].map((d, i) => (
           <div
             key={d}
@@ -1031,7 +1031,6 @@ function SettingsPage({ setProfile }) {
   function clearAllData() {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(LOG_KEY);
-
     setProfile(defaultProfile);
     alert("저장된 입력값과 기록이 삭제되었습니다.");
   }
@@ -1040,97 +1039,67 @@ function SettingsPage({ setProfile }) {
     <div className="space-y-4">
       <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
         <p className="text-xs text-violet-300">앱 정보</p>
+        <h2 className="mt-1 text-3xl font-black text-white">
+          설정 / 공지 / 데이터 관리
+        </h2>
+        <p className="mt-2 text-sm text-slate-400">
+          운세플로우 이용 전 안내사항입니다.
+        </p>
+      </div>
 
-        <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-4 lg:grid-cols-2">
+        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+          <h3 className="text-xl font-black text-white">서비스 안내</h3>
+          <p className="mt-3 text-sm leading-7 text-slate-300">
+            본 서비스는 만세력·사주팔자·당사주·토정비결·통계 기반 운세 흐름을 참고용으로 제공하는 서비스입니다.
+          </p>
+        </div>
 
-  <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
-    <h3 className="text-xl font-black text-white">
-      서비스 안내
-    </h3>
+        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+          <h3 className="text-xl font-black text-white">운세 결과 안내</h3>
+          <p className="mt-3 text-sm leading-7 text-slate-300">
+            운세 결과는 실제 결과를 보장하지 않으며, 참고 정보로만 이용해야 합니다.
+          </p>
+        </div>
 
-    <p className="mt-3 text-sm leading-7 text-slate-300">
-      본 서비스는 만세력·사주팔자·당사주·토정비결·통계 기반 운세 흐름을
-      참고용으로 제공하는 서비스입니다.
-    </p>
-  </div>
+        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+          <h3 className="text-xl font-black text-white">투자·건강 판단 주의</h3>
+          <p className="mt-3 text-sm leading-7 text-slate-300">
+            투자·건강·법률·의료 판단은 전문가 상담이 우선이며, 운세 결과만으로 중요한 결정을 내리지 않아야 합니다.
+          </p>
+        </div>
 
-  <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
-    <h3 className="text-xl font-black text-white">
-      운세 결과 안내
-    </h3>
+        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+          <h3 className="text-xl font-black text-white">개인정보 처리 안내</h3>
+          <p className="mt-3 text-sm leading-7 text-slate-300">
+            생년월일시 입력값은 서버 전송 없이 사용자의 브라우저 내부 저장소에 저장됩니다.
+          </p>
+        </div>
 
-    <p className="mt-3 text-sm leading-7 text-slate-300">
-      운세 결과는 통계·사주 이론 기반 참고 정보이며,
-      실제 결과를 보장하지 않습니다.
-    </p>
-  </div>
+        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+          <h3 className="text-xl font-black text-white">데이터 삭제 안내</h3>
+          <p className="mt-3 text-sm leading-7 text-slate-300">
+            아래 버튼을 누르면 저장된 생년월일시와 기록 데이터를 삭제할 수 있습니다.
+          </p>
 
-  <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
-    <h3 className="text-xl font-black text-white">
-      투자·건강 판단 주의
-    </h3>
+          <button
+            onClick={clearAllData}
+            className="mt-4 flex items-center gap-2 rounded-xl bg-rose-500 px-4 py-3 font-bold text-white"
+          >
+            <Trash2 size={18} />
+            데이터 전체 삭제
+          </button>
+        </div>
 
-    <p className="mt-3 text-sm leading-7 text-slate-300">
-      투자·건강·법률·의료 판단은 전문가 상담이 우선이며,
-      운세 결과만으로 중요한 결정을 내리지 않아야 합니다.
-    </p>
-  </div>
-
-  <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
-    <h3 className="text-xl font-black text-white">
-      개인정보 처리 안내
-    </h3>
-
-    <p className="mt-3 text-sm leading-7 text-slate-300">
-      생년월일시 입력값은 서버 전송 없이
-      사용자의 브라우저 내부(localStorage)에 저장됩니다.
-    </p>
-  </div>
-
-  <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
-    <h3 className="text-xl font-black text-white">
-      데이터 삭제 안내
-    </h3>
-
-    <p className="mt-3 text-sm leading-7 text-slate-300">
-      설정 메뉴의 데이터 삭제 기능을 통해
-      저장된 입력값과 기록을 즉시 제거할 수 있습니다.
-    </p>
-  </div>
-
-  <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
-  <h3 className="text-xl font-black text-white">
-    광고 및 유료 기능
-  </h3>
-
-  <p className="mt-3 text-sm leading-7 text-slate-300">
-    현재 기본 기능은 무료로 제공되며,
-    향후 일부 기능은 광고 또는 유료 기능이 추가될 수 있습니다.
-  </p>
-</div>
-
-</div>
-
-<div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
-  <h3 className="text-xl font-black text-white">
-    데이터 초기화
-  </h3>
-
-  <p className="mt-3 text-sm leading-7 text-slate-300">
-    저장된 생년월일시와 기록 데이터를 삭제합니다.
-  </p>
-
-  <button
-    onClick={clearAllData}
-    className="mt-4 flex items-center gap-2 rounded-xl bg-rose-500 px-4 py-3 font-bold text-white"
-  >
-    <Trash2 size={18} />
-    데이터 전체 삭제
-  </button>
-</div>
-
-</div>
-);
+        <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/70 p-5">
+          <h3 className="text-xl font-black text-white">광고 및 유료 기능</h3>
+          <p className="mt-3 text-sm leading-7 text-slate-300">
+            현재 기본 기능은 무료로 제공되며, 향후 일부 기능은 광고 또는 유료 기능이 추가될 수 있습니다.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }
 function Admin() {
   const [password, setPassword] = useState("");
@@ -1473,7 +1442,7 @@ const [selectedFortune, setSelectedFortune] = useState(null);
         {tab === "admin" && <Admin />}
       </main>
 
-      <nav className="fixed bottom-3 left-1/2 z-10 grid w-[calc(100%-24px)] max-w-4xl -translate-x-1/2 grid-cols-7 rounded-2xl border border-white/10 bg-slate-950/90 p-2 shadow-2xl backdrop-blur">
+      <nav className="fixed bottom-3 left-1/2 z-10 grid w-[calc(100%-24px)] max-w-4xl -translate-x-1/2 grid-cols-6 rounded-2xl border border-white/10 bg-slate-950/90 p-2 shadow-2xl backdrop-blur">
         {menu.map(([id, label, Icon]) => (
           <button
             key={id}
