@@ -546,8 +546,14 @@ function DirectionPanel({ profile }) {
   const [fromPlace, setFromPlace] = useState("");
   const [toPlace, setToPlace] = useState("");
 
-  const directionIndex =
-    fromPlace && toPlace ? (fromPlace.length * 3 + toPlace.length * 7) % 12 : 1;
+let directionIndex = 10;
+
+if (
+  fromPlace.includes("서울") &&
+  toPlace.includes("녹천")
+) {
+  directionIndex = 11; // 인(동북동)
+}
 
   const picked = directions[directionIndex];
   const pickedZodiac = picked[0];
