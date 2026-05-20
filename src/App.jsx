@@ -1027,11 +1027,16 @@ function StatsPage({ data }) {
     </div>
   );
 }
-function SettingsPage({ setProfile }) {
+function SettingsPage({ setProfile, setTab }) {
   function clearAllData() {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(LOG_KEY);
-
+<button
+  onClick={() => setTab("admin")}
+  className="mt-4 w-full rounded-xl bg-violet-500 px-4 py-3 font-bold text-white"
+>
+  관리자 페이지 들어가기
+</button>
     setProfile(defaultProfile);
     alert("저장된 입력값과 기록이 삭제되었습니다.");
   }
@@ -1094,7 +1099,7 @@ function Admin() {
   const [password, setPassword] = useState("");
   const [unlocked, setUnlocked] = useState(false);
 
-  const ADMIN_PASSWORD = "1234";
+ const ADMIN_PASSWORD = "246897";
 
  
   const logs = loadJson(LOG_KEY, []);
@@ -1166,11 +1171,13 @@ const totalFeedback = 0;
 
       <div className="grid gap-3 md:grid-cols-4">
         {[
-          ["저장된 운세 기록", `${logs.length}개`],
-          ["총 피드백", `${totalFeedback}회`],
-          ["잘 맞음", `${good}회`],
-          ["안 맞음", `${bad}회`],
-        ].map(([a, b]) => (
+  ["저장된 운세 기록", `${logs.length}개`],
+  ["오늘 접속자", "로컬 기준"],
+  ["연령층", "입력값 기준"],
+  ["가입 방식", "회원가입 없음"],
+  ["개인정보 저장", "기기 내부"],
+  ["신고/피드백", "비활성화"],
+].map(([a, b]) => (
           <div
             key={a}
             className="rounded-2xl border border-white/10 bg-slate-950/70 p-4"
@@ -1339,7 +1346,7 @@ const [selectedFortune, setSelectedFortune] = useState(null);
     ["stats", "통계", BarChart3],
     ["life", "당사주", Star],
     ["settings", "설정", Settings],
-    ["admin", "관리자", Lock],
+   
   ];
 
   return (
@@ -1422,7 +1429,7 @@ const [selectedFortune, setSelectedFortune] = useState(null);
         )}
 
         {tab === "settings" && (
-          <SettingsPage setProfile={setProfile} />
+         <SettingsPage setProfile={setProfile} setTab={setTab} />
         )}
 
         {tab === "admin" && <Admin />}
