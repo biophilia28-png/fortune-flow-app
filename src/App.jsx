@@ -1370,6 +1370,11 @@ const [selectedFortune, setSelectedFortune] = useState(null);
   alt="오늘의운"
   className="mb-2 h-14 w-14 rounded-2xl object-cover shadow-lg"
 />
+          <img
+  src={appIcon}
+  alt="오늘의운"
+  className="mb-3 h-20 w-20 rounded-3xl object-cover shadow-2xl"
+/>
           <h1 className="text-2xl font-black text-white">
             오늘의운
           </h1>
