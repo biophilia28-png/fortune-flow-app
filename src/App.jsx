@@ -450,85 +450,75 @@ function ProfileForm({ profile, setProfile }) {
 function UserHome({ profile, data, setTab, todayFortune }) {
   return (
     <div className="space-y-4">
-      <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-6">
-        <p className="text-sm text-violet-300">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4 md:p-6">
+        <p className="text-xs text-violet-300 md:text-sm">
           오늘의 운세 흐름
         </p>
 
-       <h1 className="mt-2 text-2xl font-black text-white md:text-4xl">
+        <h1 className="mt-2 text-2xl font-black text-white md:text-4xl">
           {profile.nickname || "사용자"}님의 운세
         </h1>
 
-        <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-2xl bg-white/[0.04] p-4">
-            <div className="text-xs text-slate-400">
-              종합운
-            </div>
-
-           text-3xl md:text-4xl
+        <div className="mt-4 grid grid-cols-2 gap-3 md:mt-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-2xl bg-white/[0.04] p-3 md:p-4">
+            <div className="text-xs text-slate-400">종합운</div>
+            <div className="mt-1 text-3xl font-black text-cyan-300 md:text-4xl">
               {todayFortune.total}%
             </div>
           </div>
 
-          <div className="rounded-2xl bg-white/[0.04] p-4">
-            <div className="text-xs text-slate-400">
-              인연운
-            </div>
-
-           text-3xl md:text-4xl
-             {todayFortune.love}%
+          <div className="rounded-2xl bg-white/[0.04] p-3 md:p-4">
+            <div className="text-xs text-slate-400">인연운</div>
+            <div className="mt-1 text-3xl font-black text-pink-300 md:text-4xl">
+              {todayFortune.love}%
             </div>
           </div>
 
-          <div className="rounded-2xl bg-white/[0.04] p-4">
-            <div className="text-xs text-slate-400">
-              금전운
-            </div>
-
-            text-3xl md:text-4xl
+          <div className="rounded-2xl bg-white/[0.04] p-3 md:p-4">
+            <div className="text-xs text-slate-400">금전운</div>
+            <div className="mt-1 text-3xl font-black text-yellow-300 md:text-4xl">
               {todayFortune.money}%
             </div>
           </div>
 
-          <div className="rounded-2xl bg-white/[0.04] p-4">
-            <div className="text-xs text-slate-400">
-              행복지수
-            </div>
-
-            text-3xl md:text-4xl
-            {todayFortune.happy}%
+          <div className="rounded-2xl bg-white/[0.04] p-3 md:p-4">
+            <div className="text-xs text-slate-400">행복지수</div>
+            <div className="mt-1 text-3xl font-black text-emerald-300 md:text-4xl">
+              {todayFortune.happy}%
             </div>
           </div>
         </div>
-<div className="mt-5 rounded-2xl bg-white/[0.04] p-4">
-  <div className="text-sm text-cyan-300 font-bold">
-    오늘의 사주 흐름
-  </div>
 
-  <p className="mt-2 text-sm text-slate-300">
-    {todayFortune.saju.summary}
-  </p>
+        <div className="mt-4 rounded-2xl bg-white/[0.04] p-3 md:mt-5 md:p-4">
+          <div className="text-sm font-bold text-cyan-300">
+            오늘의 사주 흐름
+          </div>
 
-  <div className="mt-3 text-xs text-violet-300">
-    기문: {todayFortune.qimen.door}
-    / 길방향: {todayFortune.qimen.direction}
-  </div>
+          <p className="mt-2 text-xs text-slate-300 md:text-sm">
+            {todayFortune.saju.summary}
+          </p>
 
-  <div className="mt-2 text-xs text-yellow-300">
-    주역: {todayFortune.iching.main}
-  </div>
-</div>
-        <div className="mt-6 flex gap-2">
+          <div className="mt-3 text-xs text-violet-300">
+            기문: {todayFortune.qimen.door}
+            / 길방향: {todayFortune.qimen.direction}
+          </div>
+
+          <div className="mt-2 text-xs text-yellow-300">
+            주역: {todayFortune.iching.main}
+          </div>
+        </div>
+
+        <div className="mt-5 flex gap-2">
           <button
             onClick={() => setTab("flow")}
-            className="rounded-xl bg-violet-500 px-4 py-3 font-bold text-white"
+            className="rounded-xl bg-violet-500 px-4 py-2 text-sm font-bold text-white md:py-3"
           >
             운세 흐름 보기
           </button>
 
           <button
             onClick={() => setTab("calendar")}
-            className="rounded-xl bg-cyan-500 px-4 py-3 font-bold text-white"
+            className="rounded-xl bg-cyan-500 px-4 py-2 text-sm font-bold text-white md:py-3"
           >
             캘린더 보기
           </button>
@@ -537,6 +527,10 @@ function UserHome({ profile, data, setTab, todayFortune }) {
 
       <DirectionPanel profile={profile} />
 
+      <FeedbackBox />
+    </div>
+  );
+}
       <FeedbackBox />
     </div>
   );
