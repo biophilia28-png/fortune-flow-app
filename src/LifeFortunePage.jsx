@@ -7,4 +7,10 @@ import {
   getLifeTimeline,
 } from "./lifeFortuneEngine";
 
+function ScoreBar({ score }) {
+  ...
+}
 
+export default function LifeFortunePage({ profile }) {
+  ...
+}
