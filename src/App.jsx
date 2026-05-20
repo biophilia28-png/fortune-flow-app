@@ -573,20 +573,10 @@ function DirectionPanel({ profile }) {
     };
   }
 
-  function angleToDirectionIndex(angle) {
-    if (angle >= 345 || angle < 15) return 4;   // 동 = 묘
-    if (angle >= 15 && angle < 45) return 3;     // 동북동 = 인
-    if (angle >= 45 && angle < 75) return 2;     // 북북동 = 축
-    if (angle >= 75 && angle < 105) return 1;    // 북 = 자
-    if (angle >= 105 && angle < 135) return 0;   // 북북서 = 해
-    if (angle >= 135 && angle < 165) return 11;  // 서북서 = 술
-    if (angle >= 165 && angle < 195) return 10;  // 서 = 유
-    if (angle >= 195 && angle < 225) return 9;   // 서남서 = 신
-    if (angle >= 225 && angle < 255) return 8;   // 남남서 = 미
-    if (angle >= 255 && angle < 285) return 7;   // 남 = 오
-    if (angle >= 285 && angle < 315) return 6;   // 남남동 = 사
-    return 5;                                    // 동남동 = 진
-  }
+function angleToDirectionIndex(angle) {
+  // 0도=북 기준
+  return Math.round(angle / 30) % 12;
+}
 
   async function analyzeDirection() {
     if (!fromPlace.trim() || !toPlace.trim()) {
@@ -607,12 +597,10 @@ function DirectionPanel({ profile }) {
 
       const dx = end.lng - start.lng;
       const dy = end.lat - start.lat;
+      
+let angle = Math.atan2(dx, dy) * 180 / Math.PI;
 
-    let angle = Math.atan2(dy, dx) * 180 / Math.PI;
-
-     angle = 90 - angle;
-
-    if (angle < 0) angle += 360;
+if (angle < 0) angle += 360;
 
       const idx = angleToDirectionIndex(angle);
       setDirectionIndex(idx);
