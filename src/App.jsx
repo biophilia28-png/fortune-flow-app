@@ -1810,55 +1810,56 @@ const [selectedFortune, setSelectedFortune] = useState(null);
       setSelectedFortune={setSelectedFortune}
     />
 
-    {selectedFortune && (
-      <StatsPage
-        data={{
-          scores: {
-            total: selectedFortune.total,
-            love: selectedFortune.love,
-            money: selectedFortune.money,
-            happy: selectedFortune.happy,
-            move: selectedFortune.move,
-            accident: selectedFortune.accidentRisk,
-            conflict: selectedFortune.stress,
-            dayLuck: selectedFortune.focus,
-            yearLuck: selectedFortune.noble,
-            bigLuck: selectedFortune.chance,
-            monthLuck: selectedFortune.move,
-            hourLuck: selectedFortune.contact,
-          },
-        }}
-      />
+   {selectedFortune && (
+  <div className="space-y-4">
+    <StatsPage
+      data={{
+        scores: {
+          total: selectedFortune.total,
+          love: selectedFortune.love,
+          money: selectedFortune.money,
+          happy: selectedFortune.happy,
+          move: selectedFortune.move,
+          accident: selectedFortune.accidentRisk,
+          conflict: selectedFortune.stress,
+          dayLuck: selectedFortune.focus,
+          yearLuck: selectedFortune.noble,
+          bigLuck: selectedFortune.chance,
+          monthLuck: selectedFortune.move,
+          hourLuck: selectedFortune.contact,
+        },
+      }}
+    />
+
     <div className="mt-4 grid gap-2 md:grid-cols-2">
-  <div className="rounded-xl bg-emerald-500/10 p-3 text-sm text-emerald-200">
-    💰 재물운:
-    {selectedDay.score >= 70
-      ? " 투자·정리 흐름 좋음"
-      : " 지출 관리 필요"}
-  </div>
+      <div className="rounded-xl bg-emerald-500/10 p-3 text-sm text-emerald-200">
+        💰 재물운:
+        {selectedFortune.total >= 70
+          ? " 투자·정리 흐름 좋음"
+          : " 지출 관리 필요"}
+      </div>
 
-  <div className="rounded-xl bg-pink-500/10 p-3 text-sm text-pink-200">
-    💘 인연운:
-    {selectedDay.score >= 70
-      ? " 사람운 상승"
-      : " 감정 기복 주의"}
-  </div>
+      <div className="rounded-xl bg-pink-500/10 p-3 text-sm text-pink-200">
+        💘 인연운:
+        {selectedFortune.total >= 70
+          ? " 사람운 상승"
+          : " 감정 기복 주의"}
+      </div>
 
-  <div className="rounded-xl bg-cyan-500/10 p-3 text-sm text-cyan-200">
-    ✈ 이동운:
-    {selectedDay.score >= 65
-      ? " 외출·이동 좋음"
-      : " 무리한 이동 주의"}
-  </div>
+      <div className="rounded-xl bg-cyan-500/10 p-3 text-sm text-cyan-200">
+        ✈ 이동운:
+        {selectedFortune.total >= 65
+          ? " 외출·이동 좋음"
+          : " 무리한 이동 주의"}
+      </div>
 
-  <div className="rounded-xl bg-yellow-500/10 p-3 text-sm text-yellow-200">
-    🧠 오늘 조언:
-    {selectedDay.score >= 75
-      ? " 중요한 일 진행 추천"
-      : " 확인 후 천천히 움직이기"}
-  </div>
-</div>
-    )}
+      <div className="rounded-xl bg-yellow-500/10 p-3 text-sm text-yellow-200">
+        🧠 오늘 조언:
+        {selectedFortune.total >= 75
+          ? " 중요한 일 진행 추천"
+          : " 확인 후 천천히 움직이기"}
+      </div>
+    </div>
   </div>
 )}
 
