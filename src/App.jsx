@@ -2027,6 +2027,9 @@ const [selectedFortune, setSelectedFortune] = useState(null);
   </div>
 </div>
 )}
+  </div>
+)}
+
       {tab === "life" && (
   <div className="space-y-4">
     <LifeFortunePage profile={profile} />
