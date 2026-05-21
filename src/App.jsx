@@ -543,9 +543,43 @@ function UserHome({ profile, data, setTab, todayFortune }) {
             / 길방향: {todayFortune.qimen.direction}
           </div>
 
-          <div className="mt-2 text-xs text-yellow-300">
-            주역: {todayFortune.iching.main}
-          </div>
+        <div className="mt-3 rounded-xl border border-yellow-500/20 bg-yellow-500/5 p-3">
+  <div className="text-xs font-bold text-yellow-300">
+    오늘의 주역괘
+  </div>
+
+  <div className="mt-1 text-lg font-black text-yellow-200">
+    {todayFortune.iching.main}
+  </div>
+
+  <div className="mt-2 text-xs leading-6 text-slate-300">
+    {
+      {
+        "택뢰수":
+          "기회가 빠르게 지나갈 수 있는 흐름입니다. 급한 판단보다 상황을 관찰하며 움직이는 것이 유리합니다.",
+
+        "건위천":
+          "강한 추진력이 들어오는 날입니다. 새로운 시작과 결단에 유리합니다.",
+
+        "중천건":
+          "운이 상승 흐름에 있으며 자신감과 실행력이 중요합니다.",
+
+        "화지진":
+          "명예와 평판이 올라갈 수 있는 흐름입니다. 사람들과의 관계를 잘 활용하세요.",
+
+        "수뢰둔":
+          "초반 장애가 강한 날입니다. 무리한 투자와 충돌을 피하는 것이 좋습니다.",
+
+        "산수몽":
+          "판단 착오 가능성이 높습니다. 중요한 결정은 한 번 더 확인하세요.",
+
+        "천화동인":
+          "귀인운과 협력운이 강합니다. 사람을 만나면 도움될 가능성이 큽니다.",
+      }[todayFortune.iching.main] ||
+        "오늘은 흐름 변화가 큰 날입니다. 주변 상황을 살피며 움직이는 것이 좋습니다."
+    }
+  </div>
+</div>
         </div>
 
         <div className="mt-5 flex gap-2">
