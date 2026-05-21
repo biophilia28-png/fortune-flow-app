@@ -907,19 +907,6 @@ function UserHome({ profile, data, setTab, todayFortune }) {
   </div>
 </div>
 
-    <div className="mt-3 grid gap-2 text-sm text-slate-300">
-      <div className="rounded-xl bg-black/20 p-3">
-        ✔ 기록 정리
-      </div>
-
-      <div className="rounded-xl bg-black/20 p-3">
-        ✔ 공부·분석
-      </div>
-
-      <div className="rounded-xl bg-black/20 p-3">
-        ✔ 오래 미뤘던 작업 처리
-      </div>
-    </div>
   </div>
 
   <div className="rounded-2xl border border-yellow-400/20 bg-yellow-500/5 p-4">
