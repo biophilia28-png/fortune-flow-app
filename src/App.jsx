@@ -732,7 +732,149 @@ function UserHome({ profile, data, setTab, todayFortune }) {
       </div>
 
       <DirectionPanel profile={profile} />
+<div className="mt-5 grid gap-3 md:grid-cols-2">
+  <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/5 p-4">
+    <div className="text-sm font-bold text-emerald-300">
+      오늘 최고 흐름 TOP 3
+    </div>
 
+    <div className="mt-3 space-y-2">
+      {[
+        ["귀인운", "82%", "도움을 주는 사람·정보 흐름이 강합니다."],
+        ["재물운", "78%", "수익·정리·현금 흐름이 안정적입니다."],
+        ["집중력", "71%", "기획·분석·정리 작업 효율이 좋습니다."],
+      ].map(([title, score, text]) => (
+        <div
+          key={title}
+          className="rounded-xl bg-black/20 p-3"
+        >
+          <div className="flex items-center justify-between">
+            <div className="font-bold text-white">
+              {title}
+            </div>
+
+            <div className="text-emerald-300 font-black">
+              {score}
+            </div>
+          </div>
+
+          <div className="mt-1 text-xs text-slate-400">
+            {text}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div className="rounded-2xl border border-rose-400/20 bg-rose-500/5 p-4">
+    <div className="text-sm font-bold text-rose-300">
+      오늘 조심할 흐름
+    </div>
+
+    <div className="mt-3 space-y-2">
+      {[
+        ["충동 소비", "지금 필요한지 한 번 더 확인하세요."],
+        ["감정 반응", "욱하는 반응이 관계 흐름을 흔들 수 있습니다."],
+        ["무리한 투자", "몰빵·추격 매수는 손실 위험이 큽니다."],
+      ].map(([title, text]) => (
+        <div
+          key={title}
+          className="rounded-xl bg-black/20 p-3"
+        >
+          <div className="font-bold text-white">
+            {title}
+          </div>
+
+          <div className="mt-1 text-xs text-slate-400">
+            {text}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<div className="mt-5 rounded-2xl border border-cyan-400/20 bg-cyan-500/5 p-4">
+  <div className="text-sm font-bold text-cyan-300">
+    시간대별 흐름
+  </div>
+
+  <div className="mt-4 grid gap-3 md:grid-cols-4">
+    {[
+      ["새벽", "48%", "컨디션 회복"],
+      ["오전", "63%", "무난한 흐름"],
+      ["오후", "81%", "가장 강한 시간"],
+      ["밤", "57%", "감정 기복 주의"],
+    ].map(([time, score, text]) => (
+      <div
+        key={time}
+        className="rounded-xl bg-black/20 p-3"
+      >
+        <div className="text-sm font-bold text-white">
+          {time}
+        </div>
+
+        <div className="mt-2 text-2xl font-black text-cyan-300">
+          {score}
+        </div>
+
+        <div className="mt-1 text-xs text-slate-400">
+          {text}
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
+<div className="mt-5 grid gap-3 md:grid-cols-2">
+  <div className="rounded-2xl border border-violet-400/20 bg-violet-500/5 p-4">
+    <div className="text-sm font-bold text-violet-300">
+      오늘 추천 행동
+    </div>
+
+    <div className="mt-3 grid gap-2 text-sm text-slate-300">
+      <div className="rounded-xl bg-black/20 p-3">
+        ✔ 기록 정리
+      </div>
+
+      <div className="rounded-xl bg-black/20 p-3">
+        ✔ 공부·분석
+      </div>
+
+      <div className="rounded-xl bg-black/20 p-3">
+        ✔ 오래 미뤘던 작업 처리
+      </div>
+    </div>
+  </div>
+
+  <div className="rounded-2xl border border-yellow-400/20 bg-yellow-500/5 p-4">
+    <div className="text-sm font-bold text-yellow-300">
+      오늘 좋은 방향
+    </div>
+
+    <div className="mt-3 grid grid-cols-2 gap-2">
+      {[
+        ["동남", "재물 흐름"],
+        ["북동", "귀인 흐름"],
+        ["남", "활동 흐름"],
+        ["서", "휴식 추천"],
+      ].map(([dir, text]) => (
+        <div
+          key={dir}
+          className="rounded-xl bg-black/20 p-3"
+        >
+          <div className="font-bold text-white">
+            {dir}
+          </div>
+
+          <div className="mt-1 text-xs text-slate-400">
+            {text}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
     
     </div>
   );
