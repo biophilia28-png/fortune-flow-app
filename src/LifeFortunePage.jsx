@@ -77,6 +77,46 @@ export default function LifeFortunePage({ profile }) {
     </div>
   </div>
 </div>
+
+  <div className="mt-5 rounded-2xl border border-white/10 bg-slate-950/70 p-5">
+  <h3 className="text-xl font-black text-white">
+    가족·인연 복 해석
+  </h3>
+
+  <div className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+    <div className="rounded-xl bg-white/[0.04] p-4">
+      <div className="text-sm font-bold text-violet-300">부모복</div>
+      <div className="mt-2 text-sm leading-6 text-slate-300">
+        초년에는 도움과 간섭이 함께 들어오는 흐름입니다.
+        스스로 독립할수록 운이 강해집니다.
+      </div>
+    </div>
+
+    <div className="rounded-xl bg-white/[0.04] p-4">
+      <div className="text-sm font-bold text-cyan-300">형제·지인복</div>
+      <div className="mt-2 text-sm leading-6 text-slate-300">
+        가까운 사람과의 관계에서 득실이 함께 생깁니다.
+        돈거래와 감정적 약속은 조심하는 편이 좋습니다.
+      </div>
+    </div>
+
+    <div className="rounded-xl bg-white/[0.04] p-4">
+      <div className="text-sm font-bold text-pink-300">배우자운</div>
+      <div className="mt-2 text-sm leading-6 text-slate-300">
+        인연은 빠른 만남보다 신뢰가 쌓인 관계에서 안정됩니다.
+        급한 결정은 피하고 오래 보는 인연이 유리합니다.
+      </div>
+    </div>
+
+    <div className="rounded-xl bg-white/[0.04] p-4">
+      <div className="text-sm font-bold text-emerald-300">자식·후배운</div>
+      <div className="mt-2 text-sm leading-6 text-slate-300">
+        후배나 아래 사람을 챙길수록 도움을 받는 흐름입니다.
+        가르치거나 이끄는 역할에서 운이 살아납니다.
+      </div>
+    </div>
+  </div>
+</div>
   
   return (
     <div className="space-y-4">
