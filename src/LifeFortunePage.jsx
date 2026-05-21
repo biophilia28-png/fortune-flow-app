@@ -308,10 +308,10 @@ export default function LifeFortunePage({ profile }) {
 
         <div className="mt-3 grid gap-2 text-sm md:grid-cols-2">
           <div className="rounded-xl bg-emerald-500/10 p-3 text-emerald-200">
-            좋은 달: {toj.bestMonths.join("월, ")}월
+          좋은 달: {(toj.bestMonths || []).join("월, ")}월
           </div>
           <div className="rounded-xl bg-rose-500/10 p-3 text-rose-200">
-            조심할 달: {toj.cautionMonths.join("월, ")}월
+            조심할 달: {(toj.cautionMonths || []).join("월, ")}월
           </div>
         </div>
       </Section>
