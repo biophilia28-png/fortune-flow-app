@@ -1513,7 +1513,7 @@ const [selectedFortune, setSelectedFortune] = useState(null);
     ["profile", "입력", UserRound],
    
     ["calendar", "캘린더", CalendarDays],
-    ["stats", "통계", BarChart3],
+   
     ["life", "당사주", Star],
     ["settings", "설정", Settings],
    
@@ -1596,9 +1596,7 @@ const [selectedFortune, setSelectedFortune] = useState(null);
     <LifeFortunePage profile={profile} />
   </div>
 )}
-       {tab === "stats" && (
-  <StatsPage todayFortune={todayFortune} data={data} />
-)}
+     
 
         {tab === "settings" && (
         <SettingsPage setProfile={setProfile} />
