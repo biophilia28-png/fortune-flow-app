@@ -1044,106 +1044,186 @@ function StatCard({ label, value, caution = false }) {
   );
 }
 
-function StatsPage({ data }) {
+function StatsPage({ todayFortune }) {
+  const monthlyStats = Array.from({ length: 30 }, (_, i) => {
+    const seed = (todayFortune.total + i * 13) % 100;
 
-  const cycleStats = getFortuneCycleStats();
+    return {
+      day: i + 1,
+      total: 45 + (seed % 50),
+      money: 40 + ((seed * 3) % 60),
+      love: 35 + ((seed * 5) % 65),
+      health: 50 + ((seed * 7) % 45),
+      move: 30 + ((seed * 11) % 70),
+    };
+  });
 
-  const detailStats = [
-    ["사고주의", data.scores.accident, true],
-    ["외출운", data.scores.move, false],
-    ["대인관계", data.scores.love, false],
-    ["업무집중", data.scores.dayLuck, false],
-    ["건강", data.scores.happy, false],
-    ["소비주의", data.scores.money > 70 ? 65 : 35, true],
-    ["말조심", data.scores.conflict, true],
-    ["귀인운", data.scores.yearLuck, false],
-    ["기회운", data.scores.bigLuck, false],
-    ["스트레스", data.scores.conflict + 15, true],
-    ["연락운", data.scores.love + 5, false],
-    ["투자리스크", data.scores.accident + data.scores.conflict / 2, true],
-  ];
+  const bestDays = [...monthlyStats]
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 5);
+
+  const worstDays = [...monthlyStats]
+    .sort((a, b) => a.total - b.total)
+    .slice(0, 5);
+
+  const avg = (key) =>
+    Math.round(
+      monthlyStats.reduce((a, b) => a + b[key], 0) /
+        monthlyStats.length
+    );
 
   return (
- <div className="space-y-3 md:space-y-4 text-sm md:text-base">
-    <div className="rounded-xl border border-white/10 bg-slate-950/80 p-3 md:p-4">
-        <p className="text-xs text-violet-300">상세 통계</p>
+    <div className="space-y-4">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
+        <p className="text-xs text-cyan-300">
+          최근 30일 운세 분석
+        </p>
 
- <h2 className="mt-1 text-base md:text-2xl font-black text-white">
- 대운·세운·월운·일운 통계
-</h2>
+        <h2 className="mt-1 text-2xl font-black text-white">
+          운세 데이터 분석실
+        </h2>
 
-      <p className="mt-2 text-xs md:text-sm text-slate-400">
-         홈은 오늘 하루 기준, 통계는 장기·올해·이번 달·오늘 흐름 기준입니다.
+        <p className="mt-2 text-xs text-slate-400">
+          최근 흐름의 평균값과 강한 날·약한 날을 분석합니다.
         </p>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="종합운" value={data.scores.total} />
-        <StatCard label="인연운" value={data.scores.love} />
-        <StatCard label="금전운" value={data.scores.money} />
-        <StatCard label="행복지수" value={data.scores.happy} />
-      </div>
-
-      <div className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5">
-       <h3 className="text-sm md:text-lg font-black text-white">
-          상세 통계 12개
-        </h3>
-<div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-  <div className="mb-3">
-    <h2 className="text-lg font-bold text-white">운세 흐름 통계</h2>
-
-    <p className="mt-1 text-xs text-white/60">
-      홈 화면은 오늘 하루 기준이며,
-      아래는 대운·세운·월운·일운 흐름입니다.
-    </p>
-  </div>
-
-  <div className="grid grid-cols-2 gap-2">
-    {cycleStats.map((item) => (
-      <div
-        key={item.title}
-        className="rounded-xl border border-white/10 bg-black/20 p-3"
-      >
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="text-sm font-bold text-white">
-              {item.title}
-            </div>
-
-            <div className="text-[11px] text-white/50">
-              {item.label}
-            </div>
-          </div>
-
-          <div className="text-xl font-black text-white">
-            {item.score}점
-          </div>
-        </div>
-
-        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
+        {[
+          ["재물운", avg("money"), "text-yellow-300"],
+          ["연애운", avg("love"), "text-pink-300"],
+          ["건강운", avg("health"), "text-emerald-300"],
+          ["이동운", avg("move"), "text-orange-300"],
+          ["종합운", avg("total"), "text-cyan-300"],
+        ].map(([title, score, color]) => (
           <div
-            className="h-full rounded-full bg-violet-400"
-            style={{ width: `${item.score}%` }}
-          />
-        </div>
+            key={title}
+            className="rounded-xl border border-white/10 bg-white/[0.04] p-4"
+          >
+            <div className={`text-sm font-bold ${color}`}>
+              {title}
+            </div>
 
-        <div className="mt-2 text-[11px] text-white/50">
-          {item.desc}
+            <div className="mt-2 text-2xl font-black text-white">
+              {score}%
+            </div>
+
+            <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/10">
+              <div
+                className="h-full rounded-full bg-cyan-400"
+                style={{ width: `${score}%` }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
+        <h3 className="text-xl font-black text-white">
+          최근 30일 흐름
+        </h3>
+
+        <div className="mt-4 flex items-end gap-1 overflow-x-auto pb-2">
+          {monthlyStats.map((d) => (
+            <div
+              key={d.day}
+              className="flex min-w-[26px] flex-col items-center"
+            >
+              <div
+                className={`w-full rounded-t-md ${
+                  d.total >= 75
+                    ? "bg-emerald-400"
+                    : d.total >= 60
+                    ? "bg-cyan-400"
+                    : d.total >= 45
+                    ? "bg-yellow-400"
+                    : "bg-rose-400"
+                }`}
+                style={{
+                  height: `${d.total * 1.2}px`,
+                }}
+              />
+
+              <div className="mt-1 text-[10px] text-slate-400">
+                {d.day}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-    ))}
-  </div>
-</div>
 
-        <div className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-          {detailStats.map(([label, value, caution]) => (
-            <StatCard
-              key={label}
-              label={label}
-              value={clamp(value)}
-              caution={caution}
-            />
-          ))}
+      <div className="grid gap-4 md:grid-cols-2">
+        <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-4">
+          <h3 className="text-lg font-black text-emerald-300">
+            가장 좋은 날 TOP 5
+          </h3>
+
+          <div className="mt-3 space-y-2">
+            {bestDays.map((d, idx) => (
+              <div
+                key={d.day}
+                className="flex items-center justify-between rounded-xl bg-black/20 p-3"
+              >
+                <div className="text-sm text-white">
+                  #{idx + 1} · {d.day}일
+                </div>
+
+                <div className="text-lg font-black text-emerald-300">
+                  {d.total}점
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-rose-500/20 bg-rose-500/5 p-4">
+          <h3 className="text-lg font-black text-rose-300">
+            주의해야 할 날 TOP 5
+          </h3>
+
+          <div className="mt-3 space-y-2">
+            {worstDays.map((d, idx) => (
+              <div
+                key={d.day}
+                className="flex items-center justify-between rounded-xl bg-black/20 p-3"
+              >
+                <div className="text-sm text-white">
+                  #{idx + 1} · {d.day}일
+                </div>
+
+                <div className="text-lg font-black text-rose-300">
+                  {d.total}점
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
+        <h3 className="text-xl font-black text-white">
+          운세 분석 결과
+        </h3>
+
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <Card title="최근 흐름">
+            최근 30일 기준 재물·인연 흐름은 평균 이상으로 유지되고 있습니다.
+            다만 이동운과 감정 기복은 다소 흔들릴 수 있습니다.
+          </Card>
+
+          <Card title="추천 행동">
+            기록 정리, 공부, 기획, 시스템 구축 흐름이 좋습니다.
+            급한 결정보다 분석 후 움직이는 것이 유리합니다.
+          </Card>
+
+          <Card title="주의 포인트">
+            피로 누적 상태에서의 충동 결정,
+            인간관계 스트레스 상태에서의 소비를 조심해야 합니다.
+          </Card>
+
+          <Card title="현재 상승 요소">
+            반복 루틴, 데이터 분석, 장기 누적형 작업에서 좋은 흐름이 들어오고 있습니다.
+          </Card>
         </div>
       </div>
     </div>
