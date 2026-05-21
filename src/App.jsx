@@ -479,6 +479,73 @@ function ProfileForm({ profile, setProfile }) {
             </div>
           </div>
 
+          <div className="mt-5 rounded-2xl border border-cyan-400/20 bg-cyan-500/5 p-4">
+  <h3 className="text-lg font-black text-white">
+    입력값 미리보기
+  </h3>
+
+  <div className="mt-3 grid gap-2 text-sm text-slate-300">
+    <div className="rounded-xl bg-white/[0.04] p-3">
+      닉네임: {temp.nickname || "아직 입력 안 함"}
+    </div>
+
+    <div className="rounded-xl bg-white/[0.04] p-3">
+      생년월일: {temp.birthDate || "아직 입력 안 함"}
+    </div>
+
+    <div className="rounded-xl bg-white/[0.04] p-3">
+      태어난 시간: {temp.birthTime || "12:00"}
+    </div>
+
+    <div className="rounded-xl bg-white/[0.04] p-3">
+      성별 / 달력: {temp.gender} · {temp.calendarType}
+    </div>
+  </div>
+</div>
+
+<div className="mt-4 rounded-2xl border border-violet-400/20 bg-violet-500/5 p-4">
+  <h3 className="text-lg font-black text-white">
+    입력 후 분석되는 항목
+  </h3>
+
+  <div className="mt-3 grid gap-2 text-sm text-slate-300 md:grid-cols-2">
+    <div className="rounded-xl bg-white/[0.04] p-3">
+      ✔ 오늘의 종합운
+    </div>
+
+    <div className="rounded-xl bg-white/[0.04] p-3">
+      ✔ 재물운·인연운
+    </div>
+
+    <div className="rounded-xl bg-white/[0.04] p-3">
+      ✔ 당사주·토정비결
+    </div>
+
+    <div className="rounded-xl bg-white/[0.04] p-3">
+      ✔ 삼재·귀인·살
+    </div>
+
+    <div className="rounded-xl bg-white/[0.04] p-3">
+      ✔ 월별 흐름
+    </div>
+
+    <div className="rounded-xl bg-white/[0.04] p-3">
+      ✔ 방향운·이동운
+    </div>
+  </div>
+</div>
+
+<div className="mt-4 rounded-2xl border border-yellow-400/20 bg-yellow-500/5 p-4">
+  <h3 className="text-lg font-black text-white">
+    입력 안내
+  </h3>
+
+  <p className="mt-2 text-sm leading-6 text-slate-300">
+    태어난 시간을 모르면 기본값 12:00으로 입력해도 됩니다.
+    다만 시간이 정확할수록 시주와 방향운 해석이 더 자연스럽게 계산됩니다.
+  </p>
+</div>
+          
           <div className="mt-5">
             <NoticeBox />
           </div>
