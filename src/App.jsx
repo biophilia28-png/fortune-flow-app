@@ -1868,74 +1868,157 @@ const [selectedFortune, setSelectedFortune] = useState(null);
       profile={profile}
       setSelectedFortune={setSelectedFortune}
     />
-
-    {selectedFortune && (
+{selectedFortune && (
   <div className="space-y-4 rounded-2xl border border-white/10 bg-slate-950/80 p-4">
-    <h3 className="text-xl font-black text-white">
-      선택한 날짜 상세 운세
-    </h3>
+    <div className="flex items-center justify-between">
+      <div>
+        <div className="text-xs text-violet-300">선택한 날짜</div>
+        <h3 className="mt-1 text-xl font-black text-white">
+          {selectedFortune.date?.getMonth() + 1}월 {selectedFortune.date?.getDate()}일 상세 운세
+        </h3>
+      </div>
+
+      <div className="rounded-xl bg-violet-500/15 px-3 py-2 text-xs font-bold text-violet-200">
+        종합 {selectedFortune.total}%
+      </div>
+    </div>
 
     <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-      <div className="rounded-xl bg-white/[0.04] p-3">
-        <div className="text-xs text-slate-400">종합운</div>
-        <div className="mt-1 text-2xl font-black text-cyan-300">
-          {selectedFortune.total}%
+      {[
+        ["종합운", selectedFortune.total, "text-cyan-300"],
+        ["재물운", selectedFortune.money, "text-yellow-300"],
+        ["인연운", selectedFortune.love, "text-pink-300"],
+        ["이동운", selectedFortune.move, "text-emerald-300"],
+      ].map(([label, score, color]) => (
+        <div key={label} className="rounded-xl bg-white/[0.04] p-3">
+          <div className="text-xs text-slate-400">{label}</div>
+          <div className={`mt-1 text-2xl font-black ${color}`}>
+            {score}%
+          </div>
+          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10">
+            <div
+              className="h-full rounded-full bg-cyan-400"
+              style={{ width: `${score}%` }}
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div className="grid gap-3 md:grid-cols-2">
+      <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/5 p-4">
+        <div className="text-sm font-bold text-emerald-300">
+          오늘 하면 좋은 행동
+        </div>
+
+        <div className="mt-3 grid gap-2 text-sm text-slate-300">
+          {selectedFortune.money >= 70 && (
+            <div className="rounded-xl bg-black/20 p-3">
+              💰 지출 정리·수익 실현·현금 흐름 점검
+            </div>
+          )}
+
+          {selectedFortune.love >= 70 && (
+            <div className="rounded-xl bg-black/20 p-3">
+              💘 연락·만남·관계 회복 시도
+            </div>
+          )}
+
+          {selectedFortune.move >= 65 && (
+            <div className="rounded-xl bg-black/20 p-3">
+              🧭 외출·이동·방문 일정 진행
+            </div>
+          )}
+
+          {selectedFortune.total >= 75 && (
+            <div className="rounded-xl bg-black/20 p-3">
+              ⚡ 중요한 일 진행·미뤘던 작업 처리
+            </div>
+          )}
+
+          {selectedFortune.total < 75 && (
+            <div className="rounded-xl bg-black/20 p-3">
+              🧘 무리한 결정 대신 정리·점검·계획 세우기
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="rounded-xl bg-white/[0.04] p-3">
-        <div className="text-xs text-slate-400">재물운</div>
-        <div className="mt-1 text-2xl font-black text-yellow-300">
-          {selectedFortune.money}%
+      <div className="rounded-2xl border border-rose-400/20 bg-rose-500/5 p-4">
+        <div className="text-sm font-bold text-rose-300">
+          오늘 조심할 행동
         </div>
-      </div>
 
-      <div className="rounded-xl bg-white/[0.04] p-3">
-        <div className="text-xs text-slate-400">인연운</div>
-        <div className="mt-1 text-2xl font-black text-pink-300">
-          {selectedFortune.love}%
-        </div>
-      </div>
+        <div className="mt-3 grid gap-2 text-sm text-slate-300">
+          {(selectedFortune.accidentRisk || selectedFortune.accident || 0) >= 50 && (
+            <div className="rounded-xl bg-black/20 p-3">
+              ⚠ 무리한 이동·야간 운전·위험한 작업 주의
+            </div>
+          )}
 
-      <div className="rounded-xl bg-white/[0.04] p-3">
-        <div className="text-xs text-slate-400">이동운</div>
-        <div className="mt-1 text-2xl font-black text-emerald-300">
-          {selectedFortune.move}%
+          {(selectedFortune.stress || selectedFortune.conflict || 0) >= 50 && (
+            <div className="rounded-xl bg-black/20 p-3">
+              ⚠ 말다툼·즉흥 답장·감정적 반응 주의
+            </div>
+          )}
+
+          {selectedFortune.money < 60 && (
+            <div className="rounded-xl bg-black/20 p-3">
+              ⚠ 충동구매·손실 만회성 투자 주의
+            </div>
+          )}
+
+          {(selectedFortune.accidentRisk || selectedFortune.accident || 0) < 50 &&
+            (selectedFortune.stress || selectedFortune.conflict || 0) < 50 &&
+            selectedFortune.money >= 60 && (
+              <div className="rounded-xl bg-black/20 p-3">
+                ✅ 큰 위험은 낮지만 과욕은 피하기
+              </div>
+            )}
         </div>
       </div>
     </div>
 
-    <div className="grid gap-2 md:grid-cols-2">
-      <div className="rounded-xl bg-emerald-500/10 p-3 text-sm text-emerald-200">
-        💰 재물운:
-        {selectedFortune.money >= 70
-          ? " 수익·정리 흐름 좋음"
-          : " 지출 관리 필요"}
+    <div className="rounded-2xl border border-cyan-400/20 bg-cyan-500/5 p-4">
+      <div className="text-sm font-bold text-cyan-300">
+        시간대별 흐름
       </div>
 
-      <div className="rounded-xl bg-pink-500/10 p-3 text-sm text-pink-200">
-        💘 인연운:
-        {selectedFortune.love >= 70
-          ? " 사람운 상승"
-          : " 감정 기복 주의"}
-      </div>
-
-      <div className="rounded-xl bg-cyan-500/10 p-3 text-sm text-cyan-200">
-        ✈ 이동운:
-        {selectedFortune.move >= 65
-          ? " 외출·이동 좋음"
-          : " 무리한 이동 주의"}
-      </div>
-
-      <div className="rounded-xl bg-yellow-500/10 p-3 text-sm text-yellow-200">
-        🧠 오늘 조언:
-        {selectedFortune.total >= 75
-          ? " 중요한 일 진행 추천"
-          : " 확인 후 천천히 움직이기"}
+      <div className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-4">
+        {[
+          ["새벽", Math.max(35, selectedFortune.total - 18), "회복·정리"],
+          ["오전", Math.max(40, selectedFortune.total - 5), "준비·확인"],
+          ["오후", Math.min(95, selectedFortune.total + 12), "실행·결정"],
+          ["밤", Math.max(35, selectedFortune.love - 7), "감정·휴식"],
+        ].map(([time, score, text]) => (
+          <div key={time} className="rounded-xl bg-black/20 p-3">
+            <div className="text-sm font-bold text-white">{time}</div>
+            <div className="mt-1 text-2xl font-black text-cyan-300">
+              {score}%
+            </div>
+            <div className="mt-1 text-xs text-slate-400">
+              {text}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
-  </div>
-)}
+
+    <div className="rounded-2xl border border-yellow-400/20 bg-yellow-500/5 p-4">
+      <div className="text-sm font-bold text-yellow-300">
+        한줄 결론
+      </div>
+
+      <p className="mt-2 text-sm leading-6 text-slate-300">
+        {selectedFortune.total >= 80
+          ? "강하게 밀고 가도 되는 날입니다. 다만 과욕과 말실수만 조심하세요."
+          : selectedFortune.total >= 65
+          ? "전체적으로 무난하게 좋은 날입니다. 중요한 일은 오후 흐름이 더 좋습니다."
+          : selectedFortune.total >= 45
+          ? "평범한 흐름입니다. 큰 결정은 피하고 정리와 확인에 집중하세요."
+          : "주의가 필요한 날입니다. 이동, 소비, 감정 반응을 줄이는 것이 좋습니다."}
+      </p>
+    </div>
   </div>
 )}
       {tab === "life" && (
