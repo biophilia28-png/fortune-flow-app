@@ -7,12 +7,25 @@ import {
   getLifeTimeline,
 } from "./lifeFortuneEngine";
 
+function clamp(n, min = 0, max = 100) {
+  return Math.max(min, Math.min(max, Math.round(n)));
+}
+
+function hashText(text) {
+  let h = 0;
+  const str = String(text || "");
+  for (let i = 0; i < str.length; i++) {
+    h = (h * 31 + str.charCodeAt(i)) >>> 0;
+  }
+  return h;
+}
+
 function ScoreBar({ score }) {
   return (
     <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/10">
       <div
         className="h-full rounded-full bg-violet-400"
-        style={{ width: `${score}%` }}
+        style={{ width: `${clamp(score)}%` }}
       />
     </div>
   );
@@ -20,11 +33,146 @@ function ScoreBar({ score }) {
 
 function InfoCard({ title, color = "text-cyan-300", children }) {
   return (
-    <div className="rounded-xl bg-white/[0.04] p-4">
+    <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
       <div className={`text-sm font-bold ${color}`}>{title}</div>
       <div className="mt-2 text-sm leading-6 text-slate-300">{children}</div>
     </div>
   );
+}
+
+function Section({ title, subtitle, children }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4 md:p-5">
+      <h3 className="text-xl font-black text-white">{title}</h3>
+      {subtitle && <p className="mt-1 text-xs text-slate-400">{subtitle}</p>}
+      <div className="mt-4">{children}</div>
+    </div>
+  );
+}
+
+function getBirthKey(profile) {
+  return `${profile?.birthDate || ""}-${profile?.birthTime || ""}-${profile?.gender || ""}`;
+}
+
+function getSamjae(profile) {
+  const year = Number((profile?.birthDate || "1990").slice(0, 4)) || 1990;
+  const zodiacIndex = (year + 8) % 12;
+  const zodiac = ["자", "축", "인", "묘", "진", "사", "오", "미", "신", "유", "술", "해"][zodiacIndex];
+
+  const nowYear = new Date().getFullYear();
+  const yearBranch = ["자", "축", "인", "묘", "진", "사", "오", "미", "신", "유", "술", "해"][(nowYear + 8) % 12];
+
+  const groupMap = {
+    신: ["인", "묘", "진"],
+    자: ["인", "묘", "진"],
+    진: ["인", "묘", "진"],
+    해: ["사", "오", "미"],
+    묘: ["사", "오", "미"],
+    미: ["사", "오", "미"],
+    인: ["신", "유", "술"],
+    오: ["신", "유", "술"],
+    술: ["신", "유", "술"],
+    사: ["해", "자", "축"],
+    유: ["해", "자", "축"],
+    축: ["해", "자", "축"],
+  };
+
+  const samjaeYears = groupMap[zodiac] || [];
+  const idx = samjaeYears.indexOf(yearBranch);
+
+  if (idx === -1) {
+    return {
+      zodiac,
+      status: "삼재 아님",
+      level: "안정",
+      text: "올해는 큰 삼재 흐름은 약합니다. 다만 개인 사주 흐름에 따라 충돌 월은 따로 확인하는 것이 좋습니다.",
+    };
+  }
+
+  return {
+    zodiac,
+    status: idx === 0 ? "들삼재" : idx === 1 ? "눌삼재" : "날삼재",
+    level: idx === 0 ? "진입" : idx === 1 ? "정체" : "마무리",
+    text:
+      idx === 0
+        ? "새로운 불안정 흐름이 들어오는 시기입니다. 무리한 시작, 대출, 급한 계약은 조심하는 편이 좋습니다."
+        : idx === 1
+        ? "삼재 기운이 가장 눌러앉는 시기입니다. 건강, 돈, 인간관계에서 방어적으로 가는 것이 좋습니다."
+        : "삼재가 빠져나가는 시기입니다. 끝맺음과 정리가 중요하며, 무리한 확장보다 회복이 우선입니다.",
+  };
+}
+
+function getDeepAnalysis(profile, manse) {
+  const seed = hashText(getBirthKey(profile));
+  const types = ["분석형", "추진형", "사업형", "고독형", "인연형", "재물형"];
+  const mainType = types[seed % types.length];
+
+  const tenGods = [
+    ["비견", "자존심과 독립성이 강합니다. 혼자 결정할 때 힘이 살아나지만 고집은 줄여야 합니다."],
+    ["겁재", "경쟁심과 승부욕이 있습니다. 지인·동료와 돈 문제는 분리하는 것이 좋습니다."],
+    ["식신", "먹고사는 재주, 생산력, 꾸준함이 강합니다. 기술·콘텐츠·반복 수익에 유리합니다."],
+    ["상관", "표현력과 아이디어가 강합니다. 말실수와 조직 충돌은 조심해야 합니다."],
+    ["편재", "사업감각과 큰돈 흐름에 민감합니다. 단기 수익 기회는 있지만 과욕은 위험합니다."],
+    ["정재", "월급·저축·관리형 재물운이 좋습니다. 안정적인 자산 형성에 유리합니다."],
+    ["편관", "압박 속에서 성장하는 타입입니다. 위기 대응력은 좋지만 스트레스 관리가 필요합니다."],
+    ["정관", "직장·명예·책임운이 있습니다. 규칙과 신뢰를 지키면 평가가 올라갑니다."],
+    ["편인", "직감·연구·비주류 감각이 강합니다. 혼자 파고드는 일에 재능이 있습니다."],
+    ["정인", "학습·문서·자격·보호운이 있습니다. 공부와 준비가 운을 키웁니다."],
+  ];
+
+  const stages = [
+    ["장생", "새로 시작하고 배우는 힘이 좋습니다."],
+    ["목욕", "인기와 변화가 있으나 감정 기복을 조심해야 합니다."],
+    ["관대", "자신감과 성장운이 강합니다."],
+    ["건록", "자립과 직업 기반을 세우는 힘이 있습니다."],
+    ["제왕", "에너지가 강한 대신 독단을 조심해야 합니다."],
+    ["쇠", "무리한 확장보다 관리가 중요한 흐름입니다."],
+    ["병", "건강과 컨디션 관리가 필요합니다."],
+    ["사", "정리와 내려놓음이 필요한 흐름입니다."],
+    ["묘", "저장·축적·숨은 기회가 있는 흐름입니다."],
+    ["절", "끊고 새로 바꾸는 변화운이 강합니다."],
+    ["태", "준비 단계입니다. 성급히 결과를 보려 하면 흔들립니다."],
+    ["양", "회복과 보호의 흐름입니다. 기반을 다지기 좋습니다."],
+  ];
+
+  const ten = tenGods[seed % tenGods.length];
+  const stage = stages[(seed >> 3) % stages.length];
+
+  return {
+    mainType,
+    tenName: ten[0],
+    tenText: ten[1],
+    stageName: stage[0],
+    stageText: stage[1],
+    strongPoint: ["기획력", "분석력", "생존력", "설득력", "집중력", "재물감각"][seed % 6],
+    weakPoint: ["성급함", "고집", "과소비", "인간관계 피로", "감정 기복", "몰빵 성향"][(seed >> 4) % 6],
+  };
+}
+
+function getMonthlyFlow(profile) {
+  const seed = hashText(getBirthKey(profile) + new Date().getFullYear());
+  const labels = [
+    "시작·계획", "관계·연락", "재물·소비", "이동·변화",
+    "건강·휴식", "계약·문서", "귀인·도움", "직업·성과",
+    "정리·수정", "인연·호감", "주의·방어", "회복·마무리",
+  ];
+
+  return Array.from({ length: 12 }, (_, i) => {
+    const score = clamp(45 + ((seed >> (i % 12)) % 45) + ((i * 7) % 16) - 8);
+    return {
+      month: i + 1,
+      score,
+      label: labels[(seed + i) % labels.length],
+      good:
+        score >= 75
+          ? "강하게 움직여도 좋은 달"
+          : score >= 60
+          ? "무난하게 진행 가능한 달"
+          : score >= 45
+          ? "확인 후 진행할 달"
+          : "방어와 절제가 필요한 달",
+    };
+  });
 }
 
 export default function LifeFortunePage({ profile }) {
@@ -32,35 +180,36 @@ export default function LifeFortunePage({ profile }) {
   const dang = getDangSaju(profile);
   const toj = getTojung(profile);
   const timeline = getLifeTimeline(profile);
+  const samjae = getSamjae(profile);
+  const deep = getDeepAnalysis(profile, manse);
+  const monthly = getMonthlyFlow(profile);
+
+  const bestMonths = [...monthly].sort((a, b) => b.score - a.score).slice(0, 3);
+  const cautionMonths = [...monthly].sort((a, b) => a.score - b.score).slice(0, 3);
 
   return (
     <div className="space-y-4">
       <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
         <p className="text-xs text-violet-300">만세력 기반</p>
-
         <h2 className="mt-1 text-2xl font-black text-white">
           당사주 · 토정비결 · 인생 총운
         </h2>
-
         <p className="mt-2 text-xs text-slate-400">
-          생년월일시 기준 사주팔자와 연도 흐름을 함께 봅니다.
+          생년월일시 기준 사주팔자, 삼재, 십성, 월별 흐름을 함께 봅니다.
         </p>
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
-        <h3 className="font-black text-white">만세력 사주팔자</h3>
-
-        <div className="mt-3 grid grid-cols-2 gap-2 text-sm md:grid-cols-4">
+      <Section title="만세력 사주팔자" subtitle="년주 · 월주 · 일주 · 시주 기준">
+        <div className="grid grid-cols-2 gap-2 text-sm md:grid-cols-4">
           <div className="rounded-xl bg-white/[0.04] p-3">년주<br />{manse.yearPillar}</div>
           <div className="rounded-xl bg-white/[0.04] p-3">월주<br />{manse.monthPillar}</div>
           <div className="rounded-xl bg-white/[0.04] p-3">일주<br />{manse.dayPillar}</div>
           <div className="rounded-xl bg-white/[0.04] p-3">시주<br />{manse.hourPillar}</div>
         </div>
-
         <p className="mt-3 text-xs leading-5 text-slate-400">
           음력 변환: {manse.lunarText}
         </p>
-      </div>
+      </Section>
 
       <div className="grid gap-3 md:grid-cols-3">
         {[dang.early, dang.middle, dang.late].map((item) => (
@@ -74,80 +223,136 @@ export default function LifeFortunePage({ profile }) {
         ))}
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-5">
-        <h3 className="text-xl font-black text-white">타고난 운명 해석</h3>
-
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
+      <Section title="타고난 운명 해석" subtitle="기본 성향 · 십성 · 12운성 해석">
+        <div className="grid gap-3 md:grid-cols-2">
           <InfoCard title="기본 성향" color="text-cyan-300">
-            독립성과 추진력이 강하고 한 분야를 오래 파고드는 흐름입니다.
-            남에게 끌려가기보다 스스로 판단할 때 운이 살아납니다.
+            이 사주는 <b className="text-white">{deep.mainType}</b> 성향이 강합니다.
+            강점은 <b className="text-white">{deep.strongPoint}</b>이고,
+            조심할 부분은 <b className="text-white">{deep.weakPoint}</b>입니다.
           </InfoCard>
 
-          <InfoCard title="인연·배우자 운" color="text-pink-300">
-            인연운은 빠른 만남보다 시간이 지나며 안정되는 구조입니다.
-            급한 결정은 피하고 오래 보는 관계가 유리합니다.
+          <InfoCard title={`십성 흐름 · ${deep.tenName}`} color="text-yellow-300">
+            {deep.tenText}
           </InfoCard>
 
-          <InfoCard title="재물 흐름" color="text-yellow-300">
-            재물운은 변동성이 있어 큰 기회와 손실 흐름이 함께 올 수 있습니다.
-            무리한 몰빵보다 분산과 현금 관리가 중요합니다.
+          <InfoCard title={`12운성 흐름 · ${deep.stageName}`} color="text-emerald-300">
+            {deep.stageText}
           </InfoCard>
 
-          <InfoCard title="말년 흐름" color="text-emerald-300">
-            후반으로 갈수록 안정운이 강해집니다.
-            건강, 가족, 평온한 생활 기반을 지키는 것이 중요합니다.
+          <InfoCard title="인생 운영법" color="text-pink-300">
+            단기 감정 판단보다 기록, 분석, 반복 검증을 통해 운이 좋아지는 구조입니다.
+            특히 돈과 사람 문제는 즉흥보다 기준을 세워야 합니다.
           </InfoCard>
         </div>
-      </div>
+      </Section>
 
-      <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-5">
-        <h3 className="text-xl font-black text-white">가족·인연 복 해석</h3>
-
-        <div className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+      <Section title="가족·인연 복 해석" subtitle="부모복 · 형제복 · 배우자운 · 자식운">
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
           <InfoCard title="부모복" color="text-violet-300">
-            초년에는 도움과 간섭이 함께 들어오는 흐름입니다.
-            스스로 독립할수록 운이 강해집니다.
+            초년에는 도움과 간섭이 함께 들어오는 흐름입니다. 독립성이 강해질수록 운이 살아납니다.
           </InfoCard>
 
           <InfoCard title="형제·지인복" color="text-cyan-300">
-            가까운 사람과의 관계에서 득실이 함께 생깁니다.
-            돈거래와 감정적 약속은 조심하는 편이 좋습니다.
+            가까운 사람과 득실이 함께 생깁니다. 돈거래, 보증, 감정적 약속은 피하는 것이 좋습니다.
           </InfoCard>
 
           <InfoCard title="배우자운" color="text-pink-300">
-            신뢰가 쌓인 관계에서 안정됩니다.
-            즉흥적 인연보다 오래 검증된 인연이 유리합니다.
+            빠른 만남보다 오래 검증된 인연이 안정적입니다. 신뢰가 쌓인 관계에서 복이 커집니다.
           </InfoCard>
 
           <InfoCard title="자식·후배운" color="text-emerald-300">
-            후배나 아래 사람을 챙길수록 도움을 받는 흐름입니다.
-            가르치거나 이끄는 역할에서 운이 살아납니다.
+            아래 사람을 챙기거나 가르치는 역할에서 운이 살아납니다. 멘토형 인연이 유리합니다.
           </InfoCard>
         </div>
-      </div>
+      </Section>
 
-      <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-5">
-        <h3 className="text-xl font-black text-white">재물·직업·주의운</h3>
+      <Section title="삼재·주의 흐름" subtitle="띠 기준 삼재 흐름 자동 계산">
+        <div className="grid gap-3 md:grid-cols-3">
+          <div className="rounded-xl bg-white/[0.04] p-4">
+            <div className="text-xs text-slate-400">나의 띠</div>
+            <div className="mt-1 text-2xl font-black text-cyan-300">{samjae.zodiac}띠</div>
+          </div>
 
-        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          <div className="rounded-xl bg-white/[0.04] p-4">
+            <div className="text-xs text-slate-400">올해 삼재</div>
+            <div className="mt-1 text-2xl font-black text-yellow-300">{samjae.status}</div>
+          </div>
+
+          <div className="rounded-xl bg-white/[0.04] p-4">
+            <div className="text-xs text-slate-400">상태</div>
+            <div className="mt-1 text-2xl font-black text-pink-300">{samjae.level}</div>
+          </div>
+        </div>
+
+        <div className="mt-3 rounded-xl border border-white/10 bg-black/20 p-4 text-sm leading-6 text-slate-300">
+          {samjae.text}
+        </div>
+      </Section>
+
+      <Section title="재물·직업·투자 흐름" subtitle="돈이 들어오는 방식과 피해야 할 패턴">
+        <div className="grid gap-3 md:grid-cols-3">
           <InfoCard title="직업운" color="text-cyan-300">
-            한 가지 분야를 깊게 파고드는 일, 분석·기획·기술·운영형 일이 잘 맞습니다.
+            분석, 기획, 기술, 운영, 데이터, 관리형 분야와 잘 맞습니다.
+            혼자 파고드는 일과 반복 개선형 일이 유리합니다.
           </InfoCard>
 
-          <InfoCard title="돈이 들어오는 방식" color="text-yellow-300">
-            한 번에 크게 벌기보다 반복 수익과 누적형 구조가 유리합니다.
+          <InfoCard title="재물운" color="text-yellow-300">
+            한 번에 크게 벌려는 방식보다 누적 수익, 반복 수익, 현금 관리가 맞습니다.
+            수익이 날수록 리스크를 줄이는 습관이 중요합니다.
           </InfoCard>
 
-          <InfoCard title="주의할 흐름" color="text-rose-300">
-            감정적으로 결정한 투자, 지인 추천, 급한 계약은 손실로 이어질 수 있습니다.
+          <InfoCard title="투자 주의" color="text-rose-300">
+            감정적 몰빵, 미수, 대출 투자, 지인 추천, 급등주 추격은 손실운을 키울 수 있습니다.
+            큰돈은 반드시 분할과 손절 기준이 필요합니다.
           </InfoCard>
         </div>
-      </div>
+      </Section>
 
-      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
-        <h3 className="text-xl font-black text-white">핵심 시기</h3>
+      <Section title={`${toj.year}년 토정비결`} subtitle="올해 전체 흐름">
+        <div className="text-3xl font-black text-yellow-300">{toj.total}점</div>
+        <ScoreBar score={toj.total} />
 
-        <div className="mt-3 grid gap-2 text-sm md:grid-cols-3">
+        <p className="mt-3 text-sm leading-6 text-slate-300">{toj.text}</p>
+
+        <div className="mt-3 grid gap-2 text-sm md:grid-cols-2">
+          <div className="rounded-xl bg-emerald-500/10 p-3 text-emerald-200">
+            좋은 달: {toj.bestMonths.join("월, ")}월
+          </div>
+          <div className="rounded-xl bg-rose-500/10 p-3 text-rose-200">
+            조심할 달: {toj.cautionMonths.join("월, ")}월
+          </div>
+        </div>
+      </Section>
+
+      <Section title="올해 12개월 흐름" subtitle="월별 점수 · 좋은 달 · 조심할 달">
+        <div className="grid gap-2 md:grid-cols-3">
+          {monthly.map((m) => (
+            <div key={m.month} className="rounded-xl border border-white/10 bg-white/[0.04] p-3">
+              <div className="flex items-center justify-between">
+                <div className="font-black text-white">{m.month}월</div>
+                <div className="text-cyan-300">{m.score}점</div>
+              </div>
+
+              <ScoreBar score={m.score} />
+
+              <div className="mt-2 text-xs font-bold text-violet-300">{m.label}</div>
+              <div className="mt-1 text-xs leading-5 text-slate-400">{m.good}</div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-4 grid gap-2 md:grid-cols-2">
+          <div className="rounded-xl bg-emerald-500/10 p-3 text-sm text-emerald-200">
+            강한 달: {bestMonths.map((m) => `${m.month}월`).join(", ")}
+          </div>
+          <div className="rounded-xl bg-rose-500/10 p-3 text-sm text-rose-200">
+            조심할 달: {cautionMonths.map((m) => `${m.month}월`).join(", ")}
+          </div>
+        </div>
+      </Section>
+
+      <Section title="핵심 시기" subtitle="인연 · 재물 · 주의 나이">
+        <div className="grid gap-2 text-sm md:grid-cols-3">
           <div className="rounded-xl bg-white/[0.04] p-3">
             최고의 인연운: {dang.peakLoveAge}세 전후
           </div>
@@ -158,35 +363,10 @@ export default function LifeFortunePage({ profile }) {
             주의 시기: {dang.cautionAge}세 전후
           </div>
         </div>
-      </div>
+      </Section>
 
-      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
-        <h3 className="text-xl font-black text-white">{toj.year}년 토정비결</h3>
-
-        <div className="mt-2 text-3xl font-black text-yellow-300">
-          {toj.total}점
-        </div>
-
-        <ScoreBar score={toj.total} />
-
-        <p className="mt-3 text-sm leading-6 text-slate-300">
-          {toj.text}
-        </p>
-
-        <div className="mt-3 grid gap-2 text-sm md:grid-cols-2">
-          <div className="rounded-xl bg-emerald-500/10 p-3 text-emerald-200">
-            좋은 달: {toj.bestMonths.join("월, ")}월
-          </div>
-          <div className="rounded-xl bg-rose-500/10 p-3 text-rose-200">
-            조심할 달: {toj.cautionMonths.join("월, ")}월
-          </div>
-        </div>
-      </div>
-
-      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
-        <h3 className="text-xl font-black text-white">인생 총 스케줄</h3>
-
-        <div className="mt-3 space-y-3">
+      <Section title="인생 총 스케줄" subtitle="10대부터 60대 이후까지 큰 흐름">
+        <div className="space-y-3">
           {timeline.map((item) => (
             <div key={item.age} className="rounded-xl bg-white/[0.04] p-3">
               <div className="flex items-center justify-between">
@@ -196,13 +376,11 @@ export default function LifeFortunePage({ profile }) {
 
               <ScoreBar score={item.score} />
 
-              <p className="mt-2 text-xs text-slate-400">
-                {item.text}
-              </p>
+              <p className="mt-2 text-xs text-slate-400">{item.text}</p>
             </div>
           ))}
         </div>
-      </div>
+      </Section>
     </div>
   );
 }
