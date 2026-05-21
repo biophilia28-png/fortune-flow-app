@@ -2001,9 +2001,11 @@ const [selectedFortune, setSelectedFortune] = useState(null);
           </div>
         ))}
       </div>
+         </div>
     </div>
- </div>
-    <div className="rounded-2xl border border-yellow-400/20 bg-yellow-500/5 p-4">
+
+
+  <div className="rounded-2xl border border-yellow-400/20 bg-yellow-500/5 p-4">
       <div className="text-sm font-bold text-yellow-300">
         한줄 결론
       </div>
