@@ -180,11 +180,27 @@ function getMonthlyFlow(profile) {
 }
 
 export default function LifeFortunePage({ profile }) {
-  const manse = getManse(profile);
-  const dang = getDangSaju(profile);
-  const toj = getTojung(profile);
-  const timeline = getLifeTimeline(profile);
+const manse = getManse(profile) || {};
+const dang = getDangSaju(profile) || {};
+const toj = getTojung(profile) || {};
+const timeline = getLifeTimeline(profile) || [];
 
+const safeDang = {
+  early: dang.early || { age: "초년", title: "초년운", score: 50, text: "초년 흐름 데이터 준비 중" },
+  middle: dang.middle || { age: "중년", title: "중년운", score: 50, text: "중년 흐름 데이터 준비 중" },
+  late: dang.late || { age: "말년", title: "말년운", score: 50, text: "말년 흐름 데이터 준비 중" },
+  peakLoveAge: dang.peakLoveAge || "-",
+  peakMoneyAge: dang.peakMoneyAge || "-",
+  cautionAge: dang.cautionAge || "-",
+};
+
+const safeToj = {
+  year: toj.year || new Date().getFullYear(),
+  total: toj.total || 50,
+  text: toj.text || "올해 토정비결 데이터를 계산 중입니다.",
+  bestMonths: toj.bestMonths || [],
+  cautionMonths: toj.cautionMonths || [],
+};
   const samjae = getSamjae(profile);
   const deep = getDeep(profile);
   const monthly = getMonthlyFlow(profile);
@@ -217,7 +233,7 @@ export default function LifeFortunePage({ profile }) {
       </Section>
 
       <div className="grid gap-3 md:grid-cols-3">
-        {[dang.early, dang.middle, dang.late].map((item) => (
+        {[safeDang.early, safeDang.middle, safeDang.late].map((item) => (
           <div key={item.title} className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
             <div className="text-xs text-violet-300">{item.age}</div>
             <h3 className="mt-1 text-xl font-black text-white">{item.title}</h3>
@@ -301,17 +317,17 @@ export default function LifeFortunePage({ profile }) {
         </div>
       </Section>
 
-      <Section title={`${toj.year}년 토정비결`} subtitle="올해 전체 흐름">
-        <div className="text-3xl font-black text-yellow-300">{toj.total}점</div>
+      <Section title={`${safeToj.year}년 토정비결`} subtitle="올해 전체 흐름">
+        <div className="text-3xl font-black text-yellow-300">{safeToj.total}점</div>
         <ScoreBar score={toj.total} />
-        <p className="mt-3 text-sm leading-6 text-slate-300">{toj.text}</p>
+        <p className="mt-3 text-sm leading-6 text-slate-300">{safeToj.text}</p>
 
         <div className="mt-3 grid gap-2 text-sm md:grid-cols-2">
           <div className="rounded-xl bg-emerald-500/10 p-3 text-emerald-200">
-          좋은 달: {(toj.bestMonths || []).join("월, ")}월
+          좋은 달: {safeToj.bestMonths.join("월, ")}월
           </div>
           <div className="rounded-xl bg-rose-500/10 p-3 text-rose-200">
-            조심할 달: {(toj.cautionMonths || []).join("월, ")}월
+          조심할 달: {safeToj.cautionMonths.join("월, ")}월
           </div>
         </div>
       </Section>
@@ -344,13 +360,13 @@ export default function LifeFortunePage({ profile }) {
       <Section title="핵심 시기" subtitle="인연 · 재물 · 주의 나이">
         <div className="grid gap-2 text-sm md:grid-cols-3">
           <div className="rounded-xl bg-white/[0.04] p-3">
-            최고의 인연운: {dang.peakLoveAge}세 전후
+            최고의 인연운: {safeDang.peakLoveAge}세 전후
           </div>
           <div className="rounded-xl bg-white/[0.04] p-3">
-            재물 상승기: {dang.peakMoneyAge}세 전후
+           재물 상승기: {safeDang.peakMoneyAge}세 전후
           </div>
           <div className="rounded-xl bg-white/[0.04] p-3">
-            주의 시기: {dang.cautionAge}세 전후
+            주의 시기: {safeDang.cautionAge}세 전후
           </div>
         </div>
       </Section>
