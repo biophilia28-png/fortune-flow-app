@@ -1046,11 +1046,14 @@ function StatCard({ label, value, caution = false }) {
 
 function StatsPage({ todayFortune, data }) {
   const baseTotal =
-    todayFortune?.total ||
-    data?.scores?.total ||
-    60;
+    todayFortune && todayFortune.total
+      ? todayFortune.total
+      : data && data.scores && data.scores.total
+      ? data.scores.total
+      : 60;
+
   const monthlyStats = Array.from({ length: 30 }, (_, i) => {
-  const seed = (baseTotal + i * 13) % 100;
+    const seed = (baseTotal + i * 13) % 100;
 
     return {
       day: i + 1,
@@ -1062,31 +1065,28 @@ function StatsPage({ todayFortune, data }) {
     };
   });
 
-  const bestDays = [...monthlyStats]
-    .sort((a, b) => b.total - a.total)
-    .slice(0, 5);
-
-  const worstDays = [...monthlyStats]
-    .sort((a, b) => a.total - b.total)
-    .slice(0, 5);
-
   const avg = (key) =>
     Math.round(
-      monthlyStats.reduce((a, b) => a + b[key], 0) /
-        monthlyStats.length
+      monthlyStats.reduce((a, b) => a + b[key], 0) / monthlyStats.length
     );
+
+  const bestDays = monthlyStats.slice().sort((a, b) => b.total - a.total).slice(0, 5);
+  const worstDays = monthlyStats.slice().sort((a, b) => a.total - b.total).slice(0, 5);
+
+  function AnalysisCard({ title, children }) {
+    return (
+      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+        <div className="text-sm font-bold text-cyan-300">{title}</div>
+        <div className="mt-2 text-sm leading-6 text-slate-300">{children}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
       <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
-        <p className="text-xs text-cyan-300">
-          최근 30일 운세 분석
-        </p>
-
-        <h2 className="mt-1 text-2xl font-black text-white">
-          운세 데이터 분석실
-        </h2>
-
+        <p className="text-xs text-cyan-300">최근 30일 운세 분석</p>
+        <h2 className="mt-1 text-2xl font-black text-white">운세 데이터 분석실</h2>
         <p className="mt-2 text-xs text-slate-400">
           최근 흐름의 평균값과 강한 날·약한 날을 분석합니다.
         </p>
@@ -1100,57 +1100,27 @@ function StatsPage({ todayFortune, data }) {
           ["이동운", avg("move"), "text-orange-300"],
           ["종합운", avg("total"), "text-cyan-300"],
         ].map(([title, score, color]) => (
-          <div
-            key={title}
-            className="rounded-xl border border-white/10 bg-white/[0.04] p-4"
-          >
-            <div className={`text-sm font-bold ${color}`}>
-              {title}
-            </div>
-
-            <div className="mt-2 text-2xl font-black text-white">
-              {score}%
-            </div>
-
+          <div key={title} className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+            <div className={`text-sm font-bold ${color}`}>{title}</div>
+            <div className="mt-2 text-2xl font-black text-white">{score}%</div>
             <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/10">
-              <div
-                className="h-full rounded-full bg-cyan-400"
-                style={{ width: `${score}%` }}
-              />
+              <div className="h-full rounded-full bg-cyan-400" style={{ width: `${score}%` }} />
             </div>
           </div>
         ))}
       </div>
 
       <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
-        <h3 className="text-xl font-black text-white">
-          최근 30일 흐름
-        </h3>
+        <h3 className="text-xl font-black text-white">최근 30일 흐름</h3>
 
         <div className="mt-4 flex items-end gap-1 overflow-x-auto pb-2">
           {monthlyStats.map((d) => (
-            <div
-              key={d.day}
-              className="flex min-w-[26px] flex-col items-center"
-            >
+            <div key={d.day} className="flex min-w-[26px] flex-col items-center">
               <div
-                className={`w-full rounded-t-md ${
-                  d.total >= 75
-                    ? "bg-emerald-400"
-                    : d.total >= 60
-                    ? "bg-cyan-400"
-                    : d.total >= 45
-                    ? "bg-yellow-400"
-                    : "bg-rose-400"
-                }`}
-                style={{
-                  height: `${d.total * 1.2}px`,
-                }}
+                className="w-full rounded-t-md bg-cyan-400"
+                style={{ height: `${d.total * 1.2}px` }}
               />
-
-              <div className="mt-1 text-[10px] text-slate-400">
-                {d.day}
-              </div>
+              <div className="mt-1 text-[10px] text-slate-400">{d.day}</div>
             </div>
           ))}
         </div>
@@ -1158,46 +1128,24 @@ function StatsPage({ todayFortune, data }) {
 
       <div className="grid gap-4 md:grid-cols-2">
         <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-4">
-          <h3 className="text-lg font-black text-emerald-300">
-            가장 좋은 날 TOP 5
-          </h3>
-
+          <h3 className="text-lg font-black text-emerald-300">가장 좋은 날 TOP 5</h3>
           <div className="mt-3 space-y-2">
             {bestDays.map((d, idx) => (
-              <div
-                key={d.day}
-                className="flex items-center justify-between rounded-xl bg-black/20 p-3"
-              >
-                <div className="text-sm text-white">
-                  #{idx + 1} · {d.day}일
-                </div>
-
-                <div className="text-lg font-black text-emerald-300">
-                  {d.total}점
-                </div>
+              <div key={d.day} className="flex justify-between rounded-xl bg-black/20 p-3">
+                <div className="text-sm text-white">#{idx + 1} · {d.day}일</div>
+                <div className="text-lg font-black text-emerald-300">{d.total}점</div>
               </div>
             ))}
           </div>
         </div>
 
         <div className="rounded-2xl border border-rose-500/20 bg-rose-500/5 p-4">
-          <h3 className="text-lg font-black text-rose-300">
-            주의해야 할 날 TOP 5
-          </h3>
-
+          <h3 className="text-lg font-black text-rose-300">주의해야 할 날 TOP 5</h3>
           <div className="mt-3 space-y-2">
             {worstDays.map((d, idx) => (
-              <div
-                key={d.day}
-                className="flex items-center justify-between rounded-xl bg-black/20 p-3"
-              >
-                <div className="text-sm text-white">
-                  #{idx + 1} · {d.day}일
-                </div>
-
-                <div className="text-lg font-black text-rose-300">
-                  {d.total}점
-                </div>
+              <div key={d.day} className="flex justify-between rounded-xl bg-black/20 p-3">
+                <div className="text-sm text-white">#{idx + 1} · {d.day}일</div>
+                <div className="text-lg font-black text-rose-300">{d.total}점</div>
               </div>
             ))}
           </div>
@@ -1205,29 +1153,24 @@ function StatsPage({ todayFortune, data }) {
       </div>
 
       <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
-        <h3 className="text-xl font-black text-white">
-          운세 분석 결과
-        </h3>
+        <h3 className="text-xl font-black text-white">운세 분석 결과</h3>
 
         <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <Card title="최근 흐름">
-            최근 30일 기준 재물·인연 흐름은 평균 이상으로 유지되고 있습니다.
-            다만 이동운과 감정 기복은 다소 흔들릴 수 있습니다.
-          </Card>
+          <AnalysisCard title="최근 흐름">
+            최근 30일 기준 흐름을 평균값으로 분석한 화면입니다.
+          </AnalysisCard>
 
-          <Card title="추천 행동">
+          <AnalysisCard title="추천 행동">
             기록 정리, 공부, 기획, 시스템 구축 흐름이 좋습니다.
-            급한 결정보다 분석 후 움직이는 것이 유리합니다.
-          </Card>
+          </AnalysisCard>
 
-          <Card title="주의 포인트">
-            피로 누적 상태에서의 충동 결정,
-            인간관계 스트레스 상태에서의 소비를 조심해야 합니다.
-          </Card>
+          <AnalysisCard title="주의 포인트">
+            피로 누적 상태에서의 충동 결정과 감정적 소비를 조심하세요.
+          </AnalysisCard>
 
-          <Card title="현재 상승 요소">
-            반복 루틴, 데이터 분석, 장기 누적형 작업에서 좋은 흐름이 들어오고 있습니다.
-          </Card>
+          <AnalysisCard title="현재 상승 요소">
+            반복 루틴, 데이터 분석, 장기 누적형 작업에서 좋은 흐름이 있습니다.
+          </AnalysisCard>
         </div>
       </div>
     </div>
