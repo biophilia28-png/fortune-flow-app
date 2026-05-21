@@ -146,6 +146,13 @@ function calcDirectionScores(profile) {
   const today = new Date();
   const todayIndex = (today.getFullYear() + today.getMonth() + today.getDate()) % 12;
 
+  const todayKey =
+  today.getFullYear() +
+  "-" +
+  (today.getMonth() + 1) +
+  "-" +
+  today.getDate();
+  
   const names = [
     { zodiac: "자", dir: "북", angle: 0, element: "수" },
     { zodiac: "축", dir: "북북동", angle: 30, element: "토" },
@@ -216,7 +223,11 @@ function calcDirectionScores(profile) {
       reasons.push("오늘 일진과 충돌 방향");
     }
 
-    score += ((h >> (i % 12)) % 11) - 5;
+   const dailySeed = hashNumber(
+  `${todayKey}-${item.zodiac}-${birthDate}-${birthTime}`
+);
+
+score += ((dailySeed >> (i % 12)) % 21) - 10;
 
     const finalScore = clamp(score, 15, 95);
 
@@ -753,6 +764,38 @@ function DirectionPanel({ profile }) {
 
 <div className="mt-4 rounded-xl bg-white/[0.04] p-3 text-xs leading-5 text-slate-300">
   {pickedReason}
+</div>
+            <div className="mt-4">
+  <div className="mb-2 text-sm font-bold text-cyan-300">
+    12방향 점수 순위
+  </div>
+
+  <div className="grid grid-cols-2 gap-2">
+    {[...directions]
+      .sort((a, b) => b[2] - a[2])
+      .map(([zodiac, dir, score, element], idx) => (
+        <div
+          key={zodiac}
+          className="rounded-xl border border-white/10 bg-white/[0.04] p-2"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-sm font-black text-white">
+                {idx + 1}. {zodiac}
+              </div>
+
+              <div className="text-[10px] text-slate-400">
+                {dir} · {element}
+              </div>
+            </div>
+
+            <div className="text-lg font-black text-yellow-300">
+              {score}%
+            </div>
+          </div>
+        </div>
+      ))}
+  </div>
 </div>
           </div>
         </div>
