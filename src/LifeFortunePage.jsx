@@ -179,26 +179,41 @@ export default function LifeFortunePage({ profile }) {
         ))}
       </div>
 
-      <Section title="타고난 운명 해석">
-        <div className="grid gap-3 md:grid-cols-2">
-          <Card title="기본 성향">
-            독립성과 추진력이 있으며 한 분야를 깊게 파고드는 흐름입니다.
-          </Card>
+  <Section title="타고난 운명 해석">
+  <div className="grid gap-3 md:grid-cols-2">
+    <Card title="기본 성향">
+      독립성과 추진력이 있으며 한 분야를 깊게 파고드는 흐름입니다.
+      남에게 휘둘리기보다 스스로 기준을 세울 때 운이 살아납니다.
+    </Card>
 
-          <Card title="인연·배우자운">
-            빠른 인연보다 오래 검증된 인연에서 안정됩니다.
-          </Card>
+    <Card title="십성 해석">
+      식신·상관 기운은 표현력, 기술, 생산력과 관련됩니다.
+      정재·편재 기운은 돈을 버는 방식과 재물 감각을 봅니다.
+      정관·편관은 직업, 책임, 압박 속 성장 흐름을 의미합니다.
+    </Card>
 
-          <Card title="재물 흐름">
-            큰 기회와 손실 흐름이 함께 오므로 분산과 현금 관리가 중요합니다.
-          </Card>
+    <Card title="12운성 해석">
+      장생·관대·건록·제왕은 성장과 활동성이 강한 흐름이고,
+      쇠·병·사·묘·절은 정리와 변화가 필요한 흐름입니다.
+      태·양은 준비와 회복의 기운으로 봅니다.
+    </Card>
 
-          <Card title="직업운">
-            분석, 기획, 기술, 운영, 데이터형 일이 잘 맞습니다.
-          </Card>
-        </div>
-      </Section>
+    <Card title="인생 운영법">
+      단기 감정 판단보다 기록, 분석, 반복 검증을 통해 운이 좋아지는 구조입니다.
+      특히 돈과 사람 문제는 즉흥보다 기준을 세워야 합니다.
+    </Card>
 
+    <Card title="재능 방향">
+      기획, 분석, 운영, 기술, 데이터, 콘텐츠처럼 혼자 깊게 파고들 수 있는 분야가 잘 맞습니다.
+      반복 개선형 일에서 성과가 쌓이는 흐름입니다.
+    </Card>
+
+    <Card title="주의할 습관">
+      급한 결정, 감정적 소비, 무리한 투자, 인간관계에서의 의리 지출을 조심해야 합니다.
+      좋은 운도 관리하지 않으면 손실로 바뀔 수 있습니다.
+    </Card>
+  </div>
+</Section>
       <Section title="삼재·주의 흐름">
         <div className="grid gap-3 md:grid-cols-3">
           <Card title="나의 띠">{samjae.zodiac}띠</Card>
