@@ -740,29 +740,33 @@ function UserHome({ profile, data, setTab, todayFortune }) {
 
     <div className="mt-3 space-y-2">
       {[
-        ["귀인운", "82%", "도움을 주는 사람·정보 흐름이 강합니다."],
-        ["재물운", "78%", "수익·정리·현금 흐름이 안정적입니다."],
-        ["집중력", "71%", "기획·분석·정리 작업 효율이 좋습니다."],
-      ].map(([title, score, text]) => (
-        <div
-          key={title}
-          className="rounded-xl bg-black/20 p-3"
-        >
-          <div className="flex items-center justify-between">
-            <div className="font-bold text-white">
-              {title}
+        ["재물운", todayFortune.money, "수익·정리·현금 흐름"],
+        ["인연운", todayFortune.love, "사람·연락·관계 흐름"],
+        ["행복지수", todayFortune.happy, "기분·만족·활력 흐름"],
+      ]
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([title, score, text]) => (
+          <div key={title} className="rounded-xl bg-black/20 p-3">
+            <div className="flex items-center justify-between">
+              <div className="font-bold text-white">{title}</div>
+
+              <div className="font-black text-emerald-300">
+                {score}%
+              </div>
             </div>
 
-            <div className="text-emerald-300 font-black">
-              {score}
+            <div className="mt-1 text-xs text-slate-400">
+              {score >= 80
+                ? `${text}이 매우 강합니다.`
+                : score >= 65
+                ? `${text}이 좋은 편입니다.`
+                : score >= 45
+                ? `${text}은 무난합니다.`
+                : `${text}은 조심해야 합니다.`}
             </div>
           </div>
-
-          <div className="mt-1 text-xs text-slate-400">
-            {text}
-          </div>
-        </div>
-      ))}
+        ))}
     </div>
   </div>
 
@@ -773,23 +777,31 @@ function UserHome({ profile, data, setTab, todayFortune }) {
 
     <div className="mt-3 space-y-2">
       {[
-        ["충동 소비", "지금 필요한지 한 번 더 확인하세요."],
-        ["감정 반응", "욱하는 반응이 관계 흐름을 흔들 수 있습니다."],
-        ["무리한 투자", "몰빵·추격 매수는 손실 위험이 큽니다."],
-      ].map(([title, text]) => (
-        <div
-          key={title}
-          className="rounded-xl bg-black/20 p-3"
-        >
-          <div className="font-bold text-white">
-            {title}
-          </div>
+        ["사고주의", todayFortune.accidentRisk || todayFortune.accident || 35, "이동·기계·몸 컨디션 주의"],
+        ["스트레스", todayFortune.stress || todayFortune.conflict || 40, "말다툼·감정 반응 주의"],
+        ["과소비", 100 - todayFortune.money, "충동 소비와 손실 만회 심리 주의"],
+      ]
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([title, score, text]) => (
+          <div key={title} className="rounded-xl bg-black/20 p-3">
+            <div className="flex items-center justify-between">
+              <div className="font-bold text-white">{title}</div>
 
-          <div className="mt-1 text-xs text-slate-400">
-            {text}
+              <div className="font-black text-rose-300">
+                {score}%
+              </div>
+            </div>
+
+            <div className="mt-1 text-xs text-slate-400">
+              {score >= 70
+                ? `${text}. 오늘은 강하게 주의해야 합니다.`
+                : score >= 50
+                ? `${text}. 한 번 더 확인하세요.`
+                : `${text}. 큰 위험은 낮은 편입니다.`}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
     </div>
   </div>
 </div>
@@ -801,25 +813,26 @@ function UserHome({ profile, data, setTab, todayFortune }) {
 
   <div className="mt-4 grid gap-3 md:grid-cols-4">
     {[
-      ["새벽", "48%", "컨디션 회복"],
-      ["오전", "63%", "무난한 흐름"],
-      ["오후", "81%", "가장 강한 시간"],
-      ["밤", "57%", "감정 기복 주의"],
+      ["새벽", Math.max(35, todayFortune.total - 18), "회복·정리"],
+      ["오전", Math.max(40, todayFortune.total - 5), "준비·확인"],
+      ["오후", Math.min(95, todayFortune.total + 12), "실행·결정"],
+      ["밤", Math.max(35, todayFortune.happy - 7), "감정·휴식"],
     ].map(([time, score, text]) => (
-      <div
-        key={time}
-        className="rounded-xl bg-black/20 p-3"
-      >
-        <div className="text-sm font-bold text-white">
-          {time}
-        </div>
+      <div key={time} className="rounded-xl bg-black/20 p-3">
+        <div className="text-sm font-bold text-white">{time}</div>
 
         <div className="mt-2 text-2xl font-black text-cyan-300">
-          {score}
+          {score}%
         </div>
 
         <div className="mt-1 text-xs text-slate-400">
-          {text}
+          {score >= 80
+            ? `${text} 흐름 매우 좋음`
+            : score >= 65
+            ? `${text} 흐름 좋음`
+            : score >= 45
+            ? `${text} 흐름 보통`
+            : `${text} 흐름 주의`}
         </div>
       </div>
     ))}
@@ -831,6 +844,68 @@ function UserHome({ profile, data, setTab, todayFortune }) {
     <div className="text-sm font-bold text-violet-300">
       오늘 추천 행동
     </div>
+
+    <div className="mt-3 grid gap-2 text-sm text-slate-300">
+      {todayFortune.money >= 70 && (
+        <div className="rounded-xl bg-black/20 p-3">
+          ✔ 지출 정리·수익 실현·현금 흐름 점검
+        </div>
+      )}
+
+      {todayFortune.love >= 70 && (
+        <div className="rounded-xl bg-black/20 p-3">
+          ✔ 연락·만남·관계 회복 시도
+        </div>
+      )}
+
+      {todayFortune.total >= 70 && (
+        <div className="rounded-xl bg-black/20 p-3">
+          ✔ 중요한 일 진행·미뤘던 작업 처리
+        </div>
+      )}
+
+      {todayFortune.total < 70 && (
+        <div className="rounded-xl bg-black/20 p-3">
+          ✔ 무리한 결정 대신 정리·점검·계획 세우기
+        </div>
+      )}
+    </div>
+  </div>
+
+  <div className="rounded-2xl border border-yellow-400/20 bg-yellow-500/5 p-4">
+    <div className="text-sm font-bold text-yellow-300">
+      오늘 피해야 할 행동
+    </div>
+
+    <div className="mt-3 grid gap-2 text-sm text-slate-300">
+      {(todayFortune.accidentRisk || todayFortune.accident || 0) >= 50 && (
+        <div className="rounded-xl bg-black/20 p-3">
+          ⚠ 무리한 이동·야간 운전·위험한 작업
+        </div>
+      )}
+
+      {(todayFortune.stress || todayFortune.conflict || 0) >= 50 && (
+        <div className="rounded-xl bg-black/20 p-3">
+          ⚠ 말다툼·즉흥 답장·감정적 반응
+        </div>
+      )}
+
+      {todayFortune.money < 60 && (
+        <div className="rounded-xl bg-black/20 p-3">
+          ⚠ 충동구매·손실 만회성 투자
+        </div>
+      )}
+
+      {todayFortune.money >= 60 &&
+        (todayFortune.stress || todayFortune.conflict || 0) < 50 &&
+        (todayFortune.accidentRisk || todayFortune.accident || 0) < 50 && (
+          <div className="rounded-xl bg-black/20 p-3">
+            ⚠ 큰 위험은 낮지만 과욕은 피하기
+          </div>
+        )}
+    </div>
+  </div>
+</div>
 
     <div className="mt-3 grid gap-2 text-sm text-slate-300">
       <div className="rounded-xl bg-black/20 p-3">
