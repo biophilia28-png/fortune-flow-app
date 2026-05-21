@@ -247,6 +247,56 @@ export default function LifeFortunePage({ profile }) {
 </Section>
   </div>
 </Section>
+      <Section title="오늘의 운세 흐름">
+  <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+    {[
+      ["재물운", 78, "text-yellow-300"],
+      ["연애운", 66, "text-pink-300"],
+      ["건강운", 59, "text-emerald-300"],
+      ["귀인운", 82, "text-cyan-300"],
+      ["이동운", 44, "text-orange-300"],
+      ["집중력", 71, "text-violet-300"],
+      ["감정지수", 63, "text-rose-300"],
+      ["사고주의", 38, "text-red-300"],
+    ].map(([title, score, color]) => (
+      <div
+        key={title}
+        className="rounded-xl border border-white/10 bg-white/[0.04] p-4"
+      >
+        <div className={`text-sm font-bold ${color}`}>
+          {title}
+        </div>
+
+        <div className="mt-2 text-2xl font-black text-white">
+          {score}%
+        </div>
+
+        <ScoreBar score={score} />
+      </div>
+    ))}
+  </div>
+
+  <div className="mt-4 grid gap-3 md:grid-cols-2">
+    <Card title="오늘 피해야 할 행동">
+      충동 매매, 감정적 소비, 급한 계약, 인간관계에서의 욱하는 반응은
+      손실 흐름으로 이어질 수 있습니다.
+    </Card>
+
+    <Card title="오늘 좋은 흐름">
+      기록 정리, 분석, 공부, 기획, 오래 미뤘던 일 정리에 좋은 흐름입니다.
+    </Card>
+
+    <Card title="좋은 시간대">
+      오후 2시 ~ 5시 흐름이 안정적입니다.
+      중요한 결정은 오전보다 오후가 유리합니다.
+    </Card>
+
+    <Card title="좋은 방향">
+      동남·북동 방향 흐름이 좋습니다.
+      이동·약속·카페·미팅 장소 선택 시 참고하면 좋습니다.
+    </Card>
+  </div>
+</Section>
       <Section title="삼재·주의 흐름">
         <div className="grid gap-3 md:grid-cols-3">
           <Card title="나의 띠">{samjae.zodiac}띠</Card>
