@@ -937,7 +937,7 @@ function UserHome({ profile, data, setTab, todayFortune }) {
   </div>
 </div>
     
-    </div>
+  </div>
   );
 }
 
