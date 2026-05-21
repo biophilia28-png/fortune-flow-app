@@ -1186,14 +1186,15 @@ function CalendarPage({ profile, setSelectedFortune }) {
               }
              className={`relative min-h-[74px] rounded-xl border p-1.5 text-left transition active:scale-95 md:min-h-[118px] md:p-3 ${
   isToday
-    ? "border-violet-400 bg-violet-500/15"
-    : fortune.total >= 80
-    ? "border-emerald-400/40 bg-emerald-500/15"
-    : fortune.total >= 65
-    ? "border-cyan-400/30 bg-cyan-500/10"
-    : fortune.total >= 45
-    ? "border-yellow-400/30 bg-yellow-500/10"
-    : "border-rose-400/30 bg-rose-500/10"
+   isToday
+  ? "border-violet-400 bg-violet-500/15"
+  : fortune.total >= 80
+  ? "border-emerald-400/40 bg-emerald-500/15"
+  : fortune.total >= 65
+  ? "border-cyan-400/30 bg-cyan-500/10"
+  : fortune.total >= 45
+  ? "border-yellow-400/30 bg-yellow-500/10"
+  : "border-rose-400/30 bg-rose-500/10"
 }`}
             >
               <div className="flex items-center justify-between">
@@ -1828,6 +1829,35 @@ const [selectedFortune, setSelectedFortune] = useState(null);
           },
         }}
       />
+    <div className="mt-4 grid gap-2 md:grid-cols-2">
+  <div className="rounded-xl bg-emerald-500/10 p-3 text-sm text-emerald-200">
+    💰 재물운:
+    {selectedDay.score >= 70
+      ? " 투자·정리 흐름 좋음"
+      : " 지출 관리 필요"}
+  </div>
+
+  <div className="rounded-xl bg-pink-500/10 p-3 text-sm text-pink-200">
+    💘 인연운:
+    {selectedDay.score >= 70
+      ? " 사람운 상승"
+      : " 감정 기복 주의"}
+  </div>
+
+  <div className="rounded-xl bg-cyan-500/10 p-3 text-sm text-cyan-200">
+    ✈ 이동운:
+    {selectedDay.score >= 65
+      ? " 외출·이동 좋음"
+      : " 무리한 이동 주의"}
+  </div>
+
+  <div className="rounded-xl bg-yellow-500/10 p-3 text-sm text-yellow-200">
+    🧠 오늘 조언:
+    {selectedDay.score >= 75
+      ? " 중요한 일 진행 추천"
+      : " 확인 후 천천히 움직이기"}
+  </div>
+</div>
     )}
   </div>
 )}
