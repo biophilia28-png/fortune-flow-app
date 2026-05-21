@@ -24,6 +24,60 @@ export default function LifeFortunePage({ profile }) {
   const toj = getTojung(profile);
   const timeline = getLifeTimeline(profile);
 
+  <div className="mt-5 rounded-2xl border border-white/10 bg-slate-950/70 p-5">
+  <h3 className="text-xl font-black text-white">
+    타고난 운명 해석
+  </h3>
+
+  <div className="mt-4 grid gap-3 md:grid-cols-2">
+    <div className="rounded-xl bg-white/[0.04] p-4">
+      <div className="text-sm font-bold text-cyan-300">
+        기본 성향
+      </div>
+
+      <div className="mt-2 text-sm leading-6 text-slate-300">
+        강한 독립성과 추진력이 있으며,
+        한 분야를 오래 파고드는 흐름이 강합니다.
+        사람에게 휘둘리기보다 스스로 판단할 때 운이 살아납니다.
+      </div>
+    </div>
+
+    <div className="rounded-xl bg-white/[0.04] p-4">
+      <div className="text-sm font-bold text-pink-300">
+        인연·배우자 운
+      </div>
+
+      <div className="mt-2 text-sm leading-6 text-slate-300">
+        인연운은 늦게 강해지는 흐름입니다.
+        초반 인간관계보다 30대 이후 안정되는 구조가 강합니다.
+      </div>
+    </div>
+
+    <div className="rounded-xl bg-white/[0.04] p-4">
+      <div className="text-sm font-bold text-yellow-300">
+        재물 흐름
+      </div>
+
+      <div className="mt-2 text-sm leading-6 text-slate-300">
+        재물운은 변동성이 큰 편이며,
+        큰 기회와 큰 손실 흐름이 함께 들어올 수 있습니다.
+        무리한 투자보다 분산 흐름이 유리합니다.
+      </div>
+    </div>
+
+    <div className="rounded-xl bg-white/[0.04] p-4">
+      <div className="text-sm font-bold text-emerald-300">
+        말년 흐름
+      </div>
+
+      <div className="mt-2 text-sm leading-6 text-slate-300">
+        후반으로 갈수록 안정운이 강해지며,
+        인간관계보다 건강과 평온이 중요해지는 흐름입니다.
+      </div>
+    </div>
+  </div>
+</div>
+  
   return (
     <div className="space-y-4">
       <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
