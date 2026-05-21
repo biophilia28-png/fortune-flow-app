@@ -448,11 +448,36 @@ function ProfileForm({ profile, setProfile }) {
               </button>
             </div>
 
-            {saved && (
-              <div className="rounded-xl bg-emerald-500/15 p-3 text-sm text-emerald-200">
-                저장 완료
-              </div>
-            )}
+          {saved && (
+  <div className="space-y-3 rounded-xl bg-emerald-500/15 p-3 text-sm text-emerald-200">
+    <div>
+      저장 완료. 이제 홈, 캘린더, 당사주에서 운세를 확인할 수 있습니다.
+    </div>
+
+    <div className="grid grid-cols-3 gap-2">
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        className="rounded-lg bg-white/10 px-3 py-2 text-xs font-bold text-white"
+      >
+        위로 이동
+      </button>
+
+      <button
+        onClick={() => alert("하단 메뉴에서 홈을 눌러 오늘 운세를 확인하세요.")}
+        className="rounded-lg bg-cyan-500/30 px-3 py-2 text-xs font-bold text-cyan-100"
+      >
+        홈 안내
+      </button>
+
+      <button
+        onClick={() => alert("하단 메뉴에서 당사주를 눌러 인생 총운을 확인하세요.")}
+        className="rounded-lg bg-violet-500/30 px-3 py-2 text-xs font-bold text-violet-100"
+      >
+        당사주 안내
+      </button>
+    </div>
+  </div>
+)}
           </div>
         </div>
 
