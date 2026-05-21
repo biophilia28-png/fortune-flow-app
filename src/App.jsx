@@ -1811,57 +1811,72 @@ const [selectedFortune, setSelectedFortune] = useState(null);
     />
 
     {selectedFortune && (
-      <div className="space-y-4">
-        <StatsPage
-          data={{
-            scores: {
-              total: selectedFortune.total,
-              love: selectedFortune.love,
-              money: selectedFortune.money,
-              happy: selectedFortune.happy,
-              move: selectedFortune.move,
-              accident: selectedFortune.accidentRisk,
-              conflict: selectedFortune.stress,
-              dayLuck: selectedFortune.focus,
-              yearLuck: selectedFortune.noble,
-              bigLuck: selectedFortune.chance,
-              monthLuck: selectedFortune.move,
-              hourLuck: selectedFortune.contact,
-            },
-          }}
-        />
+  <div className="space-y-4 rounded-2xl border border-white/10 bg-slate-950/80 p-4">
+    <h3 className="text-xl font-black text-white">
+      선택한 날짜 상세 운세
+    </h3>
 
-        <div className="mt-4 grid gap-2 md:grid-cols-2">
-          <div className="rounded-xl bg-emerald-500/10 p-3 text-sm text-emerald-200">
-            💰 재물운:
-            {selectedFortune.total >= 70
-              ? " 투자·정리 흐름 좋음"
-              : " 지출 관리 필요"}
-          </div>
-
-          <div className="rounded-xl bg-pink-500/10 p-3 text-sm text-pink-200">
-            💘 인연운:
-            {selectedFortune.total >= 70
-              ? " 사람운 상승"
-              : " 감정 기복 주의"}
-          </div>
-
-          <div className="rounded-xl bg-cyan-500/10 p-3 text-sm text-cyan-200">
-            ✈ 이동운:
-            {selectedFortune.total >= 65
-              ? " 외출·이동 좋음"
-              : " 무리한 이동 주의"}
-          </div>
-
-          <div className="rounded-xl bg-yellow-500/10 p-3 text-sm text-yellow-200">
-            🧠 오늘 조언:
-            {selectedFortune.total >= 75
-              ? " 중요한 일 진행 추천"
-              : " 확인 후 천천히 움직이기"}
-          </div>
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="rounded-xl bg-white/[0.04] p-3">
+        <div className="text-xs text-slate-400">종합운</div>
+        <div className="mt-1 text-2xl font-black text-cyan-300">
+          {selectedFortune.total}%
         </div>
       </div>
-    )}
+
+      <div className="rounded-xl bg-white/[0.04] p-3">
+        <div className="text-xs text-slate-400">재물운</div>
+        <div className="mt-1 text-2xl font-black text-yellow-300">
+          {selectedFortune.money}%
+        </div>
+      </div>
+
+      <div className="rounded-xl bg-white/[0.04] p-3">
+        <div className="text-xs text-slate-400">인연운</div>
+        <div className="mt-1 text-2xl font-black text-pink-300">
+          {selectedFortune.love}%
+        </div>
+      </div>
+
+      <div className="rounded-xl bg-white/[0.04] p-3">
+        <div className="text-xs text-slate-400">이동운</div>
+        <div className="mt-1 text-2xl font-black text-emerald-300">
+          {selectedFortune.move}%
+        </div>
+      </div>
+    </div>
+
+    <div className="grid gap-2 md:grid-cols-2">
+      <div className="rounded-xl bg-emerald-500/10 p-3 text-sm text-emerald-200">
+        💰 재물운:
+        {selectedFortune.money >= 70
+          ? " 수익·정리 흐름 좋음"
+          : " 지출 관리 필요"}
+      </div>
+
+      <div className="rounded-xl bg-pink-500/10 p-3 text-sm text-pink-200">
+        💘 인연운:
+        {selectedFortune.love >= 70
+          ? " 사람운 상승"
+          : " 감정 기복 주의"}
+      </div>
+
+      <div className="rounded-xl bg-cyan-500/10 p-3 text-sm text-cyan-200">
+        ✈ 이동운:
+        {selectedFortune.move >= 65
+          ? " 외출·이동 좋음"
+          : " 무리한 이동 주의"}
+      </div>
+
+      <div className="rounded-xl bg-yellow-500/10 p-3 text-sm text-yellow-200">
+        🧠 오늘 조언:
+        {selectedFortune.total >= 75
+          ? " 중요한 일 진행 추천"
+          : " 확인 후 천천히 움직이기"}
+      </div>
+    </div>
+  </div>
+)}
   </div>
 )}
       {tab === "life" && (
@@ -1878,7 +1893,7 @@ const [selectedFortune, setSelectedFortune] = useState(null);
         {tab === "admin" && <Admin />}
       </main>
 
-      <nav className="fixed bottom-3 left-1/2 z-10 grid w-[calc(100%-24px)] max-w-4xl -translate-x-1/2 grid-cols-6 rounded-2xl border border-white/10 bg-slate-950/90 p-2 shadow-2xl backdrop-blur">
+      <nav className="fixed bottom-3 left-1/2 z-10 grid w-[calc(100%-24px)] max-w-4xl -translate-x-1/2 grid-cols-5 rounded-2xl border border-white/10 bg-slate-950/90 p-2 shadow-2xl backdrop-blur">
         {menu.map(([id, label, Icon]) => (
           <button
             key={id}
