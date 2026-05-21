@@ -1184,17 +1184,16 @@ function CalendarPage({ profile, setSelectedFortune }) {
                   date: currentDate,
                 })
               }
-             className={`relative min-h-[74px] rounded-xl border p-1.5 text-left transition active:scale-95 md:min-h-[118px] md:p-3 ${
+            className={`relative min-h-[74px] rounded-xl border p-1.5 text-left transition active:scale-95 md:min-h-[118px] md:p-3 ${
   isToday
-   isToday
-  ? "border-violet-400 bg-violet-500/15"
-  : fortune.total >= 80
-  ? "border-emerald-400/40 bg-emerald-500/15"
-  : fortune.total >= 65
-  ? "border-cyan-400/30 bg-cyan-500/10"
-  : fortune.total >= 45
-  ? "border-yellow-400/30 bg-yellow-500/10"
-  : "border-rose-400/30 bg-rose-500/10"
+    ? "border-violet-400 bg-violet-500/15"
+    : fortune.total >= 80
+    ? "border-emerald-400/40 bg-emerald-500/15"
+    : fortune.total >= 65
+    ? "border-cyan-400/30 bg-cyan-500/10"
+    : fortune.total >= 45
+    ? "border-yellow-400/30 bg-yellow-500/10"
+    : "border-rose-400/30 bg-rose-500/10"
 }`}
             >
               <div className="flex items-center justify-between">
