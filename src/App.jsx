@@ -1988,39 +1988,44 @@ const [selectedFortune, setSelectedFortune] = useState(null);
           ["새벽", Math.max(35, selectedFortune.total - 18), "회복·정리"],
           ["오전", Math.max(40, selectedFortune.total - 5), "준비·확인"],
           ["오후", Math.min(95, selectedFortune.total + 12), "실행·결정"],
-          ["밤", Math.max(35, selectedFortune.love - 7), "감정·휴식"],
-        ].map(([time, score, text]) => (
-          <div key={time} className="rounded-xl bg-black/20 p-3">
-            <div className="text-sm font-bold text-white">{time}</div>
-            <div className="mt-1 text-2xl font-black text-cyan-300">
-              {score}%
-            </div>
-            <div className="mt-1 text-xs text-slate-400">
-              {text}
-            </div>
+                ["밤", Math.max(35, selectedFortune.love - 7), "감정·휴식"],
+      ].map(([time, score, text]) => (
+        <div
+          key={time}
+          className="rounded-xl bg-black/20 p-3"
+        >
+          <div className="text-sm font-bold text-white">
+            {time}
           </div>
-        ))}
-      </div>
-         </div>
-    </div>
 
+          <div className="mt-1 text-2xl font-black text-cyan-300">
+            {score}%
+          </div>
 
-  <div className="rounded-2xl border border-yellow-400/20 bg-yellow-500/5 p-4">
-      <div className="text-sm font-bold text-yellow-300">
-        한줄 결론
-      </div>
-
-      <p className="mt-2 text-sm leading-6 text-slate-300">
-        {selectedFortune.total >= 80
-          ? "강하게 밀고 가도 되는 날입니다. 다만 과욕과 말실수만 조심하세요."
-          : selectedFortune.total >= 65
-          ? "전체적으로 무난하게 좋은 날입니다. 중요한 일은 오후 흐름이 더 좋습니다."
-          : selectedFortune.total >= 45
-          ? "평범한 흐름입니다. 큰 결정은 피하고 정리와 확인에 집중하세요."
-          : "주의가 필요한 날입니다. 이동, 소비, 감정 반응을 줄이는 것이 좋습니다."}
-      </p>
+          <div className="mt-1 text-xs text-slate-400">
+            {text}
+          </div>
+        </div>
+      ))}
     </div>
   </div>
+
+  <div className="rounded-2xl border border-yellow-400/20 bg-yellow-500/5 p-4">
+    <div className="text-sm font-bold text-yellow-300">
+      한줄 결론
+    </div>
+
+    <p className="mt-2 text-sm leading-6 text-slate-300">
+      {selectedFortune.total >= 80
+        ? "강하게 밀고 가도 되는 날입니다. 다만 과욕과 말실수만 조심하세요."
+        : selectedFortune.total >= 65
+        ? "전체적으로 무난하게 좋은 날입니다. 중요한 일은 오후 흐름이 더 좋습니다."
+        : selectedFortune.total >= 45
+        ? "평범한 흐름입니다. 큰 결정은 피하고 정리와 확인에 집중하세요."
+        : "주의가 필요한 날입니다. 이동, 소비, 감정 반응을 줄이는 것이 좋습니다."}
+    </p>
+  </div>
+</div>
 )}
       {tab === "life" && (
   <div className="space-y-4">
