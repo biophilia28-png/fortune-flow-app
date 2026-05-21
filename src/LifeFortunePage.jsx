@@ -1,11 +1,6 @@
 import React from "react";
 
-import {
-  getManse,
-  getDangSaju,
-  getTojung,
-  getLifeTimeline,
-} from "./lifeFortuneEngine";
+import * as life from "./lifeFortuneEngine";
 
 function safeScore(score) {
   const n = Number(score || 0);
@@ -187,10 +182,10 @@ function getMonthlyFlow(profile) {
 }
 
 export default function LifeFortunePage({ profile }) {
-  const manse = getManse(profile) || {};
-  const dang = getDangSaju(profile) || {};
-  const toj = getTojung(profile) || {};
-  const timeline = getLifeTimeline(profile) || [];
+ const manse = life.getManse ? life.getManse(profile) : {};
+const dang = life.getDangSaju ? life.getDangSaju(profile) : {};
+const toj = life.getTojung ? life.getTojung(profile) : {};
+const timeline = life.getLifeTimeline ? life.getLifeTimeline(profile) : [];
 
   const safeDang = {
     early: dang.early || { age: "초년", title: "초년운", score: 50, text: "초년 흐름 데이터 준비 중" },
