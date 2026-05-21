@@ -1044,9 +1044,13 @@ function StatCard({ label, value, caution = false }) {
   );
 }
 
-function StatsPage({ todayFortune }) {
+function StatsPage({ todayFortune, data }) {
+  const baseTotal =
+    todayFortune?.total ||
+    data?.scores?.total ||
+    60;
   const monthlyStats = Array.from({ length: 30 }, (_, i) => {
-    const seed = (todayFortune.total + i * 13) % 100;
+  const seed = (baseTotal + i * 13) % 100;
 
     return {
       day: i + 1,
@@ -1649,9 +1653,9 @@ const [selectedFortune, setSelectedFortune] = useState(null);
     <LifeFortunePage profile={profile} />
   </div>
 )}
-        {tab === "stats" && (
-          <StatsPage data={data} />
-        )}
+       {tab === "stats" && (
+  <StatsPage todayFortune={todayFortune} data={data} />
+)}
 
         {tab === "settings" && (
         <SettingsPage setProfile={setProfile} />
