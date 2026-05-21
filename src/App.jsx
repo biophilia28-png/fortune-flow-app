@@ -543,9 +543,10 @@ function UserHome({ profile, data, setTab, todayFortune }) {
             / 길방향: {todayFortune.qimen.direction}
           </div>
 
-       <div className="mt-3 rounded-xl border border-yellow-500/20 bg-yellow-500/5 p-3">
-<div className="mt-3 rounded-xl border border-yellow-500/20 bg-yellow-500/5 p-3">
-  <div className="text-xs font-bold text-yellow-300">오늘의 주역괘</div>
+   <div className="mt-3 rounded-xl border border-yellow-500/20 bg-yellow-500/5 p-3">
+  <div className="text-xs font-bold text-yellow-300">
+    오늘의 주역괘
+  </div>
 
   <div className="mt-1 text-lg font-black text-yellow-200">
     {todayFortune.iching.main}
