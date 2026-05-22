@@ -485,13 +485,12 @@ function calculateSajuBasedFortune(profile, salt = "today") {
 
   const seed = hashNumber(profileKey);
 
-  cconst shiftedProfile = {
-  ...profile,
-  birthDate: profile.birthDate || "2000-01-01",
-  birthTime: profile.birthTime || "12:00",
-};
+  const shiftedProfile = {
+    ...profile,
+    birthDate: `${profile.birthDate || "2000-01-01"}-${salt}-${seed}`,
+  };
 
-const pseudo = calcPseudoSaju(shiftedProfile);
+  const pseudo = calcPseudoSaju(shiftedProfile);
   const pillars = pseudo.pillars;
 
   const dayStem = pillars.day[0];
@@ -2186,82 +2185,7 @@ function CalendarPage({ profile, setSelectedFortune }) {
     </section>
   );
 }
-function SelectedFortuneDetail({ fortune }) {
-  if (!fortune) {
-    return (
-      <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4">
-        <div className="text-sm font-bold text-slate-300">
-          날짜를 누르면 상세 운세가 표시됩니다.
-        </div>
-      </div>
-    );
-  }
 
-  return (
-    <div className="rounded-2xl border border-cyan-400/20 bg-slate-950/80 p-4">
-      <div className="text-sm font-bold text-cyan-300">
-        선택한 날짜 상세 운세
-      </div>
-
-      <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-4">
-        {[
-          ["종합운", fortune.total],
-          ["재물운", fortune.money],
-          ["인연운", fortune.love],
-          ["행복지수", fortune.happy],
-          ["이동운", fortune.move],
-          ["사고주의", fortune.accidentRisk || fortune.accident],
-          ["스트레스", fortune.stress || fortune.conflict],
-        ].map(([label, value]) => (
-          <div
-            key={label}
-            className="rounded-xl bg-white/[0.04] p-3"
-          >
-            <div className="text-xs text-slate-400">
-              {label}
-            </div>
-
-            <div className="mt-1 text-2xl font-black text-cyan-300">
-              {Math.round(value)}%
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-4 rounded-xl bg-white/[0.04] p-3">
-        <div className="text-xs font-bold text-violet-300">
-          사주 흐름
-        </div>
-
-        <div className="mt-2 text-sm leading-6 text-slate-300">
-          {fortune.saju?.summary}
-        </div>
-      </div>
-
-      <div className="mt-3 grid gap-3 md:grid-cols-2">
-        <div className="rounded-xl bg-white/[0.04] p-3">
-          <div className="text-xs text-slate-400">
-            기문
-          </div>
-
-          <div className="mt-1 text-lg font-black text-violet-300">
-            {fortune.qimen?.door} · {fortune.qimen?.direction}
-          </div>
-        </div>
-
-        <div className="rounded-xl bg-white/[0.04] p-3">
-          <div className="text-xs text-slate-400">
-            주역괘
-          </div>
-
-          <div className="mt-1 text-lg font-black text-yellow-300">
-            {fortune.iching?.main} / {fortune.iching?.changed}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 function getScoreLabel(score) {
   if (score >= 80) return "매우 좋음";
   if (score >= 60) return "좋음";
@@ -2839,8 +2763,6 @@ const todayFortune = useMemo(() => {
       profile={profile}
       setSelectedFortune={setSelectedFortune}
     />
-
-    <SelectedFortuneDetail fortune={selectedFortune} />
 {selectedFortune && (
   <div className="space-y-4 rounded-2xl border border-white/10 bg-slate-950/80 p-4">
     <div className="flex items-center justify-between">
