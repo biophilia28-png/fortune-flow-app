@@ -485,12 +485,13 @@ function calculateSajuBasedFortune(profile, salt = "today") {
 
   const seed = hashNumber(profileKey);
 
-  const shiftedProfile = {
-    ...profile,
-    birthDate: `${profile.birthDate || "2000-01-01"}-${salt}-${seed}`,
-  };
+  cconst shiftedProfile = {
+  ...profile,
+  birthDate: profile.birthDate || "2000-01-01",
+  birthTime: profile.birthTime || "12:00",
+};
 
-  const pseudo = calcPseudoSaju(shiftedProfile);
+const pseudo = calcPseudoSaju(shiftedProfile);
   const pillars = pseudo.pillars;
 
   const dayStem = pillars.day[0];
