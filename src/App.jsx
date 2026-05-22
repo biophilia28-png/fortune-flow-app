@@ -1841,7 +1841,243 @@ function DirectionPanel({ profile }) {
     </div>
   );
 }
+/* ✅ 9단계: 날짜별 동적 운세 계산 - 고정값 제거 버전 */
+function makeDynamicFortune(profile, salt = "today") {
+  const dateKey =
+    typeof salt === "string"
+      ? salt
+      : new Date().toISOString().slice(0, 10);
 
+  const base = calculateSajuBasedFortune(profile, dateKey);
+
+  const key = [
+    profile.birthDate || "",
+    profile.birthTime || "",
+    profile.gender || "",
+    profile.calendarType || "",
+    dateKey,
+    base.saju.summary,
+    base.saju.tenGod,
+    base.saju.twelveStage,
+    base.qimen.direction,
+    base.iching.main,
+  ].join("|");
+
+  const seed = hashNumber(key);
+
+  const dayDate = new Date(dateKey);
+  const dayGanji = Number.isNaN(dayDate.getTime())
+    ? getGanjiName(new Date())
+    : getGanjiName(dayDate);
+
+  const dayStem = dayGanji[0];
+  const dayBranch = dayGanji[1];
+
+  const myDayStem = base.saju.detail.pillars.day[0];
+  const myDayBranch = base.saju.detail.pillars.day[1];
+
+  const dayTenGod = getTenGod(myDayStem, dayStem);
+  const dayStage = getTwelveStage(myDayStem, dayBranch);
+
+  const dayRelation = analyzeBranchRelations([
+    base.saju.detail.pillars.year[1],
+    base.saju.detail.pillars.month[1],
+    myDayBranch,
+    dayBranch,
+  ]);
+
+  const dayElement = FIVE_ELEMENTS[dayStem] || BRANCH_ELEMENTS[dayBranch] || "토";
+
+  const tenGodEffect = {
+    정재: { money: 11, love: 2, total: 6, caution: -2 },
+    편재: { money: 9, love: 4, total: 5, caution: 1 },
+    정관: { money: 4, love: 6, total: 7, caution: -3 },
+    편관: { money: -2, love: -1, total: -3, caution: 9 },
+    식신: { money: 6, love: 5, total: 7, caution: -2 },
+    상관: { money: 2, love: -4, total: -2, caution: 7 },
+    정인: { money: 3, love: 4, total: 5, caution: -4 },
+    편인: { money: -1, love: 1, total: 0, caution: 3 },
+    비견: { money: 1, love: 2, total: 2, caution: 1 },
+    겁재: { money: -7, love: -2, total: -4, caution: 8 },
+    미상: { money: 0, love: 0, total: 0, caution: 0 },
+  };
+
+  const stageEffect = {
+    장생: { total: 8, move: 5, happy: 6, caution: -3 },
+    목욕: { total: 1, move: 3, happy: 2, caution: 4 },
+    관대: { total: 5, move: 4, happy: 4, caution: 0 },
+    건록: { total: 8, move: 3, happy: 5, caution: -2 },
+    제왕: { total: 10, move: 4, happy: 5, caution: 2 },
+    쇠: { total: -2, move: -1, happy: -1, caution: 4 },
+    병: { total: -7, move: -4, happy: -4, caution: 9 },
+    사: { total: -9, move: -5, happy: -6, caution: 11 },
+    묘: { total: -5, move: -3, happy: -2, caution: 6 },
+    절: { total: -11, move: -6, happy: -8, caution: 12 },
+    태: { total: 2, move: 2, happy: 3, caution: 1 },
+    양: { total: 4, move: 3, happy: 4, caution: 0 },
+    미상: { total: 0, move: 0, happy: 0, caution: 0 },
+  };
+
+  const tg = tenGodEffect[dayTenGod] || tenGodEffect.미상;
+  const st = stageEffect[dayStage] || stageEffect.미상;
+
+  const elementBoost =
+    base.saju.detail.element.weak.includes(dayElement)
+      ? 7
+      : base.saju.detail.element.strong.includes(dayElement)
+      ? -4
+      : 2;
+
+  const clashRisk = dayRelation.clash.length * 8;
+  const comboBoost = dayRelation.combo.length * 6 + dayRelation.harmony.length * 5;
+
+  const waveA = (seed % 17) - 8;
+  const waveB = ((seed >> 3) % 15) - 7;
+  const waveC = ((seed >> 5) % 13) - 6;
+
+  const total = clamp(
+    base.total +
+      tg.total +
+      st.total +
+      elementBoost +
+      comboBoost -
+      clashRisk +
+      waveA,
+    15,
+    95
+  );
+
+  const money = clamp(
+    base.money +
+      tg.money +
+      elementBoost +
+      comboBoost * 0.6 -
+      clashRisk * 0.5 +
+      waveB,
+    15,
+    95
+  );
+
+  const love = clamp(
+    base.love +
+      tg.love +
+      st.happy * 0.5 +
+      comboBoost -
+      clashRisk * 0.7 +
+      waveC,
+    15,
+    95
+  );
+
+  const happy = clamp(
+    base.happy +
+      st.happy +
+      tg.total * 0.4 +
+      comboBoost * 0.5 -
+      clashRisk * 0.7 +
+      waveB,
+    15,
+    95
+  );
+
+  const move = clamp(
+    base.move +
+      st.move +
+      elementBoost +
+      comboBoost * 0.7 -
+      clashRisk * 0.4 +
+      waveA,
+    15,
+    95
+  );
+
+  const accidentRisk = clamp(
+    base.accidentRisk +
+      tg.caution +
+      st.caution +
+      clashRisk -
+      comboBoost * 0.4 +
+      Math.abs(waveC) * 0.6,
+    10,
+    90
+  );
+
+  const stress = clamp(
+    base.stress +
+      tg.caution * 0.8 +
+      st.caution * 0.6 +
+      clashRisk * 0.7 -
+      comboBoost * 0.3 +
+      Math.abs(waveB) * 0.5,
+    10,
+    90
+  );
+
+  return {
+    ...base,
+    total,
+    money,
+    love,
+    happy,
+    move,
+    accident: accidentRisk,
+    accidentRisk,
+    conflict: stress,
+    stress,
+
+    saju: {
+      ...base.saju,
+      element: dayElement,
+      tenGod: dayTenGod,
+      twelveStage: dayStage,
+      summary: `${dayGanji} 일진 / ${dayElement} 오행 / ${dayTenGod} 영향 / ${dayStage} 흐름`,
+      detail: {
+        ...base.saju.detail,
+        dayGanji,
+        dayStem,
+        dayBranch,
+        dayTenGod,
+        dayStage,
+        dayRelation,
+      },
+    },
+
+    qimen: {
+      ...base.qimen,
+      door:
+        accidentRisk >= 70
+          ? "상문"
+          : money >= 75
+          ? "생문"
+          : love >= 75
+          ? "경문"
+          : move >= 75
+          ? "개문"
+          : "휴문",
+    },
+
+    iching: {
+      ...base.iching,
+      main:
+        total >= 85
+          ? "지천태"
+          : money >= 82
+          ? "화천대유"
+          : love >= 82
+          ? "택산함"
+          : move >= 80
+          ? "뢰지예"
+          : accidentRisk >= 70 || stress >= 70
+          ? "중수감"
+          : total >= 65
+          ? "풍뢰익"
+          : total >= 45
+          ? "수화기제"
+          : "화수미제",
+      changingLine: Math.max(1, Math.min(6, (seed % 6) + 1)),
+    },
+  };
+}
 
 function CalendarPage({ profile, setSelectedFortune }) {
   const now = new Date();
