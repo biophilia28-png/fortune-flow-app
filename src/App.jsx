@@ -1781,16 +1781,12 @@ function getFortuneCycleStats(birthKey = "default") {
 
 export default function App() {
 
-  const userProfile = JSON.parse(
-  localStorage.getItem(STORAGE_KEY) || "{}"
-);
-
-const todayFortune = getTodayFortune(userProfile);
-  
-const [tab, setTab] = useState("home");
-const [profile, setProfile] = useState(defaultProfile);
-const [selectedFortune, setSelectedFortune] = useState(null);
+  export default function App() {
+  const [tab, setTab] = useState("home");
+  const [profile, setProfile] = useState(defaultProfile);
+  const [selectedFortune, setSelectedFortune] = useState(null);
   const [settingsTapCount, setSettingsTapCount] = useState(0);
+
   useEffect(() => {
     const saved = loadJson(STORAGE_KEY, null);
 
@@ -1802,10 +1798,17 @@ const [selectedFortune, setSelectedFortune] = useState(null);
     }
   }, []);
 
-  const data = useMemo(
-    () => calcPseudoSaju(profile),
-    [profile]
-  );
+  const data = useMemo(() => {
+    return calcPseudoSaju(profile);
+  }, [profile.birthDate, profile.birthTime, profile.gender, profile.calendarType]);
+
+  const todayFortune = useMemo(() => {
+    return getTodayFortune(profile);
+  }, [profile.birthDate, profile.birthTime, profile.gender, profile.calendarType]);
+
+  useEffect(() => {
+    setSelectedFortune(null);
+  }, [profile.birthDate, profile.birthTime, profile.gender, profile.calendarType]);
 
   const menu = [
     ["home", "홈", Home],
@@ -2032,7 +2035,11 @@ const [selectedFortune, setSelectedFortune] = useState(null);
 
       {tab === "life" && (
   <div className="space-y-4">
-    <LifeFortunePage profile={profile} />
+  <LifeFortunePage
+  profile={profile}
+  todayFortune={todayFortune}
+  data={data}
+/>
   </div>
 )}
      
