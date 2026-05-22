@@ -1,10 +1,7 @@
 import LifeFortunePage from "./LifeFortunePage";
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  getTodayFortune,
-  getCalendarFortunes,
-  getGanjiName
-} from "./fortuneEngine";
+getTodayFortune,
+getCalendarFortunes,
 import {
   Home,
   CalendarDays,
@@ -1898,11 +1895,10 @@ const todayFortune = useMemo(() => {
 
       <main className="mx-auto max-w-7xl pb-28">
         {tab === "home" && (
-         <UserHome
+      <UserHome
   profile={profile}
   data={data}
   setTab={setTab}
-  todayFortune={todayFortune}
 />
         )}
 
