@@ -1,7 +1,6 @@
 import LifeFortunePage from "./LifeFortunePage";
 import React, { useEffect, useMemo, useState } from "react";
-getTodayFortune,
-getCalendarFortunes,
+
 import {
   Home,
   CalendarDays,
