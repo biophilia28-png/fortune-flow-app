@@ -2103,28 +2103,28 @@ const todayFortune = useMemo(() => {
         {menu.map(([id, label, Icon]) => (
           <button
             key={id}
-          onClick={() => {
+        onClick={() => {
   if (id === "settings") {
     const nextCount = settingsTapCount + 1;
     setSettingsTapCount(nextCount);
 
     if (nextCount >= 8) {
       setSettingsTapCount(0);
-      setTab("admin");
+      window.scrollTo(0, 0);
+      requestAnimationFrame(() => {
+        setTab("admin");
+      });
       return;
     }
   } else {
     setSettingsTapCount(0);
   }
 
-    setTab(id);
+  window.scrollTo(0, 0);
 
-  setTimeout(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  }, 50);
+  requestAnimationFrame(() => {
+    setTab(id);
+  });
 }}
 
             className={`rounded-xl px-1 py-3 text-[11px] md:text-xs ${
