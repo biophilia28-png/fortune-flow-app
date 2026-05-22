@@ -1256,7 +1256,7 @@ function CalendarPage({ profile, setSelectedFortune }) {
         ))}
       </div>
 
-     <div className="mt-2 grid grid-cols-7 gap-1 overflow-x-auto md:gap-2">
+    <div className="mt-2 grid grid-cols-7 gap-1 overflow-x-auto pb-2 md:gap-2">
         {blanks.map((_, i) => (
           <div key={`blank-${i}`} className="min-h-[74px] md:min-h-[118px]" />
         ))}
@@ -1285,7 +1285,7 @@ function CalendarPage({ profile, setSelectedFortune }) {
                   date: currentDate,
                 })
               }
-            className={`relative min-h-[74px] rounded-xl border p-1.5 text-left transition active:scale-95 md:min-h-[118px] md:p-3 ${
+          className={`relative min-h-[74px] min-w-[62px] rounded-xl border p-1.5 text-left transition active:scale-95 md:min-h-[118px] md:p-3 ${
   isToday
     ? "border-violet-400 bg-violet-500/15"
     : fortune.total >= 80
