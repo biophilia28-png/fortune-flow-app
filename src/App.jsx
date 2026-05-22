@@ -1256,7 +1256,7 @@ function CalendarPage({ profile, setSelectedFortune }) {
         ))}
       </div>
 
-      <div className="mt-2 grid grid-cols-7 gap-1 md:gap-2">
+     <div className="mt-2 grid grid-cols-7 gap-1 overflow-x-auto md:gap-2">
         {blanks.map((_, i) => (
           <div key={`blank-${i}`} className="min-h-[74px] md:min-h-[118px]" />
         ))}
