@@ -1215,37 +1215,37 @@ function DirectionPanel({ profile }) {
 
 function CalendarPage({ profile, setSelectedFortune }) {
   const now = new Date();
-
   const year = now.getFullYear();
   const month = now.getMonth() + 1;
   const today = now.getDate();
 
   const days = Array.from(
-  { length: new Date(year, month, 0).getDate() },
-  (_, i) => {
-    const day = i + 1;
-    return makeDynamicFortune(profile, `${year}-${month}-${day}`);
-  }
-);
+    { length: new Date(year, month, 0).getDate() },
+    (_, i) => {
+      const day = i + 1;
+      return makeDynamicFortune(profile, `${year}-${month}-${day}`);
+    }
+  );
+
   const firstDay = new Date(year, month - 1, 1).getDay();
   const blanks = Array.from({ length: firstDay });
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-3 md:p-5">
-      <div className="mb-4 flex items-end justify-between">
+    <section className="w-full overflow-hidden rounded-2xl border border-white/10 bg-slate-950/80 p-2 md:p-5">
+      <div className="mb-3 flex items-end justify-between">
         <div>
-          <p className="text-xs text-violet-300">불교 달력형 운세</p>
-          <h2 className="mt-1 text-xl font-black text-white md:text-3xl">
+          <p className="text-[11px] text-violet-300">불교 달력형 운세</p>
+          <h2 className="mt-1 text-lg font-black text-white md:text-3xl">
             {year}년 {month}월
           </h2>
         </div>
 
-        <div className="rounded-xl bg-violet-500/15 px-3 py-2 text-xs font-bold text-violet-200">
+        <div className="rounded-lg bg-violet-500/15 px-2 py-1 text-[10px] font-bold text-violet-200 md:px-3 md:py-2 md:text-xs">
           오늘 {today}일
         </div>
       </div>
 
-     <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-400 md:gap-2 md:text-xs">
+      <div className="grid w-full grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-400">
         {["일", "월", "화", "수", "목", "금", "토"].map((d, i) => (
           <div
             key={d}
@@ -1256,9 +1256,9 @@ function CalendarPage({ profile, setSelectedFortune }) {
         ))}
       </div>
 
-    <div className="mt-2 grid grid-cols-7 gap-1 overflow-x-auto pb-2 md:gap-2">
+      <div className="mt-1 grid w-full grid-cols-7 gap-1">
         {blanks.map((_, i) => (
-          <div key={`blank-${i}`} className="min-h-[74px] md:min-h-[118px]" />
+          <div key={`blank-${i}`} className="min-h-[58px] md:min-h-[118px]" />
         ))}
 
         {days.map((fortune, i) => {
@@ -1267,66 +1267,46 @@ function CalendarPage({ profile, setSelectedFortune }) {
           const isToday = dayNum === today;
           const ganji = getGanjiName(currentDate);
 
-          const scoreColor =
-            fortune.total >= 80
-              ? "text-emerald-300 bg-emerald-500/10 border-emerald-400/30"
+          const boxClass =
+            isToday
+              ? "border-violet-400 bg-violet-500/20"
+              : fortune.total >= 80
+              ? "border-emerald-400/40 bg-emerald-500/15"
               : fortune.total >= 65
-              ? "text-cyan-300 bg-cyan-500/10 border-cyan-400/30"
+              ? "border-cyan-400/30 bg-cyan-500/10"
               : fortune.total >= 45
-              ? "text-yellow-300 bg-yellow-500/10 border-yellow-400/30"
-              : "text-rose-300 bg-rose-500/10 border-rose-400/30";
+              ? "border-yellow-400/30 bg-yellow-500/10"
+              : "border-rose-400/30 bg-rose-500/10";
 
           return (
             <button
               key={dayNum}
-              onClick={() =>
+              type="button"
+              onClick={() => {
                 setSelectedFortune({
                   ...fortune,
                   date: currentDate,
-                })
-              }
-          className={`relative min-h-[74px] min-w-[62px] rounded-xl border p-1.5 text-left transition active:scale-95 md:min-h-[118px] md:p-3 ${
-  isToday
-    ? "border-violet-400 bg-violet-500/15"
-    : fortune.total >= 80
-    ? "border-emerald-400/40 bg-emerald-500/15"
-    : fortune.total >= 65
-    ? "border-cyan-400/30 bg-cyan-500/10"
-    : fortune.total >= 45
-    ? "border-yellow-400/30 bg-yellow-500/10"
-    : "border-rose-400/30 bg-rose-500/10"
-}`}
+                });
+                setTimeout(() => {
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }, 50);
+              }}
+              className={`min-w-0 rounded-lg border p-1 text-center active:scale-95 md:rounded-xl md:p-3 ${boxClass}`}
             >
-              <div className="flex items-center justify-between">
-                <div
-                  className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-black md:h-7 md:w-7 md:text-xs ${
-                    isToday ? "bg-violet-500 text-white" : "bg-black/30 text-slate-200"
-                  }`}
-                >
-                  {dayNum}
-                </div>
-
-                <div className={`rounded-full border px-1.5 py-0.5 text-[9px] font-bold md:text-[11px] ${scoreColor}`}>
-                  {fortune.total}
-                </div>
+              <div className="mx-auto flex h-5 w-5 items-center justify-center rounded-full bg-black/30 text-[10px] font-black text-white md:h-7 md:w-7 md:text-xs">
+                {dayNum}
               </div>
 
-              <div className="mt-1 text-center">
-                <div className="text-[11px] font-black text-white md:text-lg">
-                  {ganji}
-                </div>
+              <div className="mt-1 text-[10px] font-black leading-tight text-white md:text-lg">
+                {ganji}
+              </div>
 
-                <div className="mt-0.5 hidden text-[10px] text-cyan-300 md:block">
-                  {fortune.saju.element} · {fortune.saju.tenGod}
-                </div>
+              <div className="mt-1 text-[9px] font-bold text-cyan-300 md:text-xs">
+                {fortune.total}
+              </div>
 
-                <div className="mt-0.5 hidden text-[10px] text-violet-300 md:block">
-                  {fortune.saju.twelveStage}
-                </div>
-
-                <div className="mt-1 text-[9px] text-slate-400 md:hidden">
-                  {fortune.saju.element}
-                </div>
+              <div className="hidden text-[10px] text-violet-300 md:block">
+                {fortune.saju.element} · {fortune.saju.tenGod}
               </div>
             </button>
           );
@@ -1334,9 +1314,9 @@ function CalendarPage({ profile, setSelectedFortune }) {
       </div>
 
       <p className="mt-3 text-[11px] text-slate-400 md:text-xs">
-        날짜를 누르면 아래에 해당 날짜의 상세 운세 지표가 표시됩니다.
+        날짜를 누르면 해당 날짜의 상세 운세 지표가 표시됩니다.
       </p>
-    </div>
+    </section>
   );
 }
 
@@ -2099,49 +2079,39 @@ const todayFortune = useMemo(() => {
         <div className="h-32 md:h-0" />
       </main>
 
-      <nav className="fixed bottom-3 left-1/2 z-[9999] grid w-[calc(100%-24px)] max-w-4xl -translate-x-1/2 grid-cols-5 rounded-2xl border border-white/10 bg-slate-950/90 p-2 shadow-2xl backdrop-blur">
-        {menu.map(([id, label, Icon]) => (
-          <button
-            key={id}
-        onClick={() => {
-  if (id === "settings") {
-    const nextCount = settingsTapCount + 1;
-    setSettingsTapCount(nextCount);
+     <nav className="fixed bottom-3 left-1/2 z-[9999] grid w-[calc(100%-24px)] max-w-4xl -translate-x-1/2 grid-cols-5 rounded-2xl border border-white/10 bg-slate-950/95 p-2 shadow-2xl backdrop-blur">
+  {menu.map(([id, label, Icon]) => (
+    <button
+      key={id}
+      type="button"
+      onClick={() => {
+        if (id === "settings") {
+          const nextCount = settingsTapCount + 1;
+          setSettingsTapCount(nextCount);
 
-    if (nextCount >= 8) {
-      setSettingsTapCount(0);
-      window.scrollTo(0, 0);
-      requestAnimationFrame(() => {
-        setTab("admin");
-      });
-      return;
-    }
-  } else {
-    setSettingsTapCount(0);
-  }
+          if (nextCount >= 8) {
+            setSettingsTapCount(0);
+            setTab("admin");
+            window.scrollTo(0, 0);
+            return;
+          }
+        } else {
+          setSettingsTapCount(0);
+        }
 
-  window.scrollTo(0, 0);
-
-  requestAnimationFrame(() => {
-    setTab(id);
-  });
-}}
-
-            className={`rounded-xl px-1 py-3 text-[11px] md:text-xs ${
-              tab === id
-                ? "bg-violet-500 text-white"
-                : "text-slate-400"
-            }`}
-          >
-            <Icon
-              className="mx-auto mb-1"
-              size={18}
-            />
-
-            {label}
-          </button>
-        ))}
-      </nav>
+        setSelectedFortune(null);
+        setTab(id);
+        window.scrollTo(0, 0);
+      }}
+      className={`rounded-xl px-1 py-3 text-[11px] md:text-xs ${
+        tab === id ? "bg-violet-500 text-white" : "text-slate-400"
+      }`}
+    >
+      <Icon className="mx-auto mb-1" size={18} />
+      {label}
+    </button>
+  ))}
+</nav>
     </div>
   );
 }
