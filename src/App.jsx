@@ -2117,8 +2117,16 @@ const todayFortune = useMemo(() => {
     setSettingsTapCount(0);
   }
 
-  setTab(id);
+    setTab(id);
+
+  setTimeout(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, 50);
 }}
+
             className={`rounded-xl px-1 py-3 text-[11px] md:text-xs ${
               tab === id
                 ? "bg-violet-500 text-white"
