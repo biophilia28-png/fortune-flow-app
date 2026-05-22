@@ -126,7 +126,24 @@ function calcPseudoSaju(profile) {
     eventCount: 12000 + (h % 25000),
   };
 }
+function makeDynamicFortune(profile, salt = "today") {
+  const base = getTodayFortune(profile);
+  const raw = `${profile.birthDate}-${profile.birthTime}-${profile.gender}-${profile.calendarType}-${salt}`;
+  const h = hashNumber(raw);
 
+  return {
+    ...base,
+    total: clamp(35 + (h % 50), 20, 95),
+    love: clamp(35 + ((h >> 3) % 55), 20, 95),
+    money: clamp(35 + ((h >> 6) % 55), 20, 95),
+    happy: clamp(35 + ((h >> 9) % 55), 20, 95),
+    move: clamp(35 + ((h >> 12) % 55), 20, 95),
+    accident: clamp(20 + ((h >> 15) % 45), 10, 80),
+    accidentRisk: clamp(20 + ((h >> 15) % 45), 10, 80),
+    conflict: clamp(20 + ((h >> 18) % 45), 10, 80),
+    stress: clamp(20 + ((h >> 18) % 45), 10, 80),
+  };
+}
 function calcDirectionScores(profile) {
   const birthDate = profile.birthDate || "1990-01-01";
   const birthTime = profile.birthTime || "12:00";
@@ -579,7 +596,13 @@ function ProfileForm({ profile, setProfile, setTab }) {
     </div>
   );
 }
-function UserHome({ profile, data, setTab, todayFortune }) {
+function UserHome({ profile, data, setTab }) {
+  const todayFortune = useMemo(() => {
+    const todayKey = new Date().toISOString().slice(0, 10);
+    return makeDynamicFortune(profile, todayKey);
+  }, [profile.birthDate, profile.birthTime, profile.gender, profile.calendarType]);
+
+
   return (
     <div className="space-y-4">
       <div className="rounded-2xl border border-white/10 bg-slate-950/80 p-4 md:p-6">
