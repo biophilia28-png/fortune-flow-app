@@ -127,12 +127,11 @@ function calcPseudoSaju(profile) {
   };
 }
 function makeDynamicFortune(profile, salt = "today") {
-  const base = getTodayFortune(profile);
-  const raw = `${profile.birthDate}-${profile.birthTime}-${profile.gender}-${profile.calendarType}-${salt}`;
+  const raw = `${profile.birthDate || ""}-${profile.birthTime || "12:00"}-${profile.gender}-${profile.calendarType}-${salt}`;
   const h = hashNumber(raw);
+  const pseudo = calcPseudoSaju(profile);
 
   return {
-    ...base,
     total: clamp(35 + (h % 50), 20, 95),
     love: clamp(35 + ((h >> 3) % 55), 20, 95),
     money: clamp(35 + ((h >> 6) % 55), 20, 95),
@@ -142,6 +141,24 @@ function makeDynamicFortune(profile, salt = "today") {
     accidentRisk: clamp(20 + ((h >> 15) % 45), 10, 80),
     conflict: clamp(20 + ((h >> 18) % 45), 10, 80),
     stress: clamp(20 + ((h >> 18) % 45), 10, 80),
+
+    saju: {
+      summary: `${pseudo.pillars.year} / ${pseudo.pillars.month} / ${pseudo.pillars.day} / ${pseudo.pillars.hour} 흐름`,
+      element: ["목", "화", "토", "금", "수"][h % 5],
+      tenGod: ["비견", "겁재", "식신", "상관", "편재", "정재", "편관", "정관"][h % 8],
+      twelveStage: ["장생", "목욕", "관대", "건록", "제왕", "쇠", "병", "사", "묘", "절", "태", "양"][h % 12],
+    },
+
+    qimen: {
+      door: ["휴문", "생문", "상문", "두문", "경문", "사문", "경문", "개문"][h % 8],
+      direction: ["북", "북동", "동", "남동", "남", "남서", "서", "북서"][h % 8],
+    },
+
+    iching: {
+      main: ["건위천", "지천태", "화천대유", "택풍대과", "풍뢰익", "수화기제", "화수미제"][h % 7],
+      changingLine: (h % 6) + 1,
+      changed: ["중수감", "중화리", "택산함", "뢰풍항", "산천대축"][h % 5],
+    },
   };
 }
 function calcDirectionScores(profile) {
