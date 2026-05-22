@@ -1802,9 +1802,33 @@ function getFortuneCycleStats(birthKey = "default") {
     return calcPseudoSaju(profile);
   }, [profile.birthDate, profile.birthTime, profile.gender, profile.calendarType]);
 
-  const todayFortune = useMemo(() => {
-    return getTodayFortune(profile);
-  }, [profile.birthDate, profile.birthTime, profile.gender, profile.calendarType]);
+ const todayFortune = useMemo(() => {
+  const base = getTodayFortune(profile);
+  const pseudo = calcPseudoSaju(profile);
+
+  return {
+    ...base,
+    total: pseudo.scores.total,
+    love: pseudo.scores.love,
+    money: pseudo.scores.money,
+    happy: pseudo.scores.happy,
+    move: pseudo.scores.move,
+    accident: pseudo.scores.accident,
+    accidentRisk: pseudo.scores.accident,
+    conflict: pseudo.scores.conflict,
+    stress: pseudo.scores.conflict,
+    bigLuck: pseudo.scores.bigLuck,
+    yearLuck: pseudo.scores.yearLuck,
+    monthLuck: pseudo.scores.monthLuck,
+    dayLuck: pseudo.scores.dayLuck,
+    hourLuck: pseudo.scores.hourLuck,
+  };
+}, [
+  profile.birthDate,
+  profile.birthTime,
+  profile.gender,
+  profile.calendarType,
+]);
 
   useEffect(() => {
     setSelectedFortune(null);
