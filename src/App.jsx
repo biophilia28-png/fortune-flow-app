@@ -473,8 +473,24 @@ function analyzeUsefulStars(pillars) {
 }
 
 /* ✅ 7단계: 사주 기반 통합 점수 계산 */
+/* ✅ 7단계: 사주 기반 통합 점수 계산 - 고정값 최소화 버전 */
 function calculateSajuBasedFortune(profile, salt = "today") {
-  const pseudo = calcPseudoSaju(profile);
+  const profileKey = [
+    profile.birthDate || "",
+    profile.birthTime || "",
+    profile.gender || "",
+    profile.calendarType || "",
+    salt || "today",
+  ].join("|");
+
+  const seed = hashNumber(profileKey);
+
+  const shiftedProfile = {
+    ...profile,
+    birthDate: `${profile.birthDate || "2000-01-01"}-${salt}-${seed}`,
+  };
+
+  const pseudo = calcPseudoSaju(shiftedProfile);
   const pillars = pseudo.pillars;
 
   const dayStem = pillars.day[0];
@@ -509,95 +525,138 @@ function calculateSajuBasedFortune(profile, salt = "today") {
   const stars = analyzeUsefulStars(pillars);
   const element = analyzeElementBalance(pillars);
 
+  const stageScores = [
+    getTwelveStageScore(stages.year),
+    getTwelveStageScore(stages.month),
+    getTwelveStageScore(stages.day),
+    getTwelveStageScore(stages.hour),
+  ];
+
   const stageAvg = Math.round(
-    (
-      getTwelveStageScore(stages.year) +
-      getTwelveStageScore(stages.month) +
-      getTwelveStageScore(stages.day) +
-      getTwelveStageScore(stages.hour)
-    ) / 4
+    stageScores.reduce((sum, v) => sum + v, 0) / stageScores.length
   );
 
   const tenGodScoreMap = {
-    비견: 58,
-    겁재: 45,
-    식신: 76,
-    상관: 54,
-    편재: 72,
-    정재: 78,
-    편관: 50,
-    정관: 74,
-    편인: 55,
-    정인: 70,
-    일간: 60,
-    미상: 50,
+    비견: 57,
+    겁재: 43,
+    식신: 77,
+    상관: 49,
+    편재: 73,
+    정재: 79,
+    편관: 46,
+    정관: 75,
+    편인: 52,
+    정인: 71,
+    일간: 61,
+    미상: 48,
   };
 
+  const tenGodValues = Object.values(tenGods).map(
+    (tg) => tenGodScoreMap[tg] || 48
+  );
+
   const tenGodAvg = Math.round(
-    Object.values(tenGods).reduce(
-      (sum, tg) => sum + (tenGodScoreMap[tg] || 50),
-      0
-    ) / Object.values(tenGods).length
+    tenGodValues.reduce((sum, v) => sum + v, 0) / tenGodValues.length
+  );
+
+  const seedA = seed % 100;
+  const seedB = Math.floor(seed / 7) % 100;
+  const seedC = Math.floor(seed / 13) % 100;
+  const seedD = Math.floor(seed / 23) % 100;
+
+  const personalWave = clamp(
+    stageAvg * 0.28 +
+      tenGodAvg * 0.24 +
+      element.score * 0.22 +
+      relation.score * 0.16 +
+      stars.score * 0.1 +
+      (seedA - 50) * 0.18,
+    15,
+    95
   );
 
   const total = clamp(
-    element.score * 0.25 +
-      relation.score * 0.25 +
-      stars.score * 0.2 +
-      stageAvg * 0.2 +
+    personalWave * 0.35 +
+      element.score * 0.2 +
+      relation.score * 0.18 +
+      stageAvg * 0.17 +
       tenGodAvg * 0.1,
     15,
     95
   );
 
   const money = clamp(
-    (tenGods.month === "정재" || tenGods.month === "편재" ? 78 : 55) +
-      (element.strong.includes("금") ? 6 : 0) +
-      (relation.score - 50) * 0.4,
+    tenGodAvg * 0.33 +
+      element.score * 0.27 +
+      stageScores[1] * 0.18 +
+      relation.score * 0.12 +
+      stars.score * 0.1 +
+      (seedB - 50) * 0.15,
     15,
     95
   );
 
   const love = clamp(
-    55 +
-      (stars.stars.some((s) => s.includes("도화살")) ? 14 : 0) +
-      (relation.combo.length ? 8 : 0) -
-      (relation.clash.length ? 10 : 0),
+    stars.score * 0.3 +
+      relation.score * 0.25 +
+      stageScores[2] * 0.18 +
+      tenGodAvg * 0.17 +
+      element.score * 0.1 +
+      (seedC - 50) * 0.16,
+    15,
+    95
+  );
+
+  const happy = clamp(
+    total * 0.28 +
+      stageAvg * 0.23 +
+      stars.score * 0.2 +
+      relation.score * 0.16 +
+      element.score * 0.13 +
+      (seedD - 50) * 0.12,
     15,
     95
   );
 
   const move = clamp(
-    50 +
-      (stars.stars.some((s) => s.includes("역마살")) ? 18 : 0) +
-      (relation.clash.length ? 5 : 0),
+    relation.score * 0.26 +
+      stars.score * 0.22 +
+      stageScores[3] * 0.2 +
+      element.score * 0.17 +
+      tenGodAvg * 0.15 +
+      (seedA - 50) * 0.14,
     15,
     95
   );
 
   const accidentRisk = clamp(
-    30 +
-      relation.clash.length * 14 +
-      (stages.day === "절" || stages.day === "사" || stages.day === "병" ? 12 : 0),
+    100 -
+      (
+        relation.score * 0.32 +
+        stageScores[2] * 0.24 +
+        element.score * 0.18 +
+        stars.score * 0.14 +
+        tenGodAvg * 0.12
+      ) +
+      relation.clash.length * 9 +
+      (seedB % 9),
     10,
     85
   );
 
   const stress = clamp(
-    35 +
-      relation.clash.length * 12 +
-      (tenGods.month === "편관" || tenGods.hour === "상관" ? 10 : 0),
+    100 -
+      (
+        relation.score * 0.28 +
+        stageAvg * 0.24 +
+        element.score * 0.18 +
+        stars.score * 0.16 +
+        tenGodAvg * 0.14
+      ) +
+      relation.clash.length * 8 +
+      (seedC % 10),
     10,
     85
-  );
-
-  const happy = clamp(
-    55 +
-      (tenGods.month === "식신" || tenGods.hour === "식신" ? 12 : 0) +
-      (stars.score - 50) * 0.3 -
-      relation.clash.length * 5,
-    15,
-    95
   );
 
   return {
@@ -623,40 +682,62 @@ function calculateSajuBasedFortune(profile, salt = "today") {
         relation,
         stars,
         element,
+        stageAvg,
+        tenGodAvg,
+        personalWave,
       },
     },
 
     qimen: {
-      door: relation.clash.length ? "상문" : relation.combo.length ? "생문" : "휴문",
-      direction: element.weak[0] === "목"
-        ? "동"
-        : element.weak[0] === "화"
-        ? "남"
-        : element.weak[0] === "금"
-        ? "서"
-        : element.weak[0] === "수"
-        ? "북"
-        : "중앙",
+      door:
+        relation.clash.length >= 2
+          ? "상문"
+          : relation.combo.length || relation.harmony.length
+          ? "생문"
+          : total >= 70
+          ? "개문"
+          : "휴문",
+      direction:
+        element.weak[0] === "목"
+          ? "동"
+          : element.weak[0] === "화"
+          ? "남"
+          : element.weak[0] === "금"
+          ? "서"
+          : element.weak[0] === "수"
+          ? "북"
+          : "중앙",
     },
 
     iching: {
       main:
-        total >= 80
+        total >= 82
           ? "지천태"
+          : money >= 78
+          ? "화천대유"
+          : love >= 78
+          ? "택산함"
+          : move >= 75
+          ? "뢰지예"
+          : stress >= 65 || accidentRisk >= 65
+          ? "중수감"
           : total >= 65
           ? "풍뢰익"
           : total >= 45
           ? "수화기제"
-          : relation.clash.length
-          ? "중수감"
           : "화수미제",
-      changingLine: Math.max(1, Math.min(6, relation.clash.length + relation.combo.length + 1)),
+      changingLine: Math.max(
+        1,
+        Math.min(6, (relation.clash.length + relation.combo.length + seedA) % 6 + 1)
+      ),
       changed:
-        total >= 70
+        total >= 75
           ? "화천대유"
-          : total >= 45
+          : total >= 55
           ? "뢰풍항"
-          : "산천대축",
+          : accidentRisk >= 65
+          ? "산천대축"
+          : "화수미제",
     },
   };
 }
@@ -1364,9 +1445,33 @@ function UserHome({ profile, data, setTab }) {
 </div>
   );
 }
+/* ✅ 8단계: 12지신 방향운 계산 - 사주 기반 버전 */
 function calcDirectionScores(profile) {
-  const baseKey = `${profile.birthDate || ""}-${profile.birthTime || ""}-${profile.gender || ""}`;
-  const seed = hashNumber(baseKey || "default-direction");
+  const todayKey = new Date().toISOString().slice(0, 10);
+
+  const fortune = calculateSajuBasedFortune(profile, todayKey);
+  const detail = fortune.saju.detail;
+
+  const pillars = detail.pillars;
+  const element = detail.element;
+  const relation = detail.relation;
+  const stars = detail.stars;
+  const stages = detail.stages;
+  const tenGods = detail.tenGods;
+
+  const profileKey = [
+    profile.birthDate || "",
+    profile.birthTime || "",
+    profile.gender || "",
+    profile.calendarType || "",
+    todayKey,
+    pillars.year,
+    pillars.month,
+    pillars.day,
+    pillars.hour,
+  ].join("|");
+
+  const seed = hashNumber(profileKey);
 
   const items = [
     ["자", "북", "수"],
@@ -1383,20 +1488,121 @@ function calcDirectionScores(profile) {
     ["해", "북서", "수"],
   ];
 
-  return items.map(([zodiac, dir, element], index) => {
-    const raw = 45 + ((seed + index * 13) % 45);
-    const score = clamp(raw, 20, 95);
+  const tenGodBonus = {
+    정재: 9,
+    편재: 7,
+    정관: 8,
+    식신: 7,
+    정인: 6,
+    비견: 3,
+    편인: 1,
+    상관: -2,
+    편관: -4,
+    겁재: -5,
+    미상: 0,
+  };
 
-    const reason =
-      score >= 80
-        ? `${dir} 방향은 오늘 이동·만남·재물 흐름이 강한 편입니다.`
-        : score >= 60
-        ? `${dir} 방향은 무난하게 활용하기 좋은 방향입니다.`
-        : score >= 40
-        ? `${dir} 방향은 보통 흐름입니다. 급한 일만 처리하세요.`
-        : `${dir} 방향은 무리한 이동보다 조심이 필요한 방향입니다.`;
+  const stageBonus = {
+    장생: 10,
+    관대: 7,
+    건록: 9,
+    제왕: 11,
+    양: 4,
+    태: 3,
+    목욕: 0,
+    쇠: -2,
+    묘: -4,
+    병: -7,
+    사: -9,
+    절: -11,
+    미상: 0,
+  };
 
-    return [zodiac, dir, score, element, reason];
+  return items.map(([zodiac, dir, dirElement], index) => {
+    const branchTenGod = getBranchTenGod(pillars.day[0], zodiac);
+    const branchStage = getTwelveStage(pillars.day[0], zodiac);
+
+    const elementMatch =
+      element.weak.includes(dirElement)
+        ? 16
+        : element.strong.includes(dirElement)
+        ? -7
+        : 4;
+
+    const clashPenalty =
+      BRANCH_CLASH[pillars.day[1]] === zodiac ||
+      BRANCH_CLASH[pillars.year[1]] === zodiac
+        ? -18
+        : 0;
+
+    const comboBonus =
+      BRANCH_COMBINATION[pillars.day[1]] === zodiac ||
+      BRANCH_COMBINATION[pillars.year[1]] === zodiac
+        ? 13
+        : 0;
+
+    const harmonyBonus = THREE_HARMONY.some(([a, b, c]) => {
+      const group = [a, b, c];
+      return (
+        group.includes(zodiac) &&
+        (group.includes(pillars.day[1]) || group.includes(pillars.year[1]))
+      );
+    })
+      ? 9
+      : 0;
+
+    const starBonus =
+      stars.stars.some((s) => s.includes(zodiac)) ? 8 : 0;
+
+    const dayBranchBonus =
+      zodiac === pillars.day[1] ? 6 : 0;
+
+    const yearBranchBonus =
+      zodiac === pillars.year[1] ? 4 : 0;
+
+    const timeWave =
+      ((seed >> (index % 8)) % 13) - 6;
+
+    const rawScore =
+      detail.stageAvg * 0.2 +
+      detail.tenGodAvg * 0.18 +
+      element.score * 0.2 +
+      relation.score * 0.17 +
+      stars.score * 0.12 +
+      fortune.move * 0.13 +
+      elementMatch +
+      clashPenalty +
+      comboBonus +
+      harmonyBonus +
+      starBonus +
+      dayBranchBonus +
+      yearBranchBonus +
+      (tenGodBonus[branchTenGod] || 0) +
+      (stageBonus[branchStage] || 0) +
+      timeWave;
+
+    const score = clamp(rawScore, 15, 95);
+
+    const reasonParts = [];
+
+    if (elementMatch > 10) {
+      reasonParts.push(`부족한 오행 ${dirElement} 보완`);
+    } else if (elementMatch < 0) {
+      reasonParts.push(`강한 오행 ${dirElement} 과다 주의`);
+    } else {
+      reasonParts.push(`${dirElement} 오행 균형`);
+    }
+
+    if (comboBonus > 0) reasonParts.push("육합 흐름");
+    if (harmonyBonus > 0) reasonParts.push("삼합 보조");
+    if (clashPenalty < 0) reasonParts.push("충돌 기운 주의");
+    if (starBonus > 0) reasonParts.push("귀인·신살 반응");
+    if (stageBonus[branchStage] > 6) reasonParts.push(`${branchStage} 운성 강함`);
+    if (tenGodBonus[branchTenGod] > 5) reasonParts.push(`${branchTenGod} 흐름 양호`);
+
+    const reason = reasonParts.join(" · ");
+
+    return [zodiac, dir, score, dirElement, reason];
   });
 }
 function DirectionPanel({ profile }) {
